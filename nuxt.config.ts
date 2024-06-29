@@ -9,6 +9,11 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: ["nitro-cloudflare-dev"],
+  modules: [
+    "nitro-cloudflare-dev",
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/google-fonts",
+    "nuxt-icon"
+  ],
 
 })

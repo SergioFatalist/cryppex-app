@@ -12,12 +12,24 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^6.12.0",
     "nuxt": "^3.12.2",
+    "nuxt-icon": "^0.6.10",
     "vue": "latest"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240620.0",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.14.1",
+    "eslint": "^8",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-vue": "^9.26.0",
     "nitro-cloudflare-dev": "^0.1.4",
+    "prettier": "^3.3.2",
+    "typescript": "^5.5.2",
+    "vue-tsc": "^2.0.22",
     "wrangler": "^3.62.0"
   }
 }
