@@ -9,13 +9,10 @@ export default defineNuxtConfig({
   ],
   nitro: {
     preset: "cloudflare-pages",
-    prerender: {
-      autoSubfolderIndex: false,
-    },
   },
   ssr: false,
   build: {
-    transpile: ["vuetify"],
+    transpile: ["vuetify", "trpc-nuxt"],
   },
   runtimeConfig: {
     botToken: process.env.NUXT_BOT_TOKEN,
@@ -88,7 +85,7 @@ export default defineNuxtConfig({
     server: {
       hmr: {
         overlay: false,
-        protocol: "ws",
+        protocol: "wss",
       },
     },
   },

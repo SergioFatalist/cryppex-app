@@ -1,19 +1,21 @@
 <template>
   <div>{{ s }}</div>
-  <v-btn @click="send">BUTTON!</v-btn>
+  <v-btn @click="send">BUTTON! {{ s }} {{ h }}}</v-btn>
 </template>
 
 <script setup lang="ts">
-import { MainButton, useWebApp } from "vue-tg";
+import { useWebApp } from "vue-tg";
 
 const app = useWebApp();
-const s = ref("empty");
+const { $client } = useNuxtApp();
+const s = ref<boolean>();
+const h = ref("");
 
-const send = () => app.sendData("somedata");
-
-const handleMainButton = () => {
-  console.dir(s.value);
+const send = async () => {
+  const result = await $client.validation.initData.query({
+    initData: app.initData,
+  });
+  console.dir(result);
+  s.value = result.result;
 };
 </script>
-
-<style scoped></style>
