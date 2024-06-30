@@ -7,15 +7,16 @@
 import { useWebApp } from "vue-tg";
 
 const app = useWebApp();
-const { $client } = useNuxtApp();
 const s = ref<boolean>();
 const h = ref("");
 
 const send = async () => {
-  const result = await $client.validation.initData.query({
-    initData: app.initData,
+  const result = await $fetch("/api/validate", {
+    method: "POST",
+    body: app.initData,
   });
+
   console.dir(result);
-  s.value = result.result;
+  h.value = <string>result;
 };
 </script>
