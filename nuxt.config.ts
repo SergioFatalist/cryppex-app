@@ -7,12 +7,6 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "vuetify-nuxt-module",
   ],
-  // nitro: {
-  //   preset: "cloudflare-module",
-  //   prerender: {
-  //     autoSubfolderIndex: false,
-  //   },
-  // },
   ssr: false,
   build: {
     transpile: ["vuetify", "trpc-nuxt"],

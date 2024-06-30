@@ -8,9 +8,9 @@
     "start:dev": "nuxt dev",
     "start": "node .output/server/index.mjs",
     "generate": "nuxt generate",
-    "preview": "nuxt preview && wrangler pages dev",
+    "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "start:deploy": "pnpm build && pnpm wrangler pages deploy",
+    "start:deploy": "pnpm build",
     "prisma:generate": "pnpm prisma generate",
     "prisma:migrate:dev": "pnpm prisma migrate dev --create-only",
     "prisma:migrate:deploy": "pnpm prisma migrate deploy",
@@ -58,6 +58,5 @@
   "engines": {
     "node": "21.x",
     "pnpm": "9.x"
-  },
-  "packageManager": "pnpm@9.4.0"
+  }
 }
