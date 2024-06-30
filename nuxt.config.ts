@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     "vuetify-nuxt-module",
   ],
   nitro: {
-    preset: "cloudflare",
+    preset: "cloudflare-module",
     prerender: {
       autoSubfolderIndex: false,
     },
