@@ -17,6 +17,9 @@ export default defineNuxtConfig({
   build: {
     transpile: ["vuetify"],
   },
+  runtimeConfig: {
+    botToken: process.env.NUXT_BOT_TOKEN,
+  },
   i18n: {
     lazy: true,
     strategy: "no_prefix",
@@ -44,6 +47,9 @@ export default defineNuxtConfig({
     vueI18n: "./i18n.config.ts",
   },
   vuetify: {
+    moduleOptions: {
+      includeTransformAssetsUrls: false,
+    },
     vuetifyOptions: {
       icons: {
         defaultSet: "mdi",
@@ -73,13 +79,19 @@ export default defineNuxtConfig({
       },
     },
   },
-
   app: {
     head: {
       script: [{ src: "https://telegram.org/js/telegram-web-app.js" }],
     },
   },
-  devtools: { enabled: true },
+  vite: {
+    server: {
+      hmr: {
+        overlay: false,
+        protocol: "ws",
+      },
+    },
+  },
   devServer: {
     host: "0.0.0.0",
     port: 4200,

@@ -5,7 +5,7 @@
         <NuxtPage />
       </div>
     </v-main>
-    <v-bottom-navigation>
+    <v-bottom-navigation mode="">
       <v-btn value="recent">
         <v-icon>mdi-history</v-icon>
 

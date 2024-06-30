@@ -1,12 +1,19 @@
 <template>
-  <div>sample</div>
-  {{ app.isReady }}
+  <div>{{ s }}</div>
+  <v-btn @click="send">BUTTON!</v-btn>
 </template>
 
 <script setup lang="ts">
-import { useWebApp } from "vue-tg";
+import { MainButton, useWebApp } from "vue-tg";
 
 const app = useWebApp();
+const s = ref("empty");
+
+const send = () => app.sendData("somedata");
+
+const handleMainButton = () => {
+  console.dir(s.value);
+};
 </script>
 
 <style scoped></style>
