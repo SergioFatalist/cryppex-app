@@ -7,9 +7,10 @@ generator client {
 }
 
 datasource db {
-  provider   = "postgresql"
-  url        = env("DB_URL")
-  extensions = [pgcrypto]
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOWDB_URL")
+  extensions        = [pgcrypto]
 }
 
 model AppUser {
