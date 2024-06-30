@@ -2,7 +2,7 @@ FROM node:alpine AS base
 RUN apk --no-cache add curl && corepack enable
 
 FROM base AS builder
-
+ARG NUXT_TEST_VAR
 ENV NUXT_TEST_VAR=${NUXT_TEST_VAR}
 RUN echo ${NUXT_TEST_VAR}
 
