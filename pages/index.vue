@@ -1,5 +1,5 @@
 <template>
-  <div>{{ s }}</div>
+  <div>{{ config.public.testVar }}</div>
   <v-btn @click="send">BUTTON! {{ s }} {{ h }}}</v-btn>
 </template>
 
@@ -10,6 +10,8 @@ const app = useWebApp();
 const s = ref<boolean>();
 const h = ref("");
 
+const config = useRuntimeConfig();
+
 const send = async () => {
   const result = await $fetch("/api/validate", {
     method: "POST",
@@ -17,6 +19,5 @@ const send = async () => {
   });
 
   console.dir(result);
-  h.value = <string>result;
 };
 </script>

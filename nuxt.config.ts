@@ -12,6 +12,9 @@ export default defineNuxtConfig({
     transpile: ["vuetify", "trpc-nuxt"],
   },
   runtimeConfig: {
+    public: {
+      testVar: process.env.NUXT_TEST_VAR,
+    },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
   i18n: {
