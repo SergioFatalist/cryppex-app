@@ -14,7 +14,6 @@
     "prisma:generate": "pnpm prisma generate",
     "prisma:migrate:dev": "pnpm prisma migrate dev --create-only",
     "prisma:migrate:deploy": "pnpm prisma migrate deploy",
-    "cf-typegen": "wrangler types",
     "lint": "eslint --ext .js,.ts,.vue --fix ./",
     "vue-i18n-extract": "vue-i18n-extract report --vueFiles './**/*.?(ts|vue)' --languageFiles './i18n/*.json' --add --remove"
   },
@@ -54,8 +53,7 @@
     "vite-plugin-vuetify": "^2.0.3",
     "vue-i18n-extract": "^2.0.7",
     "vuetify": "^3.6.10",
-    "vuetify-nuxt-module": "^0.14.1",
-    "wrangler": "^3.62.0"
+    "vuetify-nuxt-module": "^0.14.1"
   },
   "engines": {
     "node": "21.x",
