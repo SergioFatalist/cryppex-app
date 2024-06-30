@@ -4,6 +4,9 @@
   "description": "refresh",
   "type": "module",
   "main": "./.output/server/index.mjs",
+  "files": [
+    ".output"
+  ],
   "scripts": {
     "build": "pnpm prisma:generate && pnpm nuxt build",
     "start:dev": "nuxt dev",
