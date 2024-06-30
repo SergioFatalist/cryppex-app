@@ -1,6 +1,7 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "description": "",
   "type": "module",
   "scripts": {
     "build": "pnpm prisma:generate && pnpm nuxt build",
