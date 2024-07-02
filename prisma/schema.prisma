@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
@@ -13,6 +10,24 @@ datasource db {
   extensions        = [pgcrypto]
 }
 
-model AppUser {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+model User {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  telegramId  Int           @map("telegram_id")
+  balance     Int           @default(0) @map("balance")
+  refCode     String        @unique @map("ref_code")
+  referrer    User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  referrerId  String?       @map("referrer_id") @db.Uuid
+  referrals   User[]        @relation("referrer")
+  Transaction Transaction[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user      User   @relation(fields: [], references: [id])
+  userId    String @map("user_id")
+  direction String
+
+  @@map("transactions")
 }
