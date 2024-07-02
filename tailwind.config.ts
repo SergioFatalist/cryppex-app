@@ -2,7 +2,7 @@
 import type { Config } from "tailwindcss";
 
 export default <Partial<Config>>{
-  darkMode: "selector",
+  darkMode: "media",
   theme: {
     extend: {
       fontFamily: {
