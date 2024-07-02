@@ -1,24 +1,25 @@
 <template>
-  <div>{{ config.public.testVar }}</div>
+  <div class="text-white">{{ app.isReady }}</div>
 </template>
 
 <script setup lang="ts">
 import { useWebApp } from "vue-tg";
 const app = useWebApp();
 const config = useRuntimeConfig();
+const h = ref();
 
 const send = async () => {
-  const { error, data } = await useFetch("/api/validate", {
+  const data = await $fetch("/api/validate", {
     method: "POST",
     body: app.initData,
   });
 
-  console.log(data.value);
+  h.value = data;
 
-  if (error) {
-    console.dir(error);
-  }
+  // if (error) {
+  //   console.dir(error);
+  // }
 };
 
-onMounted(() => console.log(app.initData));
+onMounted(send);
 </script>
