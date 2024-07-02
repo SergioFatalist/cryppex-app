@@ -32,7 +32,6 @@
     "uuid": "^10.0.0",
     "vue": "latest",
     "vue-router": "^4.4.0",
-    "vue-tg": "^0.6.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

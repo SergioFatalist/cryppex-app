@@ -1,27 +1,19 @@
 <template>
-  <div class="text-white">{{ foo }}</div>
+  <div class="text-white">{{ res }}</div>
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig();
-const router = useRouter();
-const r = ref("");
-const eee = ref("");
+const res = ref("");
+const tg = (window as any).Telegram;
 
-const foo = ref(Telegram.WebApp.);
 const send = async () => {
-  const { data, error, refresh, clear }  = await useFetch("/api/validate", {
+  const initData = tg.WebApp.initData;
+  const { data } = await useFetch("/api/validate", {
     method: "POST",
-    body: {
-      data: Telegram.WebApp.initData
-    },
+    body: JSON.stringify({ initData }),
   });
 
-  r.value = data.value?.result.toString() ?? "undef";
-
-  if (error) {
-    eee.value = error.value ?? "unknown";
-  }
+  res.value = data.value?.result.toString() ?? "undef";
 };
 
 onMounted(send);

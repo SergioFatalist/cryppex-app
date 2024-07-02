@@ -3,10 +3,10 @@ import { H3Event } from "h3";
 
 export default defineEventHandler(async (event: H3Event) => {
   const body = await readBody(event);
-  console.log(JSON.stringify(body.data));
+  console.log(JSON.stringify(body));
 
   // const config = useRuntimeConfig();
-  // const initData = new URLSearchParams(body);
+  // const initData = new URLSearchParams(JSON.parse(body.data));
   // console.dir(initData);
   // initData.sort();
   //
@@ -21,8 +21,7 @@ export default defineEventHandler(async (event: H3Event) => {
   //
   // const result = hash === _hash;
   // console.log(result);
+  const result = true;
 
-  return {
-    result: true,
-  };
+  return result;
 });
