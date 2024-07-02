@@ -1,2 +1,2 @@
-web: pnpm start:dev
+web: pnpm start
 release: pnpm prisma migrate deploy
