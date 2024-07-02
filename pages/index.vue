@@ -1,20 +1,19 @@
 <template>
-  <div class="text-white">{{ res }}</div>
+  <div class="text-white text-2xl">
+    Hello
+    <br />
+    {{ $app.$state.user?.username || `${$app.$state.user?.first_name} ${$app.$state.user?.last_name} ` }}
+  </div>
 </template>
 
 <script setup lang="ts">
-const res = ref("");
-const tg = (window as any).Telegram;
+const $app = useAppStore();
 
-const send = async () => {
-  const initData = tg.WebApp.initData;
-  const { data } = await useFetch("/api/validate", {
-    method: "POST",
-    body: JSON.stringify({ initData }),
-  });
-
-  res.value = data.value?.result.toString() ?? "undef";
-};
-
-onMounted(send);
+// const load = async () => {
+//   try {
+//
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
 </script>

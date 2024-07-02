@@ -4,13 +4,20 @@ import { dirname, join } from "node:path";
 const currentDir = dirname(fileURLToPath(import.meta.url));
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts", "@nuxt/icon", "@vueuse/nuxt"],
+  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/google-fonts", "@nuxt/icon"],
+  piniaPersistedstate: {
+    storage: "localStorage",
+    debug: true,
+  },
+
   googleFonts: {
     families: {
       Roboto: [300, 400, 500, 700],
     },
   },
+
   css: [join(currentDir, "./assets/css/main.css")],
+
   icon: {
     class: "icon",
     size: "32px",
@@ -21,18 +28,22 @@ export default defineNuxtConfig({
       },
     ],
   },
+
   ssr: false,
+
   runtimeConfig: {
     public: {
       testVar: process.env.NUXT_TEST_VAR,
     },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
+
   app: {
     head: {
       script: [{ src: "https://telegram.org/js/telegram-web-app.js" }],
     },
   },
+
   vite: {
     server: {
       ws: false,
@@ -41,11 +52,15 @@ export default defineNuxtConfig({
       },
     },
   },
+
   devtools: {
     enabled: false,
   },
+
   devServer: {
     host: "0.0.0.0",
     port: parseInt(process.env.PORT || "4200") || 4200,
   },
+
+  compatibilityDate: "2024-07-02",
 });
