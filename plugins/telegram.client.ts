@@ -1,4 +1,4 @@
-import type { Telegram } from "~/types";
+import type { Telegram } from "~/types/telegram";
 
 export default defineNuxtPlugin({
   name: "telegram",

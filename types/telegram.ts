@@ -876,11 +876,11 @@ export interface WebAppUser {
    * integer or a double-precision float type is safe for storing this
    * identifier.
    */
-  id: number;
+  id: bigint;
   /** True, if this user is a bot. Returns in the receiver field only. */
   is_bot?: boolean;
   /** First name of the user or bot. */
-  first_name: string;
+  first_name?: string;
   /** Last name of the user or bot. */
   last_name?: string;
   /** Username of the user or bot. */
@@ -888,11 +888,11 @@ export interface WebAppUser {
   /** IETF language tag of the user's language. Returns in user field only. */
   language_code?: string;
   /** True, if this user is a Telegram Premium user. */
-  is_premium?: true;
+  is_premium?: boolean;
   /** True, if this user added the bot to the attachment menu. */
-  added_to_attachment_menu?: true;
+  added_to_attachment_menu?: boolean;
   /** True, if this user allowed the bot to message them. */
-  allows_write_to_pm?: true;
+  allows_write_to_pm?: boolean;
   /**
    * URL of the user’s profile photo. The photo can be in .jpeg or .svg formats.
    * Only returned for Web Apps launched from the attachment menu.

@@ -1,12 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gray-400 dark:bg-gray-950">
+  <div class="min-h-screen flex flex-col items-center content-center bg-gray-400 dark:bg-gray-950 pb-16">
     <NuxtPage />
 
     <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-gray-400 dark:bg-black">
       <div class="grid h-full max-w-lg grid-cols-3 mx-auto font-medium">
-        <button
+        <NuxtLink
           type="button"
           class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-950 dark:hover:bg-gray-950 group"
+          to="/"
         >
           <Icon
             name="ic:baseline-home"
@@ -16,10 +17,11 @@
             class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500"
             >Wallet</span
           >
-        </button>
-        <button
+        </NuxtLink>
+        <NuxtLink
           type="button"
           class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-950 dark:hover:bg-gray-950 group"
+          to="/wallet"
         >
           <Icon
             name="ic:baseline-account-balance-wallet"
@@ -29,10 +31,11 @@
             class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500"
             >Wallet</span
           >
-        </button>
-        <button
+        </NuxtLink>
+        <NuxtLink
           type="button"
           class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-950 dark:hover:bg-gray-950 group"
+          to="/friends"
         >
           <Icon
             name="ic:outline-group"
@@ -40,9 +43,9 @@
           />
           <span
             class="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-500"
-            >Referrals</span
+            >Friends</span
           >
-        </button>
+        </NuxtLink>
       </div>
     </div>
   </div>

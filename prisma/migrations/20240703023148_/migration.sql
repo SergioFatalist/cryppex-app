@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "telegram_id" TEXT NOT NULL,
+    "telegram_id" BIGINT NOT NULL,
     "username" VARCHAR,
     "first_name" VARCHAR,
     "last_name" VARCHAR,
@@ -12,7 +12,8 @@ CREATE TABLE "users" (
     "balance" INTEGER NOT NULL DEFAULT 0,
     "farm" INTEGER NOT NULL DEFAULT 0,
     "referrer_id" UUID,
-    "login_epoch" INTEGER,
+    "last_login_epoch" INTEGER,
+    "curr_login_epoch" INTEGER,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );

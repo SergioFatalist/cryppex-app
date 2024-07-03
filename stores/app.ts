@@ -1,7 +1,7 @@
-import type { WebAppUser } from "~/types";
+import type { User } from "~/types/app";
 
 export interface AppState {
-  user?: WebAppUser | undefined;
+  user?: User | undefined;
 }
 
 export const useAppStore = defineStore("cryppex", {

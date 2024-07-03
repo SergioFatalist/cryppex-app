@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import dayjs from "dayjs";
 import { H3Event } from "h3";
-import { WebAppUser } from "~/types";
+import { WebAppUser } from "~/types/telegram";
 
 export default defineEventHandler(async (event: H3Event) => {
   const body = await readBody(event);
@@ -32,22 +32,33 @@ export default defineEventHandler(async (event: H3Event) => {
     return { result: false, user: undefined };
   }
 
-  const user = await prisma.user.upsert({
+  let user = await prisma.user.findUnique({
     where: {
       telegramId: webAppUser.id.toString(),
     },
-    create: {
-      telegramId: webAppUser.id.toString(),
-      firstName: webAppUser.first_name,
-      lastName: webAppUser.last_name,
-      username: webAppUser.username,
-      languageCode: webAppUser.language_code,
-      loginEpoch: dayjs().unix(),
-    },
-    update: {
-      loginEpoch: dayjs().unix(),
-    },
   });
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        telegramId: webAppUser.id.toString(),
+        firstName: webAppUser.first_name,
+        lastName: webAppUser.last_name,
+        username: webAppUser.username,
+        languageCode: webAppUser.language_code,
+        currLoginEpoch: dayjs().unix(),
+      },
+    });
+  } else {
+    user = await prisma.user.update({
+      where: {
+        telegramId: webAppUser.id.toString(),
+      },
+      data: {
+        lastLoginEpoch: user.currLoginEpoch,
+        currLoginEpoch: dayjs().unix(),
+      },
+    });
+  }
 
   return { result, user };
 });
