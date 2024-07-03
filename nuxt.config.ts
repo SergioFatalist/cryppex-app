@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -10,23 +11,8 @@ export default defineNuxtConfig({
     },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/google-fonts", "@nuxt/icon"],
-  googleFonts: {
-    families: {
-      Roboto: [300, 400, 500, 700],
-    },
-  },
+  modules: ["@pinia/nuxt", "vuetify-nuxt-module"],
   css: [join(currentDir, "./assets/css/main.css")],
-  icon: {
-    class: "icon",
-    size: "32px",
-    customCollections: [
-      {
-        prefix: "cppx",
-        dir: "./assets/icons",
-      },
-    ],
-  },
   ssr: false,
   app: {
     head: {
@@ -34,7 +20,52 @@ export default defineNuxtConfig({
     },
   },
   build: {
-    transpile: ["trpc-nuxt"],
+    transpile: ["vuetify", "trpc-nuxt"],
+  },
+  vuetify: {
+    vuetifyOptions: {
+      icons: {
+        defaultSet: "mdi",
+      },
+      theme: {
+        themes: {
+          light: {
+            dark: false,
+            colors: {
+              background: "#232b43",
+              surface: "#ADBBDA",
+              "surface-bright": "#7091E6",
+              "surface-light": "#8697C4",
+              primary: "#3366FF",
+              secondary: "#7091E6",
+              error: "#FF652D",
+              info: "#3EB8F9",
+              success: "#87E21F",
+              warning: "#FFE121",
+            },
+          },
+          dark: {
+            dark: true,
+            colors: {
+              background: "#232b43",
+              // 'background': '#0C0F16',
+              surface: "#161A2E",
+              "surface-bright": "#3D52A0",
+              "surface-light": "#232b43",
+              // 'surface-variant': '#0C0F16',
+              "on-surface-variant": "#EEEEEE",
+              primary: "#3366FF",
+              secondary: "#254EDB",
+              error: "#FF652D",
+              info: "#3EB8F9",
+              success: "#87E21F",
+              warning: "#FFE121",
+            },
+          },
+        },
+        defaultTheme: "dark",
+      },
+    },
   },
   vite: {
     server: {
