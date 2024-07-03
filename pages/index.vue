@@ -1,48 +1,35 @@
 <template>
-  <div class="flex-grow text-center text-white text-2xl">
-    <div class="mt-4">
-      <span class="text-xl">Hello</span>
-      <br />
-      <span v-if="$app.$state.user?.username">
-        <span class="text-gray-600">@</span>{{ $app.$state.user?.username }}
-      </span>
-      <span v-else>
-        {{ `${$app.$state.user?.first_name} ${$app.$state.user?.last_name}` }}
-      </span>
-    </div>
-  </div>
-
-  <div class="w-full flex flex-row content-between align-middle justify-between px-2">
-    <div class="inline-flex flex-row">
-      <div class="trx-bg w-16 h-16 m-0 p-0 flex justify-center items-center">
-        <Icon name="cppx:trx-logo" class="w-12 h-12 m-0 p-0 flex-grow text-gray-50 dark:text-gray-50" />
-      </div>
-      <div>
-        <span class="text-gray-500">Tron Balance</span>
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <span class="text-subtitle-2">Hello</span>
         <br />
-        <span class="text-2xl text-white">100 TRX</span>
-      </div>
-    </div>
-    <div class="inline-flex text-white">
-      <button
-        type="button"
-        class="py-2 px-4 bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-      >
-        Send
-      </button>
-    </div>
-  </div>
+        <span v-if="$app.$state.user?.username" class="text-h6">
+          <span class="text-grey">@</span>
+          <span class="text-white">{{ $app.$state.user?.username }}</span>
+        </span>
+        <span v-else class="text-h6 text-white">
+          {{ `${$app.$state.user?.first_name} ${$app.$state.user?.last_name}` }}
+        </span>
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-toolbar class="pl-4">
+    <v-toolbar-items>
+      <v-img src="/tron-trx.svg" class="ma-0 pa-0" width="64" alt="tron logo" />
+    </v-toolbar-items>
+    <v-toolbar-title>
+      <span class="text-caption">Tron balance</span><br />
+      <span>100 TRX</span>
+    </v-toolbar-title>
+
+    <v-toolbar-items>
+      <v-btn prepend-icon="mdi-arrow-right-bold-hexagon-outline" variant="plain" size="large" class="pa-4">Send</v-btn>
+    </v-toolbar-items>
+  </v-toolbar>
 </template>
 
 <script setup lang="ts">
 const $app = useAppStore();
 </script>
 
-<style>
-.trx-bg {
-  background-image: url("assets/icons/redg.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-}
-</style>
