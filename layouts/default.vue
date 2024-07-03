@@ -1,6 +1,8 @@
 <template>
   <div class="min-h-screen flex flex-col items-center content-center bg-gray-400 dark:bg-gray-950 pb-16">
-    <NuxtPage />
+    <div class="container mx-auto">
+      <NuxtPage />
+    </div>
 
     <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-gray-400 dark:bg-black">
       <div class="grid h-full max-w-lg grid-cols-3 mx-auto font-medium">
@@ -50,3 +52,5 @@
     </div>
   </div>
 </template>
+<script setup lang="ts">
+</script>
