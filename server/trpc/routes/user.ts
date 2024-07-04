@@ -1,6 +1,14 @@
 import crypto from "crypto";
 import dayjs from "dayjs";
-import { InitDataSchema, User, UserSchema } from "~/server/model/user";
+import {
+  InitDataSchema,
+  ListRequestSchema,
+  User,
+  UserSchema,
+  UsersList,
+  UsersListSchema,
+  UuidFieldSchema,
+} from "~/server/model/trpc";
 import { procedure, router } from "~/server/trpc/trpc";
 import errorParser from "../error-parser";
 
@@ -10,7 +18,6 @@ export default router({
     .output(UserSchema)
     .mutation(async ({ input }): Promise<User> => {
       try {
-        console.dir(input);
         const config = useRuntimeConfig();
         const initData = new URLSearchParams(JSON.parse(input.initData));
         initData.sort();
@@ -62,6 +69,43 @@ export default router({
 
         return user;
       } catch (error) {
+        throw errorParser(error);
+      }
+    }),
+
+  get: procedure
+    .input(UuidFieldSchema)
+    .output(UserSchema)
+    .query(async ({ input }): Promise<User> => {
+      try {
+        return prisma.user.findUniqueOrThrow({
+          where: {
+            id: input.id,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        throw errorParser(error);
+      }
+    }),
+
+  list: procedure
+    .input(ListRequestSchema)
+    .output(UsersListSchema)
+    .query(async ({ input }): Promise<UsersList> => {
+      try {
+        const where = { referrerId: input.userId };
+        const total = await prisma.user.count({ where });
+        const items = await prisma.user.findMany({
+          where,
+          ...parsePagination(input.pagination),
+        });
+        return {
+          pagination: { ...input.pagination, total },
+          items,
+        };
+      } catch (error) {
+        console.error(error);
         throw errorParser(error);
       }
     }),

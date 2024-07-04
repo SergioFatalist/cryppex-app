@@ -1,18 +1,18 @@
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <div v-if="$app.$state.user">
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { useAppStore } from "~/stores/app";
-
 const router = useRouter();
 const $app = useAppStore();
 
 //const platform = Telegram.WebApp.platform;
 // if (platform == "tdesktop") {
-//   await router.push("/use-mobile");
+//   await router.push("/errors/use-mobile");
 // } else if (platform != "ios" && platform != "android") {
 //   navigateTo("https://t.me/cryppex_dev_bot/cryppex_dev_app", { external: true });
 // }
@@ -28,31 +28,20 @@ const setUser = async () => {
   const params = new URLSearchParams(initData);
 
   // if (!initData) {
-  //   await router.push("/no-data");
+  //   await router.push("/errors/no-data");
   // }
   try {
-    const webAppUser = JSON.parse(<string>params.get("user"), (_k, _v) => (_k == "id" ? BigInt(_v) : _v));
-    console.log("webAppUser", webAppUser);
     const result = await $client.User.set.mutate({
       initData: JSON.stringify(initData),
-      webAppUser,
+      webAppUser: JSON.parse(<string>params.get("user"), (_k, _v) => (_k == "id" ? BigInt(_v) : _v)),
     });
     console.log(result);
     $app.$state.user = result;
   } catch (error) {
     console.error(error);
-    await router.push("/no-data");
+    await router.push("/errors/no-data");
   }
-
-  // $app.$state.user = <WebAppUser>{
-  //   id: 273459086,
-  //   first_name: "Jackson",
-  //   last_name: "Teller",
-  //   username: "JaksonTeller",
-  //   language_code: "ru",
-  //   allows_write_to_pm: true,
-  // };
 };
 
-onMounted(setUser);
+onBeforeMount(setUser);
 </script>

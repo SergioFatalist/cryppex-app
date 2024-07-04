@@ -22,6 +22,7 @@ model User {
   referrer       User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   referrerId     String?       @map("referrer_id") @db.Uuid
   referrals      User[]        @relation("referrer")
+  createdEpoch   Int           @default(dbgenerated("EXTRACT(epoch FROM now())")) @map("created_epoch")
   lastLoginEpoch Int?          @map("last_login_epoch")
   currLoginEpoch Int?          @map("curr_login_epoch")
   transactions   Transaction[]
@@ -45,8 +46,11 @@ model Transaction {
   userId     String   @map("user_id") @db.Uuid
   startEpoch Int      @map("start_epoch")
   endEpoch   Int?     @map("end_epoch")
+  referral   String?
+  amount     Int      @default(0)
   success    Boolean?
-  direction  String
+  operation  String
+  referralId String?  @map("referral_id") @db.Uuid
 
   @@map("transactions")
 }

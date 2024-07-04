@@ -34,13 +34,13 @@ export default defineEventHandler(async (event: H3Event) => {
 
   let user = await prisma.user.findUnique({
     where: {
-      telegramId: webAppUser.id.toString(),
+      telegramId: webAppUser.id,
     },
   });
   if (!user) {
     user = await prisma.user.create({
       data: {
-        telegramId: webAppUser.id.toString(),
+        telegramId: webAppUser.id,
         firstName: webAppUser.first_name,
         lastName: webAppUser.last_name,
         username: webAppUser.username,
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event: H3Event) => {
   } else {
     user = await prisma.user.update({
       where: {
-        telegramId: webAppUser.id.toString(),
+        telegramId: webAppUser.id,
       },
       data: {
         lastLoginEpoch: user.currLoginEpoch,
