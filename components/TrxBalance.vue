@@ -18,6 +18,6 @@
 <script setup lang="ts">
 const $app = useAppStore();
 const balance = computed(() =>
-  $app.$state.user?.balance ? parseFloat(String($app.$state.user?.balance / 1000)).toFixed(3) : 0
+  $app.$state.user?.balance ? parseFloat(String($app.$state.user?.balance / 1000000)).toFixed(3) : 0
 );
 </script>

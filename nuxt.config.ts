@@ -4,6 +4,11 @@ export default defineNuxtConfig({
     public: {
       testVar: process.env.NUXT_TEST_VAR,
     },
+    tron: {
+      fullHost: process.env.NUXT_TRON_FULL_HOST,
+      privateKey: process.env.NUXT_TRON_PRIVATE_KEY,
+      apiKey: process.env.NUXT_TRON_API_KEY,
+    },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
   modules: ["@pinia/nuxt", "vuetify-nuxt-module"],

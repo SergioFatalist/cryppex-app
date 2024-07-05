@@ -10,6 +10,7 @@ import {
   UuidFieldSchema,
 } from "~/server/model/trpc";
 import { procedure, router } from "~/server/trpc/trpc";
+import tron from "~/server/utils/tron";
 import errorParser from "../error-parser";
 
 export default router({
@@ -18,6 +19,8 @@ export default router({
     .output(UserSchema)
     .mutation(async ({ input }): Promise<User> => {
       try {
+        const b = await tron.trx.getBalance();
+        console.log(b);
         const config = useRuntimeConfig();
         const initData = new URLSearchParams(JSON.parse(input.initData));
         initData.sort();
