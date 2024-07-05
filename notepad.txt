@@ -1,3 +1,0 @@
-https://t.me/cryppex_dev_bot/cryppex_dev_app
-
-docker run -it -p 9090:9090 --rm --name tron trontools/quickstart
