@@ -1,0 +1,29 @@
+version: "3"
+networks:
+  cryppex:
+    driver: bridge
+services:
+  postgresql:
+    image: postgres:16
+    networks:
+      - cryppex
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./local/init.sql:/docker-entrypoint-initdb.d/init.sql
+  tron:
+    image: trontools/quickstart
+    networks:
+      - cryppex
+    restart: always
+    environment:
+      useDefaultPrivateKey: true
+      showQueryString: true
+      howBody: true
+      formatJson: true
+    ports:
+      - "9090:9090"
