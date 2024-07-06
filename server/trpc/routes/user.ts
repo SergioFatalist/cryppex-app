@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import dayjs from "dayjs";
 import {
@@ -19,8 +20,6 @@ export default router({
     .output(UserSchema)
     .mutation(async ({ input }): Promise<User> => {
       try {
-        const b = await tron.trx.getBalance();
-        console.log(b);
         const config = useRuntimeConfig();
         const initData = new URLSearchParams(JSON.parse(input.initData));
         initData.sort();
@@ -48,6 +47,8 @@ export default router({
           },
         });
         if (!user) {
+          const account = await tron.createAccount();
+
           user = await prisma.user.create({
             data: {
               telegramId: input.webAppUser.id,
@@ -55,18 +56,27 @@ export default router({
               lastName: input.webAppUser.last_name,
               username: input.webAppUser.username,
               languageCode: input.webAppUser.language_code,
+              publicKey: account.publicKey,
+              privateKey: account.privateKey,
               currLoginEpoch: dayjs().unix(),
             },
           });
         } else {
+          const data: Prisma.UserUpdateInput = {
+            lastLoginEpoch: user.currLoginEpoch,
+            currLoginEpoch: dayjs().unix(),
+          };
+          if (!user.publicKey) {
+            const account = await tron.createAccount();
+
+            data.publicKey = account.publicKey;
+            data.privateKey = account.privateKey;
+          }
           user = await prisma.user.update({
             where: {
               telegramId: input.webAppUser.id,
             },
-            data: {
-              lastLoginEpoch: user.currLoginEpoch,
-              currLoginEpoch: dayjs().unix(),
-            },
+            data,
           });
         }
 

@@ -16,7 +16,7 @@
       {{ formatEpoch(item.startEpoch) }}
     </template>
     <template #[`item.amount`]="{ item }">
-      {{ formatAmount(item.amount) }}
+      {{ formatTrx(item.amount) }}
     </template>
     <template #[`item.success`]="{ item }">
       <v-icon v-if="item.success" color="success" icon="mdi-check-circle-outline" size="16" />

@@ -70,7 +70,7 @@ export const TransactionSchema = z.object({
   startEpoch: z.number(),
   endEpoch: z.number().nullable().optional(),
   referral: z.string().nullable().optional(),
-  amount: z.number().default(0),
+  amount: z.bigint(),
   success: z.boolean().nullable(),
   operation: z.string(),
 });

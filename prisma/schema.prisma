@@ -17,6 +17,8 @@ model User {
   firstName      String?       @map("first_name") @db.VarChar
   lastName       String?       @map("last_name") @db.VarChar
   languageCode   String?       @map("language_code") @db.VarChar
+  publicKey      String?       @map("public_key") @db.VarChar
+  privateKey     String?       @map("private_key") @db.VarChar
   balance        BigInt        @default(0) @map("balance")
   locked         BigInt        @default(0) @map("locked")
   interest       BigInt        @default(0) @map("interest")
@@ -27,18 +29,8 @@ model User {
   lastLoginEpoch Int?          @map("last_login_epoch")
   currLoginEpoch Int?          @map("curr_login_epoch")
   transactions   Transaction[]
-  accounts       Address[]
 
   @@map("users")
-}
-
-model Address {
-  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String @map("user_id") @db.Uuid
-  address String @db.VarChar
-
-  @@map("addresses")
 }
 
 model Transaction {
@@ -48,10 +40,11 @@ model Transaction {
   startEpoch Int      @map("start_epoch")
   endEpoch   Int?     @map("end_epoch")
   referral   String?
-  amount     Int      @default(0)
+  amount     BigInt   @default(0)
   success    Boolean?
   operation  String
   referralId String?  @map("referral_id") @db.Uuid
+  txId       String?  @map("tx_id")
 
   @@map("transactions")
 }

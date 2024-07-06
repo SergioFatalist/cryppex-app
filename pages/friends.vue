@@ -33,7 +33,7 @@
       {{ formatTgName(item) }}
     </template>
     <template #[`item.balance`]="{ item }">
-      {{ formatAmount(item.balance) }}
+      {{ formatTrx(item.balance) }}
     </template>
   </v-data-table-server>
 </template>
