@@ -18,10 +18,10 @@
       </div>
     </div>
   </div>
-  <v-dialog v-model="showQR">
-    <QrcodeVue value="value" :size="100" level="H">
-
-    </QrcodeVue>
+  <v-dialog v-model="showQR" min-width="75%">
+    <v-sheet>
+      <qr-code value="value" :size="100" level="H" />
+    </v-sheet>
   </v-dialog>
 </template>
 
@@ -30,5 +30,4 @@ import TrxBalance from "~/components/TrxBalance.vue";
 
 const $app = useAppStore();
 const showQR = ref(false);
-
 </script>
