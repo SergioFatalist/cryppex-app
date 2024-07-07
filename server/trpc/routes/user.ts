@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import dayjs from "dayjs";
+import { omit } from "remeda";
 import {
   InitDataSchema,
   ListRequestSchema,
@@ -80,7 +81,10 @@ export default router({
           });
         }
 
-        return user;
+        return {
+          ...omit(user, ["publicKey", "privateKey"]),
+          address: user.privateKey ? tron.address.fromPrivateKey(user.privateKey) || "" : "",
+        };
       } catch (error) {
         throw errorParser(error);
       }
@@ -91,11 +95,15 @@ export default router({
     .output(UserSchema)
     .query(async ({ input }): Promise<User> => {
       try {
-        return prisma.user.findUniqueOrThrow({
+        const user = await prisma.user.findUniqueOrThrow({
           where: {
             id: input.id,
           },
         });
+        return {
+          ...omit(user, ["publicKey", "privateKey"]),
+          address: user.privateKey ? tron.address.fromPrivateKey(user.privateKey) || "" : "",
+        };
       } catch (error) {
         console.error(error);
         throw errorParser(error);

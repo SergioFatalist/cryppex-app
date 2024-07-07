@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-main>
+    <v-main class="h-screen">
       <NuxtPage />
     </v-main>
     <v-bottom-navigation>

@@ -31,6 +31,7 @@ export const UserSchema = z.object({
   balance: z.bigint(),
   locked: z.bigint(),
   interest: z.bigint(),
+  address: z.string(),
   referrerId: z.string().uuid().nullable().optional(),
   languageCode: z.string().nullable().optional(),
   createdEpoch: z.number(),
@@ -38,8 +39,17 @@ export const UserSchema = z.object({
   lastLoginEpoch: z.number().nullable().optional(),
 });
 
+export const UsersListItemSchema = UserSchema.pick({
+  id: true,
+  telegramId: true,
+  firstName: true,
+  lastName: true,
+  username: true,
+  createdEpoch: true,
+});
+
 export const UsersListSchema = PaginatiedSchema.extend({
-  items: z.array(UserSchema).default([]),
+  items: z.array(UsersListItemSchema).default([]),
 });
 
 export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
@@ -81,6 +91,7 @@ export const TransactionsListSchema = PaginatiedSchema.extend({
 
 export type User = z.TypeOf<typeof UserSchema>;
 export type UsersList = z.TypeOf<typeof UsersListSchema>;
+export type UsersListItem = z.TypeOf<typeof UsersListItemSchema>;
 export type Pagination = z.TypeOf<typeof PaginationSchema>;
 export type Transaction = z.TypeOf<typeof TransactionSchema>;
 export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;

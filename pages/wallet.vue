@@ -7,6 +7,7 @@
     :page="page"
     :items-length="total"
     :items-per-page="itemsPerPage"
+    :hide-default-footer="total == 0"
     disable-sort
     density="compact"
     class="text-caption"

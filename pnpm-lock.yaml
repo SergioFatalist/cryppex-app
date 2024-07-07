@@ -35,6 +35,9 @@ importers:
       prisma:
         specifier: ^5.16.1
         version: 5.16.1
+      qrcode.vue:
+        specifier: ^3.4.1
+        version: 3.4.1(vue@3.4.31(typescript@5.5.3))
       remeda:
         specifier: ^2.2.2
         version: 2.3.0
@@ -3176,6 +3179,11 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  qrcode.vue@3.4.1:
+    resolution: {integrity: sha512-wq/zHsifH4FJ1GXQi8/wNxD1KfQkckIpjK1KPTc/qwYU5/Bkd4me0w4xZSg6EXk6xLBkVDE0zxVagewv5EMAVA==}
+    peerDependencies:
+      vue: ^3.0.0
 
   querystring-es3@0.2.1:
     resolution: {integrity: sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA==}
@@ -7385,6 +7393,10 @@ snapshots:
   proxy-from-env@1.1.0: {}
 
   punycode@2.3.1: {}
+
+  qrcode.vue@3.4.1(vue@3.4.31(typescript@5.5.3)):
+    dependencies:
+      vue: 3.4.31(typescript@5.5.3)
 
   querystring-es3@0.2.1: {}
 

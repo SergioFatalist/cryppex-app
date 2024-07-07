@@ -30,6 +30,7 @@
     "nuxt": "^3.12.2",
     "pinia": "^2.1.7",
     "prisma": "^5.16.1",
+    "qrcode.vue": "^3.4.1",
     "remeda": "^2.2.2",
     "superjson": "^2.2.1",
     "telegraf": "^4.16.3",
