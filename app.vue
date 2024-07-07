@@ -8,7 +8,11 @@
 
 <script lang="ts" setup>
 const router = useRouter();
+const route = useRoute();
 const $app = useAppStore();
+
+const ref = route.query["ref"];
+const kentId = ref ? (Array.isArray(ref) ? ref[0] || "" : ref).toString() : "";
 
 //const platform = Telegram.WebApp.platform;
 // if (platform == "tdesktop") {
@@ -34,6 +38,7 @@ const setUser = async () => {
     const result = await $client.User.set.mutate({
       initData: JSON.stringify(initData),
       webAppUser: JSON.parse(<string>params.get("user"), (_k, _v) => (_k == "id" ? BigInt(_v) : _v)),
+      kentId,
     });
     console.log(result);
     $app.$state.user = result;

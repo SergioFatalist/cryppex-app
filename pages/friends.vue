@@ -1,18 +1,22 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12" class="text-h6 text-white text-center">Friends</v-col>
-    </v-row>
     <v-row v-if="my">
-      <v-col cols="12">
-        <span class="text-subtitle-2">Your Referrer</span>
-        <br />
-        <span class="text-h6 text-white">
-          {{ formatTgName(my) }}
-        </span>
+      <v-col cols="12" class="d-flex justify-space-between">
+        <div class="text-subtitle-2">Your Referrer</div>
+        <div class="text-subtitle-2 text-white">{{ formatTgName(my) }}</div>
       </v-col>
     </v-row>
   </v-container>
+  <v-toolbar color="secondary" class="pl-4">
+    <v-toolbar-title>
+      <span class="text-caption">Link to Invite a friends</span><br />
+      <span>{{ $router.currentRoute }}</span>
+    </v-toolbar-title>
+
+    <v-toolbar-items>
+      <v-btn prepend-icon="mdi-content-copy" variant="plain" size="large" class="pa-4">Copy</v-btn>
+    </v-toolbar-items>
+  </v-toolbar>
 
   <v-data-table-server
     :items="items"
@@ -41,14 +45,16 @@
 
 <script setup lang="ts">
 import { NIL } from "uuid";
-import type { Pagination, User } from "~/server/model/trpc";
+import type { Pagination, User, UsersListItem } from "~/server/model/trpc";
 import type { DataTableHeaders } from "~/server/model/ui";
 
 const $app = useAppStore();
+const config = useRuntimeConfig();
 const { $client } = useNuxtApp();
+
 const loading = ref(false);
 const my = ref<User | undefined>(undefined);
-const items = ref<User[]>([]);
+const items = ref<UsersListItem[]>([]);
 const itemsPerPage = ref(15);
 const page = ref(1);
 const total = ref(0);

@@ -17,8 +17,8 @@ model User {
   firstName      String?       @map("first_name") @db.VarChar
   lastName       String?       @map("last_name") @db.VarChar
   languageCode   String?       @map("language_code") @db.VarChar
-  publicKey      String?       @map("public_key") @db.VarChar
-  privateKey     String?       @map("private_key") @db.VarChar
+  address        String        @map("address") @db.VarChar
+  privateKey     String        @map("private_key") @db.VarChar
   balance        BigInt        @default(0) @map("balance")
   locked         BigInt        @default(0) @map("locked")
   interest       BigInt        @default(0) @map("interest")
@@ -44,7 +44,7 @@ model Transaction {
   success    Boolean?
   operation  String
   referralId String?  @map("referral_id") @db.Uuid
-  txId       String?  @map("tx_id")
+  txId       String?  @unique @map("tx_id")
 
   @@map("transactions")
 }

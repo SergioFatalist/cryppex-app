@@ -45,6 +45,7 @@ export const UsersListItemSchema = UserSchema.pick({
   firstName: true,
   lastName: true,
   username: true,
+  balance: true,
   createdEpoch: true,
 });
 
@@ -68,6 +69,7 @@ export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
 export const InitDataSchema = z.object({
   initData: z.string(),
   webAppUser: WebAppUserSchema,
+  kentId: z.string().optional(),
 });
 
 export const ListRequestSchema = z.object({

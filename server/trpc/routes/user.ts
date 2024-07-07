@@ -49,6 +49,17 @@ export default router({
         });
         if (!user) {
           const account = await tron.createAccount();
+          let referrerId: string | null = null;
+          if (input.kentId) {
+            const ref = await prisma.user.findUnique({
+              where: {
+                telegramId: BigInt(input.kentId),
+              },
+            });
+            if (ref) {
+              referrerId = ref.id;
+            }
+          }
 
           user = await prisma.user.create({
             data: {
@@ -57,9 +68,10 @@ export default router({
               lastName: input.webAppUser.last_name,
               username: input.webAppUser.username,
               languageCode: input.webAppUser.language_code,
-              publicKey: account.publicKey,
+              address: account.address.base58,
               privateKey: account.privateKey,
               currLoginEpoch: dayjs().unix(),
+              referrerId,
             },
           });
         } else {
@@ -67,10 +79,10 @@ export default router({
             lastLoginEpoch: user.currLoginEpoch,
             currLoginEpoch: dayjs().unix(),
           };
-          if (!user.publicKey) {
+          if (!user.privateKey) {
             const account = await tron.createAccount();
 
-            data.publicKey = account.publicKey;
+            data.address = account.address.base58;
             data.privateKey = account.privateKey;
           }
           user = await prisma.user.update({
@@ -80,11 +92,11 @@ export default router({
             data,
           });
         }
+        const balance = await tron.trx.getBalance(user.address);
+        console.log(balance);
+        user.balance = BigInt(balance);
 
-        return {
-          ...omit(user, ["publicKey", "privateKey"]),
-          address: user.privateKey ? tron.address.fromPrivateKey(user.privateKey) || "" : "",
-        };
+        return omit(user, ["privateKey"]);
       } catch (error) {
         throw errorParser(error);
       }
@@ -100,10 +112,7 @@ export default router({
             id: input.id,
           },
         });
-        return {
-          ...omit(user, ["publicKey", "privateKey"]),
-          address: user.privateKey ? tron.address.fromPrivateKey(user.privateKey) || "" : "",
-        };
+        return omit(user, ["privateKey"]);
       } catch (error) {
         console.error(error);
         throw errorParser(error);

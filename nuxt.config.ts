@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      testVar: process.env.NUXT_TEST_VAR,
+      appUrl: process.env.NUXT_PUBLIC_APP_URL,
     },
     tron: {
       fullHost: process.env.NUXT_TRON_FULL_HOST,
