@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="pl-4">
+  <v-toolbar color="secondary" class="pl-4">
     <v-toolbar-items>
       <v-img src="/tron-trx.svg" class="ma-0 pa-0" width="64" alt="tron logo" />
     </v-toolbar-items>

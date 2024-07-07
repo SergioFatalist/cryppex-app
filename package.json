@@ -26,6 +26,8 @@
     "@prisma/client": "^5.16.1",
     "@trpc/client": "^10.45.2",
     "@trpc/server": "^10.45.2",
+    "@vueuse/core": "^10.11.0",
+    "@vueuse/nuxt": "^10.11.0",
     "dayjs": "^1.11.11",
     "nuxt": "^3.12.2",
     "pinia": "^2.1.7",

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
-  modules: ["@pinia/nuxt", "vuetify-nuxt-module"],
+  modules: ["@vueuse/nuxt", "@pinia/nuxt", "vuetify-nuxt-module"],
   ssr: false,
   app: {
     head: {
@@ -54,7 +54,7 @@ export default defineNuxtConfig({
               // 'surface-variant': '#0C0F16',
               "on-surface-variant": "#EEEEEE",
               primary: "#3366FF",
-              secondary: "#254EDB",
+              secondary: "#3D52A0",
               error: "#FF652D",
               info: "#3EB8F9",
               success: "#87E21F",
