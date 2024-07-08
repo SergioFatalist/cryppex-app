@@ -29,6 +29,7 @@ model User {
   lastLoginEpoch Int?          @map("last_login_epoch")
   currLoginEpoch Int?          @map("curr_login_epoch")
   transactions   Transaction[]
+  investments    Investment[]
 
   @@map("users")
 }
@@ -47,4 +48,17 @@ model Transaction {
   txId       String?  @unique @map("tx_id")
 
   @@map("transactions")
+}
+
+model Investment {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user       User   @relation(fields: [userId], references: [id])
+  userId     String @map("user_id") @db.Uuid
+  amount     BigInt
+  rate       Int
+  interest   BigInt
+  startEpoch Int    @map("start_epoch")
+  endEpoch   Int?   @map("end_epoch")
+
+  @@map("investments")
 }

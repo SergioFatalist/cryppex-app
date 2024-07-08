@@ -10,11 +10,11 @@
   <v-toolbar color="secondary" class="pl-4">
     <v-toolbar-title>
       <span class="text-caption">Link to Invite a friends</span><br />
-      <span>{{ $router.currentRoute }}</span>
+      <span class="text-caption">{{ refUrl }}</span>
     </v-toolbar-title>
 
     <v-toolbar-items>
-      <v-btn prepend-icon="mdi-content-copy" variant="plain" size="large" class="pa-4">Copy</v-btn>
+      <v-btn prepend-icon="mdi-content-copy" variant="plain" size="large" class="pa-4" @click="copyUrl">Copy</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 
@@ -41,6 +41,12 @@
       {{ formatTrx(item.balance) }}
     </template>
   </v-data-table-server>
+  <v-snackbar v-model="showSB" :close-delay="2" variant="flat" color="primary">
+    <div class="text-body-2">Copied to clibpoard {{ text }}</div>
+    <template #actions>
+      <v-btn icon="mdi-close" @click="showSB = false"> </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -54,10 +60,18 @@ const { $client } = useNuxtApp();
 
 const loading = ref(false);
 const my = ref<User | undefined>(undefined);
+const refUrl = computed(() => `${config.public.appUrl}/?ref=${$app.user?.telegramId}`);
 const items = ref<UsersListItem[]>([]);
 const itemsPerPage = ref(15);
 const page = ref(1);
 const total = ref(0);
+const showSB = ref(false);
+const { text, copy, copied } = useClipboard();
+
+const copyUrl = () => {
+  copy(refUrl.value);
+  showSB.value = true;
+};
 
 const onOptions = async (pagination: Pagination) => {
   page.value = pagination.page || 1;
