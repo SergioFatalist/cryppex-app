@@ -9,24 +9,90 @@
             {{ formatTgName($app.user) }}
           </span>
         </div>
-        <trx-balance />
+        <div class="d-flex bg-secondary text-white text-center py-2">
+          <div class="flex-1-1">
+            <span class="text-caption">Balance</span>
+            <br />
+            <span>{{ formatTrx(summary.balance) }}</span>
+            <br />TRX
+          </div>
+          <div class="flex-1-1">
+            <span class="text-caption">Invests</span>
+            <br />
+            <span>{{ summary.count }}</span>
+          </div>
+          <div class="flex-1-1">
+            <span class="text-caption">Amount</span>
+            <br />
+            <span>{{ formatTrx(summary.amount) }}</span>
+            <br />TRX
+          </div>
+          <div class="flex-1-1">
+            <span class="text-caption">Interests</span>
+            <br />
+            <span>{{ formatTrx(summary.interest) }}</span>
+            <br />TRX
+          </div>
+        </div>
       </div>
+      <v-container class="mt-2">
+        <v-row class="px-4">
+          <v-col cols="12" class="d-flex justify-space-between first my-2">
+            <div>
+              <div class="text-h5">Newbie</div>
+              <div>Minimal - 100 TRX</div>
+              <div>Interest - 10%</div>
+              <div>Term - 20 days</div>
+            </div>
+            <div class="d-flex flex-column justify-space-around">
+              <v-btn variant="outlined" @click="showApply(100, 10)">Apply</v-btn>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row class="px-4">
+          <v-col cols="12" class="d-flex justify-space-between second my-2">
+            <div>
+              <div class="text-h5">Confident</div>
+              <div>Minimal - 500 TRX</div>
+              <div>Interest - 20%</div>
+              <div>Term - 30 days</div>
+            </div>
+            <div class="d-flex flex-column justify-space-around">
+              <v-btn variant="outlined" @click="showApply(500, 20)">Apply</v-btn>
+            </div>
+          </v-col>
+        </v-row>
+        <v-row class="px-4">
+          <v-col cols="12" class="d-flex justify-space-between third my-2">
+            <div>
+              <div class="text-h5">Professional</div>
+              <div>Minimal - 1000 TRX</div>
+              <div>Interest - 30%</div>
+              <div>Term - 40 days</div>
+            </div>
+            <div class="d-flex flex-column justify-space-around">
+              <v-btn variant="outlined" @click="showApply(500, 20)">Apply</v-btn>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-spacer />
       <div class="flex-0-0 text-center pb-6">
-        <v-btn color="secondary" variant="flat" size="x-large" @click="showQR = true">
+        <v-btn color="secondary" variant="flat" size="x-large" @click="showQRDialog = true">
           <span class="text-white">TOP UP<br />balance</span>
         </v-btn>
       </div>
     </div>
   </div>
-  <v-dialog v-model="showQR" min-width="75%">
+  <v-dialog v-model="showQRDialog" min-width="75%">
     <v-sheet class="text-center pa-4">
       <div class="text-h6">Top Up balance</div>
       <div class="text-caption">Send TRX to address</div>
       <div class="my-4">
         <qr-code
           :value="$app.user?.address"
-          background="#161A2E"
-          foreground="#FFFFFF"
+          :background="'#161a2e'"
+          :foreground="'#ffffff'"
           :size="200"
           level="H"
           render-as="svg"
@@ -46,8 +112,20 @@
       </div>
     </v-sheet>
   </v-dialog>
+  <v-dialog v-model="showApplyDialog" min-width="75%">
+    <v-form>
+      <v-sheet>
+        <v-input
+          v-model="investAmount"
+          :rules="[(v) => rules.equalOrGreaterThan(v, miniamAmount.toString())]"
+          type="text"
+          label="Amount"
+        />
+      </v-sheet>
+    </v-form>
+  </v-dialog>
   <v-snackbar v-model="showSB" :close-delay="2" variant="flat" color="primary">
-    <div class="text-body-2">Copied to clibpoard {{ text }}</div>
+    <div class="text-body-2">{{ alert }}</div>
     <template #actions>
       <v-btn icon="mdi-close" @click="showSB = false"> </v-btn>
     </template>
@@ -55,18 +133,87 @@
 </template>
 
 <script setup lang="ts">
-import TrxBalance from "~/components/TrxBalance.vue";
+import { NIL } from "uuid";
+import type { InvestmentSummary } from "~/server/model/trpc";
 
 const $app = useAppStore();
-const showQR = ref(false);
-const showSB = ref(false);
+const { $client } = useNuxtApp();
+const rules = useValidationRules();
 const { text, copy, copied, isSupported } = useClipboard();
+const showQRDialog = ref(false);
+const showApplyDialog = ref(false);
+const showSB = ref(false);
+const alert = ref("");
+
+const showInsufficient = ref(false);
+const miniamAmount = ref(100);
+const investAmount = ref(0);
+
+const summary = ref<InvestmentSummary>({
+  balance: BigInt(0),
+  count: 0,
+  amount: BigInt(0),
+  interest: BigInt(0),
+});
 
 const copyAddress = (address: string) => {
   copy(address);
-  showQR.value = false;
+  showQRDialog.value = false;
+  alert.value = `Copied to clibpoard ${text}`;
   if (copied) {
     showSB.value = true;
   }
 };
+
+const showApply = (min: number, rate: number) => {
+  if (summary.value.balance < BigInt(min * 1000000)) {
+    alert.value = "Insufficient funds. Top up your balance please";
+    showSB.value = true;
+  }
+
+};
+
+const load = async () => {
+  summary.value = await $client.Investment.summary.query({
+    id: $app.user?.id || NIL,
+  });
+};
+
+const apply = async () => {
+  console.log();
+};
+
+onMounted(load);
 </script>
+
+<style scoped>
+.first {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #161a2e;
+  background-color: #3eb8f9;
+  border-radius: 8px;
+  border-color: #cccccc;
+  border-width: 2px;
+}
+
+.second {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #161a2e;
+  background-color: #87e21f;
+  border-radius: 8px;
+  border-color: #cccccc;
+  border-width: 2px;
+}
+
+.third {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  color: #161a2e;
+  background-color: #ffe121;
+  border-radius: 8px;
+  border-color: #cccccc;
+  border-width: 2px;
+}
+</style>

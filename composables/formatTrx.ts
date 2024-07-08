@@ -1,3 +1,3 @@
 export default function (amount: bigint | undefined) {
-  return amount ? parseFloat(String(amount / 1000000n)).toFixed(3) : 0;
+  return amount ? (Number(amount) / 1000000).toFixed(2) : 0;
 }

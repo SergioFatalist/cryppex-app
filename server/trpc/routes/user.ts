@@ -92,9 +92,6 @@ export default router({
             data,
           });
         }
-        const balance = await tron.trx.getBalance(user.address);
-        console.log(balance);
-        user.balance = BigInt(balance);
 
         return omit(user, ["privateKey"]);
       } catch (error) {

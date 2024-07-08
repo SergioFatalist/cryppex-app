@@ -105,9 +105,16 @@ export const InvestmentsListSchema = PaginatiedSchema.extend({
 });
 
 export const InvestmentSummarySchema = z.object({
+  balance: z.bigint(),
   count: z.number(),
   amount: z.bigint(),
   interest: z.bigint(),
+});
+
+export const ApplyInvestSchema = z.object({
+  userId: z.string().uuid(),
+  rate: z.number(),
+  amount: z.bigint(),
 });
 
 export type User = z.TypeOf<typeof UserSchema>;
