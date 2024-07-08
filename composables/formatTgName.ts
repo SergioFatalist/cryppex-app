@@ -1,6 +1,6 @@
-import type { User } from "~/server/model/trpc";
+import type { User, UsersListItem } from "~/server/model/trpc";
 
-export default function (user: User | undefined) {
+export default function (user: User | UsersListItem | undefined) {
   if (!user) {
     return "No DATA";
   }

@@ -45,6 +45,7 @@ export const UsersListItemSchema = UserSchema.pick({
   firstName: true,
   lastName: true,
   username: true,
+  balance: true,
   createdEpoch: true,
 });
 
@@ -68,6 +69,7 @@ export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
 export const InitDataSchema = z.object({
   initData: z.string(),
   webAppUser: WebAppUserSchema,
+  kentId: z.string().optional(),
 });
 
 export const ListRequestSchema = z.object({
@@ -89,9 +91,31 @@ export const TransactionsListSchema = PaginatiedSchema.extend({
   items: z.array(TransactionSchema).default([]),
 });
 
+export const InvestmentSchema = z.object({
+  id: z.string().uuid(),
+  amount: z.bigint(),
+  rate: z.number(),
+  interest: z.bigint(),
+  startEpoch: z.number(),
+  endEpoch: z.number(),
+});
+
+export const InvestmentsListSchema = PaginatiedSchema.extend({
+  items: z.array(InvestmentSchema).default([]),
+});
+
+export const InvestmentSummarySchema = z.object({
+  count: z.number(),
+  amount: z.bigint(),
+  interest: z.bigint(),
+});
+
 export type User = z.TypeOf<typeof UserSchema>;
 export type UsersList = z.TypeOf<typeof UsersListSchema>;
 export type UsersListItem = z.TypeOf<typeof UsersListItemSchema>;
 export type Pagination = z.TypeOf<typeof PaginationSchema>;
 export type Transaction = z.TypeOf<typeof TransactionSchema>;
 export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;
+export type Investment = z.TypeOf<typeof InvestmentSchema>;
+export type InvestmentsList = z.TypeOf<typeof InvestmentsListSchema>;
+export type InvestmentSummary = z.TypeOf<typeof InvestmentSummarySchema>;

@@ -1,18 +1,22 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12" class="text-h6 text-white text-center">Friends</v-col>
-    </v-row>
     <v-row v-if="my">
-      <v-col cols="12">
-        <span class="text-subtitle-2">Your Referrer</span>
-        <br />
-        <span class="text-h6 text-white">
-          {{ formatTgName(my) }}
-        </span>
+      <v-col cols="12" class="d-flex justify-space-between">
+        <div class="text-subtitle-2">Your Referrer</div>
+        <div class="text-subtitle-2 text-white">{{ formatTgName(my) }}</div>
       </v-col>
     </v-row>
   </v-container>
+  <v-toolbar color="secondary" class="pl-4">
+    <v-toolbar-title>
+      <span class="text-caption">Link to Invite a friends</span><br />
+      <span class="text-caption">{{ refUrl }}</span>
+    </v-toolbar-title>
+
+    <v-toolbar-items>
+      <v-btn prepend-icon="mdi-content-copy" variant="plain" size="large" class="pa-4" @click="copyUrl">Copy</v-btn>
+    </v-toolbar-items>
+  </v-toolbar>
 
   <v-data-table-server
     :items="items"
@@ -37,21 +41,37 @@
       {{ formatTrx(item.balance) }}
     </template>
   </v-data-table-server>
+  <v-snackbar v-model="showSB" :close-delay="2" variant="flat" color="primary">
+    <div class="text-body-2">Copied to clibpoard {{ text }}</div>
+    <template #actions>
+      <v-btn icon="mdi-close" @click="showSB = false"> </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
 import { NIL } from "uuid";
-import type { Pagination, User } from "~/server/model/trpc";
+import type { Pagination, User, UsersListItem } from "~/server/model/trpc";
 import type { DataTableHeaders } from "~/server/model/ui";
 
 const $app = useAppStore();
+const config = useRuntimeConfig();
 const { $client } = useNuxtApp();
+
 const loading = ref(false);
 const my = ref<User | undefined>(undefined);
-const items = ref<User[]>([]);
+const refUrl = computed(() => `${config.public.appUrl}/?ref=${$app.user?.telegramId}`);
+const items = ref<UsersListItem[]>([]);
 const itemsPerPage = ref(15);
 const page = ref(1);
 const total = ref(0);
+const showSB = ref(false);
+const { text, copy, copied } = useClipboard();
+
+const copyUrl = () => {
+  copy(refUrl.value);
+  showSB.value = true;
+};
 
 const onOptions = async (pagination: Pagination) => {
   page.value = pagination.page || 1;
