@@ -51,14 +51,15 @@ model Transaction {
 }
 
 model Investment {
-  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user       User   @relation(fields: [userId], references: [id])
-  userId     String @map("user_id") @db.Uuid
+  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user       User    @relation(fields: [userId], references: [id])
+  userId     String  @map("user_id") @db.Uuid
   amount     BigInt
   rate       Int
   interest   BigInt
-  startEpoch Int    @map("start_epoch")
-  endEpoch   Int?   @map("end_epoch")
+  startEpoch Int     @default(dbgenerated("EXTRACT(epoch FROM now())")) @map("start_epoch")
+  endEpoch   Int     @map("end_epoch")
+  closed     Boolean @default(false)
 
   @@map("investments")
 }
