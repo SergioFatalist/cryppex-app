@@ -21,10 +21,10 @@ class Investor {
       const pass = BigInt(Math.round((now - i.startEpoch) / this.period));
       const full = BigInt((Number(i.amount) * (100 + i.rate)) / 100);
       const interest = closed ? full : ((full - i.amount) / slots) * pass;
-      console.log(i);
-      console.log(
-        `now: ${now}, closed: ${closed}, slots: ${slots}, pass: ${pass}, full: ${full}, interest: ${interest}`
-      );
+      // console.log(i);
+      // console.log(
+      //   `now: ${now}, closed: ${closed}, slots: ${slots}, pass: ${pass}, full: ${full}, interest: ${interest}`
+      // );
       await prisma.investment.update({
         where: { id: i.id },
         data: {
