@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "vuetify-nuxt-module"],
+  ssr: false,
   runtimeConfig: {
     public: {
       appUrl: process.env.NUXT_PUBLIC_APP_URL,
@@ -11,15 +13,10 @@ export default defineNuxtConfig({
     },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
-  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "vuetify-nuxt-module"],
-  ssr: false,
   app: {
     head: {
       script: [{ src: "https://telegram.org/js/telegram-web-app.js" }],
     },
-  },
-  build: {
-    transpile: ["vuetify", "trpc-nuxt"],
   },
   vuetify: {
     vuetifyOptions: {
@@ -66,6 +63,13 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    debug: true,
+    logLevel: 1,
+  },
+  build: {
+    transpile: ["vuetify", "trpc-nuxt"],
+  },
   vite: {
     server: {
       ws: false,
@@ -74,9 +78,9 @@ export default defineNuxtConfig({
       },
     },
   },
-  devtools: {
-    enabled: false,
-  },
+  // devtools: {
+  //   enabled: false,
+  // },
   devServer: {
     host: "0.0.0.0",
     port: parseInt(process.env.PORT || "4200") || 4200,

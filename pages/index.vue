@@ -199,9 +199,11 @@ const showApply = (min: number, rate: number) => {
 };
 
 const load = async () => {
-  summary.value = await $client.Investment.summary.query({
-    id: $app.user?.id || NIL,
-  });
+  if ($app.user?.id) {
+    summary.value = await $client.Investment.summary.query({
+      id: $app.user.id,
+    });
+  }
 };
 
 const apply = async () => {

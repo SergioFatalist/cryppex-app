@@ -37,10 +37,10 @@ export default router({
         const dataToCheck = [...initData.entries()].map(([key, value]) => key + "=" + value).join("\n");
         const secretKey = crypto.createHmac("sha256", "WebAppData").update(config.botToken).digest();
         const hash = crypto.createHmac("sha256", secretKey).update(dataToCheck).digest("hex");
-
-        // if (h === hash) {
-        //   throw new Error("invalid hash");
-        // }
+        console.error(hash, h);
+        if (h !== hash) {
+          throw new Error("invalid hash");
+        }
 
         let user = await prisma.user.findUnique({
           where: {
@@ -95,6 +95,7 @@ export default router({
 
         return omit(user, ["privateKey"]);
       } catch (error) {
+        console.error(error);
         throw errorParser(error);
       }
     }),
@@ -111,7 +112,7 @@ export default router({
         });
         return omit(user, ["privateKey"]);
       } catch (error) {
-        console.error(error);
+        console.error("Error: ", error);
         throw errorParser(error);
       }
     }),

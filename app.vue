@@ -1,12 +1,30 @@
 <template>
-  <div v-if="$app.$state.user">
-    <NuxtLayout>
+  <v-layout>
+    <v-main>
       <NuxtPage />
-    </NuxtLayout>
-  </div>
+    </v-main>
+    <v-bottom-navigation>
+      <v-btn to="/">
+        <v-icon>mdi-home-outline</v-icon>
+        <span>Home</span>
+      </v-btn>
+      <v-btn to="/wallet">
+        <v-icon>mdi-wallet-outline</v-icon>
+        <span>Wallet</span>
+      </v-btn>
+      <v-btn to="/investment">
+        <v-icon>mdi-currency-usd</v-icon>
+        <span>Invest</span>
+      </v-btn>
+      <v-btn to="/friends">
+        <v-icon>mdi-account-multiple-outline</v-icon>
+        <span>Friends</span>
+      </v-btn>
+    </v-bottom-navigation>
+  </v-layout>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 const router = useRouter();
 const route = useRoute();
 const $app = useAppStore();
@@ -30,11 +48,11 @@ const setUser = async () => {
   const { $client } = useNuxtApp();
   const initData = $telegram.WebApp.initData;
   // const initData = potap;
-  console.warn($app.user);
 
-  // if (!initData) {
-  //   await router.push("/no-data");
-  // }
+  if (!initData) {
+    await router.push("/no-data");
+    return;
+  }
   const params = new URLSearchParams(initData);
   $telegram.WebApp.expand();
   try {
@@ -43,7 +61,7 @@ const setUser = async () => {
       webAppUser: JSON.parse(<string>params.get("user"), (_k, _v) => (_k == "id" ? BigInt(_v) : _v)),
       kentId,
     });
-    console.log(result);
+    console.dirxml(result);
     $app.$state.user = result;
   } catch (error) {
     console.error(error);
