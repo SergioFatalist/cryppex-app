@@ -19,6 +19,7 @@
   </v-toolbar>
 
   <v-data-table-server
+    v-if="items.length > 0"
     :items="items"
     :headers="headers"
     :loading="loading"
@@ -41,6 +42,12 @@
       {{ formatTrx(item.balance) }}
     </template>
   </v-data-table-server>
+  <v-container>
+    <v-row>
+      <v-col cols="12" class="text-center text-h6">Invite firiends for referral bonuses</v-col>
+      <v-col cols="12" class="text-center">More friends more bonuses</v-col>
+    </v-row>
+  </v-container>
   <v-snackbar v-model="showSB" :close-delay="2" variant="flat" color="primary">
     <div class="text-body-2">Copied to clibpoard {{ text }}</div>
     <template #actions>

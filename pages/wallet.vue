@@ -1,5 +1,24 @@
 <template>
-  <trx-balance />
+  <v-container>
+    <v-row>
+      <v-col cols="12" class="d-flex justify-space-between">
+        <div class="text-subtitle-2">My Wallet</div>
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-toolbar color="secondary" class="pl-4">
+    <v-toolbar-items>
+      <v-img src="/tron-trx.svg" class="ma-0 pa-0" width="64" alt="tron logo" />
+    </v-toolbar-items>
+    <v-toolbar-title>
+      <span class="text-caption">Tron balance</span><br />
+      <span>{{ formatTrx($app.$state.user?.balance) }} TRX</span>
+    </v-toolbar-title>
+
+    <v-toolbar-items>
+      <v-btn prepend-icon="mdi-arrow-right-bold-hexagon-outline" variant="plain" size="large" class="pa-4">Send</v-btn>
+    </v-toolbar-items>
+  </v-toolbar>
   <v-data-table-server
     :items="items"
     :headers="headers"

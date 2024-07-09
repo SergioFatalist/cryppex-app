@@ -1,4 +1,11 @@
 <template>
+  <v-container>
+    <v-row>
+      <v-col cols="12" class="d-flex justify-space-between">
+        <div class="text-subtitle-2">My Current Investments</div>
+      </v-col>
+    </v-row>
+  </v-container>
   <v-data-table-server
     :items="items"
     :headers="headers"
@@ -12,12 +19,6 @@
     class="text-caption"
     @update:options="onOptions"
   >
-    <template #[`item.startEpoch`]="{ item }">
-      {{ formatEpoch(item.startEpoch) }}
-    </template>
-    <template #[`item.amount`]="{ item }">
-      {{ formatTrx(item.amount) }}
-    </template>
   </v-data-table-server>
 </template>
 
@@ -56,11 +57,10 @@ const list = async () => {
 const headers = computed<DataTableHeaders>(
   () =>
     [
-      { title: "Begin", key: "startEpoch", align: "start", value: (i) => formatEpoch(i) },
-      { title: "End", key: "operation", align: "start", value: (i) => formatEpoch(i) },
-      { title: "Amount", key: "amount", align: "end", value: (i) => formatTrx(i) },
-      { title: "Interest", key: "interest", align: "end", value: (i) => formatTrx(i) },
-      { title: "Rate", key: "rate", align: "end", value: (i) => `${i}%` },
+      { title: "End", key: "endEpoch", align: "start", value: (i) => formatEpoch(i.endEpoch) },
+      { title: "Amount", key: "amount", align: "end", value: (i) => formatTrx(i.amount) },
+      { title: "Interest", key: "interest", align: "end", value: (i) => formatTrx(i.interest) },
+      { title: "Rate", key: "rate", align: "end", value: (i) => `${i.rate}%` },
     ] as const
 );
 </script>

@@ -2,7 +2,7 @@
   <div class="d-block h-100">
     <div class="d-flex flex-column justify-space-between h-100">
       <div class="flex-0-0">
-        <div class="pa-4">
+        <div class="px-4 py-0">
           <span class="text-subtitle-2">Hello</span>
           <br />
           <span class="text-h6 text-white">
@@ -22,7 +22,7 @@
             <span>{{ summary.count }}</span>
           </div>
           <div class="flex-1-1">
-            <span class="text-caption">Amount</span>
+            <span class="text-caption">Locked</span>
             <br />
             <span>{{ formatTrx(summary.amount) }}</span>
             <br />TRX
@@ -37,12 +37,12 @@
       </div>
       <v-container class="mt-2">
         <v-row class="px-4">
-          <v-col cols="12" class="d-flex justify-space-between first my-2">
-            <div>
-              <div class="text-h5">Newbie</div>
-              <div>Minimal - 100 TRX</div>
-              <div>Interest - 10%</div>
-              <div>Term - 20 days</div>
+          <v-col cols="12" class="d-flex justify-space-between first my-2 px-xs-2 py-xs-1 pa-sm-4">
+            <div class="text-caption">
+              <span class="text-h6">Beginner</span><br />
+              Minimal - 100 TRX<br />
+              Interest - 10%<br />
+              Term - 20 days
             </div>
             <div class="d-flex flex-column justify-space-around">
               <v-btn variant="outlined" @click="showApply(100, 10)">Apply</v-btn>
@@ -50,12 +50,12 @@
           </v-col>
         </v-row>
         <v-row class="px-4">
-          <v-col cols="12" class="d-flex justify-space-between second my-2">
-            <div>
-              <div class="text-h5">Confident</div>
-              <div>Minimal - 500 TRX</div>
-              <div>Interest - 20%</div>
-              <div>Term - 30 days</div>
+          <v-col cols="12" class="d-flex justify-space-between second my-2 px-xs-2 py-xs-1 pa-sm-4">
+            <div class="text-caption">
+              <span class="text-h6">Confident</span><br />
+              Minimal - 500 TRX<br />
+              Interest - 20%<br />
+              Term - 30 days
             </div>
             <div class="d-flex flex-column justify-space-around">
               <v-btn variant="outlined" @click="showApply(500, 20)">Apply</v-btn>
@@ -63,15 +63,15 @@
           </v-col>
         </v-row>
         <v-row class="px-4">
-          <v-col cols="12" class="d-flex justify-space-between third my-2">
-            <div>
-              <div class="text-h5">Professional</div>
-              <div>Minimal - 1000 TRX</div>
-              <div>Interest - 30%</div>
-              <div>Term - 40 days</div>
+          <v-col cols="12" class="d-flex justify-space-between third my-2 px-xs-2 py-xs-1 pa-sm-4">
+            <div class="text-caption">
+              <span class="text-h6">Professional</span><br />
+              Minimal - 1000 TRX<br />
+              Interest - 30%<br />
+              Term - 40 days
             </div>
             <div class="d-flex flex-column justify-space-around">
-              <v-btn variant="outlined" @click="showApply(500, 20)">Apply</v-btn>
+              <v-btn variant="outlined" @click="showApply(1000, 30)">Apply</v-btn>
             </div>
           </v-col>
         </v-row>
@@ -113,15 +113,30 @@
     </v-sheet>
   </v-dialog>
   <v-dialog v-model="showApplyDialog" min-width="75%">
-    <v-form>
-      <v-sheet>
-        <v-input
-          v-model="investAmount"
-          :rules="[(v) => rules.equalOrGreaterThan(v, miniamAmount.toString())]"
-          type="text"
-          label="Amount"
-        />
-      </v-sheet>
+    <v-form validate-on="submit lazy" @submit.prevent="apply">
+      <v-container class="bg-surface" fluid>
+        <v-row>
+          <v-col cols="12">
+            <div class="text-h6">Invest as {{ investTitle.get(investRate) }}</div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              v-model="investAmount"
+              :rules="[rules.decimal, (v) => rules.equalOrGreaterThan(v, minimalAmount.toString())]"
+              type="number"
+              label="Amount"
+            />
+            <v-checkbox v-model="approveRules" label="Approve rules" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" class="text-center">
+            <v-btn :disabled="!approveRules" type="submit" color="primary" outlined>Invest</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-form>
   </v-dialog>
   <v-snackbar v-model="showSB" :close-delay="2" variant="flat" color="primary">
@@ -136,6 +151,12 @@
 import { NIL } from "uuid";
 import type { InvestmentSummary } from "~/server/model/trpc";
 
+const investTitle = new Map<number, string>([
+  [10, "Beginner"],
+  [20, "Confident"],
+  [30, "Professional"],
+]);
+
 const $app = useAppStore();
 const { $client } = useNuxtApp();
 const rules = useValidationRules();
@@ -144,10 +165,10 @@ const showQRDialog = ref(false);
 const showApplyDialog = ref(false);
 const showSB = ref(false);
 const alert = ref("");
-
-const showInsufficient = ref(false);
-const miniamAmount = ref(100);
+const minimalAmount = ref(100);
 const investAmount = ref(0);
+const investRate = ref(10);
+const approveRules = ref(false);
 
 const summary = ref<InvestmentSummary>({
   balance: BigInt(0),
@@ -170,7 +191,10 @@ const showApply = (min: number, rate: number) => {
     alert.value = "Insufficient funds. Top up your balance please";
     showSB.value = true;
   }
-
+  investAmount.value = min;
+  minimalAmount.value = min;
+  investRate.value = rate;
+  showApplyDialog.value = true;
 };
 
 const load = async () => {
@@ -180,7 +204,13 @@ const load = async () => {
 };
 
 const apply = async () => {
-  console.log();
+  await $client.Investment.apply.mutate({
+    userId: $app.$state.user?.id || NIL,
+    amount: BigInt(investAmount.value * 1000000),
+    rate: investRate.value,
+  });
+  await load();
+  showApplyDialog.value = false;
 };
 
 onMounted(load);
@@ -188,8 +218,6 @@ onMounted(load);
 
 <style scoped>
 .first {
-  padding-top: 8px;
-  padding-bottom: 8px;
   color: #161a2e;
   background-color: #3eb8f9;
   border-radius: 8px;
@@ -198,8 +226,6 @@ onMounted(load);
 }
 
 .second {
-  padding-top: 8px;
-  padding-bottom: 8px;
   color: #161a2e;
   background-color: #87e21f;
   border-radius: 8px;
@@ -208,8 +234,6 @@ onMounted(load);
 }
 
 .third {
-  padding-top: 8px;
-  padding-bottom: 8px;
   color: #161a2e;
   background-color: #ffe121;
   border-radius: 8px;

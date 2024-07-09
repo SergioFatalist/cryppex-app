@@ -11,11 +11,10 @@ import {
 import errorParser from "~/server/trpc/error-parser";
 import { procedure, router } from "~/server/trpc/trpc";
 
-const rates = [10, 20, 30];
 const minimals = new Map<number, bigint>([
-  [10, 100000000n],
-  [20, 500000000n],
-  [30, 1000000000n],
+  [10, BigInt(100000000)],
+  [20, BigInt(500000000)],
+  [30, BigInt(1000000000)],
 ]);
 
 export default router({
@@ -28,6 +27,7 @@ export default router({
         const total = await prisma.investment.count({ where });
         const items = await prisma.investment.findMany({
           where,
+          orderBy: { endEpoch: "asc" },
           ...parsePagination(input.pagination),
         });
         return {
@@ -76,10 +76,8 @@ export default router({
     }),
   apply: procedure.input(ApplyInvestSchema).mutation(async ({ input }) => {
     try {
-      if (!rates.includes(input.rate)) {
-        throw new Error("Invalid Rate specified");
-      } else if (input.amount < minimals.get(input.rate)) {
-        throw new Error("Invalid Amount specified");
+      if (!minimals.get(input.rate) || (minimals.get(input.rate) ?? 0) > input.amount) {
+        throw new Error("Invalid Data specified");
       }
 
       await prisma.$transaction(async (tx) => {
@@ -93,12 +91,19 @@ export default router({
           .add(10 + input.rate, "days")
           .unix();
         await tx.investment.create({
-          userId: input.userId,
-          amount: input.amount,
-          startEpoch,
-          endEpoch,
-          closed: false,
-          interest: 0n,
+          data: {
+            amount: input.amount,
+            rate: input.rate,
+            startEpoch,
+            endEpoch,
+            closed: false,
+            interest: BigInt(0),
+            user: {
+              connect: {
+                id: input.userId,
+              },
+            },
+          },
         });
         await tx.user.update({
           where: { id: input.userId },
