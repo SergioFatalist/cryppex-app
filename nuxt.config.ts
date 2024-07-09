@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     },
     botToken: process.env.NUXT_BOT_TOKEN,
   },
-  modules: ["@vueuse/nuxt", "@pinia/nuxt", "vuetify-nuxt-module"],
+  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "vuetify-nuxt-module"],
   ssr: false,
   app: {
     head: {
@@ -20,10 +20,6 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: ["vuetify", "trpc-nuxt"],
-  },
-  nitro: {
-    debug: true,
-    logLevel: 1,
   },
   vuetify: {
     vuetifyOptions: {

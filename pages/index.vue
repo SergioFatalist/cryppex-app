@@ -2,12 +2,17 @@
   <div class="d-block h-100">
     <div class="d-flex flex-column justify-space-between h-100">
       <div class="flex-0-0">
-        <div class="px-4 py-0">
-          <span class="text-subtitle-2">Hello</span>
-          <br />
-          <span class="text-h6 text-white">
-            {{ formatTgName($app.user) }}
-          </span>
+        <div class="d-flex justify-space-between px-4 pt-0 pb-2">
+          <div class="flex-0-0">
+            <span class="text-subtitle-2">Hello</span>
+            <br />
+            <span class="text-h6 text-white">{{ formatTgName($app.user) }}</span>
+          </div>
+          <div class="flex-0-0 text-center">
+            <v-btn color="secondary" variant="flat" size="x-large" @click="showQRDialog = true">
+              <span class="text-white">TOP UP<br />balance</span>
+            </v-btn>
+          </div>
         </div>
         <div class="d-flex bg-secondary text-white text-center py-2">
           <div class="flex-1-1">
@@ -77,11 +82,6 @@
         </v-row>
       </v-container>
       <v-spacer />
-      <div class="flex-0-0 text-center pb-6">
-        <v-btn color="secondary" variant="flat" size="x-large" @click="showQRDialog = true">
-          <span class="text-white">TOP UP<br />balance</span>
-        </v-btn>
-      </div>
     </div>
   </div>
   <v-dialog v-model="showQRDialog" min-width="75%">
@@ -190,6 +190,7 @@ const showApply = (min: number, rate: number) => {
   if (summary.value.balance < BigInt(min * 1000000)) {
     alert.value = "Insufficient funds. Top up your balance please";
     showSB.value = true;
+    return;
   }
   investAmount.value = min;
   minimalAmount.value = min;

@@ -21,10 +21,7 @@ class Investor {
       const pass = BigInt(Math.round((now - i.startEpoch) / this.period));
       const full = BigInt((Number(i.amount) * (100 + i.rate)) / 100);
       const interest = closed ? full : ((full - i.amount) / slots) * pass;
-      // console.log(i);
-      // console.log(
-      //   `now: ${now}, closed: ${closed}, slots: ${slots}, pass: ${pass}, full: ${full}, interest: ${interest}`
-      // );
+
       await prisma.investment.update({
         where: { id: i.id },
         data: {
@@ -35,15 +32,15 @@ class Investor {
     }
   }
 
-  private async checkBalance() {
-    const users = await prisma.user.findMany({});
-    for (const u of users) {
-      const balance = await tron.trx.getBalance(u.address);
-      if (BigInt(balance) != u.balance + u.locked) {
-        const txs = await tron.trx.getTransactionsToAddress(u.address);
-      }
-    }
-  }
+  // private async checkBalance() {
+  //   const users = await prisma.user.findMany({});
+  //   for (const u of users) {
+  //     const balance = await tron.trx.getBalance(u.address);
+  //     if (BigInt(balance) != u.balance + u.locked) {
+  //       const txs = await tron.trx.getTransactionsToAddress(u.address);
+  //     }
+  //   }
+  // }
 }
 
 export default new Investor();
