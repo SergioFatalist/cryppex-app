@@ -21,6 +21,10 @@ export default defineNuxtConfig({
   build: {
     transpile: ["vuetify", "trpc-nuxt"],
   },
+  nitro: {
+    debug: true,
+    logLevel: 1,
+  },
   vuetify: {
     vuetifyOptions: {
       icons: {
