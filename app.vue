@@ -62,8 +62,7 @@ const setUser = async () => {
       webAppUser: JSON.parse(<string>params.get("user"), (_k, _v) => (_k == "id" ? BigInt(_v) : _v)),
       kentId,
     });
-    console.dirxml(result);
-    $app.$state.user = result;
+    $app.setUser(result);
   } catch (error) {
     console.error(error);
     // await router.push("/no-data");

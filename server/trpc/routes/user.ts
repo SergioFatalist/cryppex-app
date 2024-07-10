@@ -12,7 +12,6 @@ import {
   UuidFieldSchema,
 } from "~/server/model/trpc";
 import { procedure, router } from "~/server/trpc/trpc";
-import tron from "~/server/utils/tron";
 import errorParser from "../error-parser";
 
 export default router({
@@ -48,7 +47,7 @@ export default router({
           },
         });
         if (!user) {
-          const account = await tron.createAccount();
+          const account = await tronWeb.createAccount();
           let referrerId: string | null = null;
           if (input.kentId) {
             const ref = await prisma.user.findUnique({
@@ -80,7 +79,7 @@ export default router({
             currLoginEpoch: dayjs().unix(),
           };
           if (!user.privateKey) {
-            const account = await tron.createAccount();
+            const account = await tronWeb.createAccount();
 
             data.address = account.address.base58;
             data.privateKey = account.privateKey;

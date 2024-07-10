@@ -1,4 +1,5 @@
 <template>
+  {{ $telegram.WebApp.initDataUnsafe }}
   <div class="d-block h-100">
     <div class="d-flex flex-column justify-space-between h-100">
       <div class="flex-0-0">

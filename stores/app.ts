@@ -8,7 +8,10 @@ export const useAppStore = defineStore("cryppex", {
   state: (): AppState => ({
     user: undefined,
   }),
-  persist: true,
+  persist: {
+    debug: true,
+    storage: persistedState.localStorage,
+  },
   actions: {
     setUser(user: User) {
       this.$state.user = user;
