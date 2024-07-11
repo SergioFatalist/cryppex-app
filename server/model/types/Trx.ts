@@ -1,5 +1,5 @@
-import { AccountType, Permission } from "./Contract";
-import { SignedTransaction, Transaction } from "./Transaction";
+import type { AccountType, Permission } from "./Contract";
+import type { SignedTransaction, Transaction } from "./Transaction";
 
 type HTTPMap<T extends string | number | symbol, U> = Record<T, U>[];
 

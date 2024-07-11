@@ -1,3 +1,5 @@
+import { defineStore } from "pinia";
+import superjson from "superjson";
 import type { InvestmentSummary, User, UserWithSummary } from "~/server/model/trpc";
 
 export interface AppState {
@@ -16,8 +18,11 @@ export const useAppStore = defineStore("cryppex", {
     },
   }),
   persist: {
-    debug: true,
-    storage: persistedState.localStorage,
+    storage: persistedState.sessionStorage,
+    serializer: {
+      serialize: (v) => superjson.stringify(v),
+      deserialize: (v) => superjson.parse(v),
+    },
   },
   actions: {
     setUser(userWithSummary: UserWithSummary) {

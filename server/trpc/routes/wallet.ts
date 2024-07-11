@@ -1,4 +1,4 @@
-import { ListRequestSchema, SendSchema, TransactionsList, TransactionsListSchema } from "~/server/model/trpc";
+import { ListRequestSchema, SendSchema, type TransactionsList, TransactionsListSchema } from "~/server/model/trpc";
 import errorParser from "~/server/trpc/error-parser";
 import { procedure, router } from "~/server/trpc/trpc";
 

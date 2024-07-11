@@ -1,4 +1,4 @@
-import { Pagination } from "~/server/model/trpc";
+import type { Pagination } from "~/server/model/trpc";
 
 export default function (pagination: Pagination | undefined): { take: number | undefined; skip: number | undefined } {
   return pagination

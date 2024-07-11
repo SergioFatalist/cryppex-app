@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { WebAppUser } from "~/types/telegram";
+import type { WebAppUser } from "~/types/telegram";
 
 export const SortingSchema = z.object({
   key: z.string(),

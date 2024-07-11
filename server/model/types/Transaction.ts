@@ -1,4 +1,4 @@
-import { ContractParamter, ContractType, CreateSmartContract } from "./Contract";
+import type { ContractParamter, ContractType, CreateSmartContract } from "./Contract";
 
 export interface ContractParamterWrapper<T = ContractParamter> {
   value: T;

@@ -1,4 +1,4 @@
-import { InvestmentSummary } from "~/server/model/trpc";
+import type { InvestmentSummary } from "~/server/model/trpc";
 
 export default async function (id: string): Promise<InvestmentSummary> {
   const user = await prisma.user.findUniqueOrThrow({

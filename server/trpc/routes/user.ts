@@ -5,16 +5,16 @@ import { omit } from "remeda";
 import {
   InitDataSchema,
   ListRequestSchema,
-  User,
+  type User,
   UserSchema,
-  UsersList,
+  type UsersList,
   UsersListSchema,
-  UserWithSummary,
+  type UserWithSummary,
   UserWithSummarySchema,
   UuidFieldSchema,
 } from "~/server/model/trpc";
-import { TransferContract } from "~/server/model/types/Contract";
-import { Transaction } from "~/server/model/types/Transaction";
+import type { TransferContract } from "~/server/model/types/Contract";
+import type { Transaction } from "~/server/model/types/Transaction";
 import getInvestmentsSummary from "~/server/trpc/handlers/get-investments-summary";
 import { procedure, router } from "~/server/trpc/trpc";
 import errorParser from "../error-parser";
@@ -67,11 +67,11 @@ export default router({
             };
 
             const lastTransaction = await tx.transaction.findFirst({
-              where: { userId: u.id },
+              where: { userId: u.id, success: true },
               orderBy: { startEpoch: "desc" },
             });
 
-            let url = `https://api.trongrid.io/v1/accounts/${u.address}/transactions?only_confirmed=true&only_to=true&search_internal=false`;
+            let url = `https://api.trongrid.io/v1/accounts/${u.address}/transactions?only_confirmed=true&search_internal=false`;
             if (lastTransaction) {
               url += `&min_timestamp=${lastTransaction.startEpoch * 1000}`;
             }
@@ -86,7 +86,7 @@ export default router({
             for (const trxTX of result.data) {
               const hex = tronWeb.address.toHex(u.address).toLowerCase();
               for (const p of trxTX.raw_data.contract) {
-                if (p.type.toLowerCase() === "transfercontract" && p.parameter.value.amount > 1000000) {
+                if (p.type.toLowerCase() === "transfercontract" && p.parameter.value.amount >= 1000000) {
                   console.dir(trxTX.txID);
                   const exist = await tx.transaction.findUnique({
                     where: { txId: trxTX.txID },

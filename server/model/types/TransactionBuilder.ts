@@ -1,5 +1,5 @@
-import { AbiFragment, ContractAbiInterface } from "./ABI";
-import { Transaction } from "./Transaction";
+import type { AbiFragment, ContractAbiInterface } from "./ABI";
+import type { Transaction } from "./Transaction";
 
 export interface TransactionCommonOptions {
   /**

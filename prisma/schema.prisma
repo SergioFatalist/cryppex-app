@@ -35,17 +35,19 @@ model User {
 }
 
 model Transaction {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String   @map("user_id") @db.Uuid
-  startEpoch Int      @map("start_epoch")
-  endEpoch   Int?     @map("end_epoch")
-  referral   String?
-  amount     BigInt   @default(0)
-  success    Boolean?
-  operation  String
-  referralId String?  @map("referral_id") @db.Uuid
-  txId       String?  @unique @map("tx_id")
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @map("user_id") @db.Uuid
+  startEpoch   Int      @map("start_epoch")
+  endEpoch     Int?     @map("end_epoch")
+  referral     String?
+  amount       BigInt   @default(0)
+  success      Boolean?
+  operation    String
+  referralId   String?  @map("referral_id") @db.Uuid
+  txId         String?  @unique @map("tx_id") @db.VarChar()
+  ownerAddress String?  @map("owner_address") @db.VarChar()
+  toAddress    String?  @map("to_address") @db.VarChar()
 
   @@map("transactions")
 }

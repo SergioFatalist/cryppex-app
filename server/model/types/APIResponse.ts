@@ -1,5 +1,5 @@
-import { Permission } from "./Contract";
-import { Transaction, TransactionWrapper } from "./Transaction";
+import type { Permission } from "./Contract";
+import type { Transaction, TransactionWrapper } from "./Transaction";
 
 export interface BlockHeaderRawData {
   number: number;

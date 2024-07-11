@@ -78,12 +78,15 @@ export default defineNuxtConfig({
       },
     },
   },
-  // devtools: {
-  //   enabled: false,
-  // },
+  devtools: {
+    enabled: false,
+  },
   devServer: {
     host: "0.0.0.0",
     port: parseInt(process.env.PORT || "4200") || 4200,
+  },
+  typescript: {
+    typeCheck: true,
   },
   compatibilityDate: "2024-07-02",
 });
