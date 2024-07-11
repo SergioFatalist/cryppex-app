@@ -1,6 +1,5 @@
 <template>
-  {{ $telegram.WebApp.initDataUnsafe }}
-  <div class="d-block h-100">
+  <div v-if="$app.$state.user?.id" class="d-block h-100">
     <div class="d-flex flex-column justify-space-between h-100">
       <div class="flex-0-0">
         <div class="d-flex justify-space-between px-4 pt-0 pb-2">
@@ -19,24 +18,24 @@
           <div class="flex-1-1">
             <span class="text-caption">Balance</span>
             <br />
-            <span>{{ formatTrx(summary.balance) }}</span>
+            <span>{{ formatTrx($app.$state.summary.balance) }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Invests</span>
             <br />
-            <span>{{ summary.count }}</span>
+            <span>{{ $app.$state.summary.count }}</span>
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Locked</span>
             <br />
-            <span>{{ formatTrx(summary.amount) }}</span>
+            <span>{{ formatTrx($app.$state.summary.amount) }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Interests</span>
             <br />
-            <span>{{ formatTrx(summary.interest) }}</span>
+            <span>{{ formatTrx($app.$state.summary.interest) }}</span>
             <br />TRX
           </div>
         </div>
@@ -149,8 +148,7 @@
 </template>
 
 <script setup lang="ts">
-import { NIL } from "uuid";
-import type { InvestmentSummary } from "~/server/model/trpc";
+import type { SubmitEventPromise } from "vuetify";
 
 const investTitle = new Map<number, string>([
   [10, "Beginner"],
@@ -171,13 +169,6 @@ const investAmount = ref(0);
 const investRate = ref(10);
 const approveRules = ref(false);
 
-const summary = ref<InvestmentSummary>({
-  balance: BigInt(0),
-  count: 0,
-  amount: BigInt(0),
-  interest: BigInt(0),
-});
-
 const copyAddress = (address: string) => {
   copy(address);
   showQRDialog.value = false;
@@ -188,7 +179,7 @@ const copyAddress = (address: string) => {
 };
 
 const showApply = (min: number, rate: number) => {
-  if (summary.value.balance < BigInt(min * 1000000)) {
+  if ($app.$state.summary.balance < BigInt(min * 1000000)) {
     alert.value = "Insufficient funds. Top up your balance please";
     showSB.value = true;
     return;
@@ -201,23 +192,25 @@ const showApply = (min: number, rate: number) => {
 
 const load = async () => {
   if ($app.user?.id) {
-    summary.value = await $client.Investment.summary.query({
+    $app.$state.summary = await $client.Investment.summary.query({
       id: $app.user.id,
     });
   }
 };
 
-const apply = async () => {
-  await $client.Investment.apply.mutate({
-    userId: $app.$state.user?.id || NIL,
-    amount: BigInt(investAmount.value * 1000000),
-    rate: investRate.value,
-  });
-  await load();
-  showApplyDialog.value = false;
+const apply = async (event: SubmitEventPromise) => {
+  if ((await event).valid && $app.$state.user?.id) {
+    await $client.Investment.apply.mutate({
+      userId: $app.$state.user.id,
+      amount: BigInt(investAmount.value * 1000000),
+      rate: investRate.value,
+    });
+    await load();
+    showApplyDialog.value = false;
+  }
 };
 
-onMounted(load);
+onBeforeMount(load);
 </script>
 
 <style scoped>

@@ -117,7 +117,19 @@ export const ApplyInvestSchema = z.object({
   amount: z.bigint(),
 });
 
+export const UserWithSummarySchema = z.object({
+  user: UserSchema,
+  summary: InvestmentSummarySchema,
+});
+
+export const SendSchema = z.object({
+  userId: z.string().uuid(),
+  to: z.string(),
+  amount: z.bigint(),
+});
+
 export type User = z.TypeOf<typeof UserSchema>;
+export type UserWithSummary = z.TypeOf<typeof UserWithSummarySchema>;
 export type UsersList = z.TypeOf<typeof UsersListSchema>;
 export type UsersListItem = z.TypeOf<typeof UsersListItemSchema>;
 export type Pagination = z.TypeOf<typeof PaginationSchema>;
@@ -126,3 +138,4 @@ export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;
 export type Investment = z.TypeOf<typeof InvestmentSchema>;
 export type InvestmentsList = z.TypeOf<typeof InvestmentsListSchema>;
 export type InvestmentSummary = z.TypeOf<typeof InvestmentSummarySchema>;
+export type Send = z.TypeOf<typeof SendSchema>;
