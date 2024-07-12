@@ -32,14 +32,14 @@
     class="text-caption"
     @update:options="onOptions"
   >
-    <template #[`item.createdEpoch`]="{ item }">
-      {{ formatEpoch(item.createdEpoch) }}
+    <template #[`item.created`]="{ item }">
+      {{ dayjs(item.created).format("YYYY-MM-DD HH:mm") }}
     </template>
     <template #[`item.username`]="{ item }">
       {{ formatTgName(item) }}
     </template>
     <template #[`item.balance`]="{ item }">
-      {{ formatTrx(item.balance) }}
+      {{ item.balance ? (item.balance / 1_000_000).toFixed(2) : 0 }}
     </template>
   </v-data-table-server>
   <v-container>
@@ -57,23 +57,22 @@
 </template>
 
 <script setup lang="ts">
-import { NIL } from "uuid";
-import type { Pagination, User, UsersListItem } from "~/server/model/trpc";
-import type { DataTableHeaders } from "~/server/model/ui";
+import dayjs from "dayjs";
+import type { Pagination, User, UsersList, UsersListItem } from "~/server/lib/schema";
+import type { DataTableHeaders } from "~/types/ui";
 
-const $app = useAppStore();
+const app = useAppStore();
 const config = useRuntimeConfig();
-const { $client } = useNuxtApp();
 
 const loading = ref(false);
 const my = ref<User | undefined>(undefined);
-const refUrl = computed(() => `${config.public.appUrl}/?ref=${$app.user?.telegramId}`);
+const refUrl = computed(() => `${config.public.appUrl}/?ref=${app.user?.telegramId}`);
 const items = ref<UsersListItem[]>([]);
 const itemsPerPage = ref(15);
 const page = ref(1);
 const total = ref(0);
 const showSB = ref(false);
-const { text, copy, copied } = useClipboard();
+const { text, copy } = useClipboard();
 
 const copyUrl = () => {
   copy(refUrl.value);
@@ -87,24 +86,33 @@ const onOptions = async (pagination: Pagination) => {
 };
 
 const get = async () => {
-  if ($app.user?.referrerId) {
-    my.value = await $client.User.get.query({
-      id: $app.user.referrerId,
+  if (app.$state.user?.referrerId) {
+    my.value = await $fetch<User>("/api/get-user", {
+      method: "POST",
+      body: {
+        id: app.$state.user,
+      },
+      onRequestError: ({ error }) => console.error(error),
     });
   }
 };
 
 const list = async () => {
-  const data = await $client.User.list.query({
-    userId: $app.$state.user?.id || NIL,
-    pagination: {
-      page: page.value,
-      itemsPerPage: itemsPerPage.value,
-    },
-  });
-
-  items.value = data.items;
-  total.value = data.pagination?.total || 0;
+  if (app.$state.user?.id) {
+    const data = await $fetch<UsersList>("/api/list-users", {
+      method: "POST",
+      body: {
+        userId: app.$state.user.id,
+        pagination: {
+          page: page.value,
+          itemsPerPage: itemsPerPage.value,
+        },
+      },
+      onRequestError: ({ error }) => console.error(error),
+    });
+    items.value = data.items;
+    total.value = data.pagination?.total || 0;
+  }
 };
 
 onMounted(get);
@@ -112,7 +120,7 @@ onMounted(get);
 const headers = computed<DataTableHeaders>(
   () =>
     [
-      { title: "Added", key: "createdEpoch", align: "start" },
+      { title: "Added", key: "created", align: "start" },
       { title: "User", key: "username", align: "start" },
       { title: "Balance", key: "balance", align: "end" },
     ] as const

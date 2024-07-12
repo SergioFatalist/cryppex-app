@@ -7,7 +7,7 @@ interface Headers extends AxiosRequestHeaders {
 
 const config = useRuntimeConfig();
 
-const tronWeb = new TronWeb({
+const tron = new TronWeb({
   fullHost: config.tron.fullHost,
   privateKey: config.tron.privateKey,
   headers: config.tron.apiKey
@@ -18,4 +18,4 @@ const tronWeb = new TronWeb({
     : undefined,
 });
 
-export default tronWeb;
+export default tron;

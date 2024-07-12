@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 class Investor {
   private period = 10; // seconds
   private timer;
@@ -15,10 +13,10 @@ class Investor {
       where: { closed: false },
     });
     for (const i of invests) {
-      const now = dayjs().unix();
-      const closed = now >= i.endEpoch;
-      const slots = BigInt(Math.round((i.endEpoch - i.startEpoch) / this.period));
-      const pass = BigInt(Math.round((now - i.startEpoch) / this.period));
+      const now = BigInt(new Date().getTime());
+      const closed = now >= i.finish;
+      const slots = (i.finish - i.start) / BigInt(this.period);
+      const pass = (now - i.start) / BigInt(this.period);
       const full = BigInt((Number(i.amount) * (100 + i.rate)) / 100);
       const interest = closed ? full : ((full - i.amount) / slots) * pass;
 

@@ -4,14 +4,14 @@ export default defineNuxtConfig({
   ssr: false,
   runtimeConfig: {
     public: {
-      appUrl: process.env.NUXT_PUBLIC_APP_URL,
+      appUrl: process.env.PUBLIC_APP_URL,
     },
     tron: {
-      fullHost: process.env.NUXT_TRON_FULL_HOST,
-      privateKey: process.env.NUXT_TRON_PRIVATE_KEY,
-      apiKey: process.env.NUXT_TRON_API_KEY,
+      fullHost: process.env.TRON_FULL_HOST,
+      privateKey: process.env.TRON_PRIVATE_KEY,
+      apiKey: process.env.TRON_API_KEY,
     },
-    botToken: process.env.NUXT_BOT_TOKEN,
+    botToken: process.env.BOT_TOKEN,
   },
   app: {
     head: {
@@ -68,7 +68,7 @@ export default defineNuxtConfig({
     logLevel: 1,
   },
   build: {
-    transpile: ["vuetify", "trpc-nuxt"],
+    transpile: ["vuetify"],
   },
   vite: {
     server: {

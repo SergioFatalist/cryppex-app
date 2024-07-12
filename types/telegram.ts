@@ -876,7 +876,7 @@ export interface WebAppUser {
    * integer or a double-precision float type is safe for storing this
    * identifier.
    */
-  id: bigint;
+  id: number;
   /** True, if this user is a bot. Returns in the receiver field only. */
   is_bot?: boolean;
   /** First name of the user or bot. */

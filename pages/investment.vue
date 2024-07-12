@@ -23,12 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { NIL } from "uuid";
-import type { Investment, Pagination } from "~/server/model/trpc";
-import type { DataTableHeaders } from "~/server/model/ui";
+import type { Investment, InvestmentsList, Pagination } from "~/server/lib/schema";
+import type { DataTableHeaders } from "~/types/ui";
 
-const $app = useAppStore();
-const { $client } = useNuxtApp();
+const app = useAppStore();
 const loading = ref(false);
 const items = ref<Investment[]>([]);
 const itemsPerPage = ref(15);
@@ -42,16 +40,21 @@ const onOptions = async (pagination: Pagination) => {
 };
 
 const list = async () => {
-  const data = await $client.Investment.list.query({
-    userId: $app.$state.user?.id || NIL,
-    pagination: {
-      page: page.value,
-      itemsPerPage: itemsPerPage.value,
-    },
-  });
-
-  items.value = data.items;
-  total.value = data.pagination?.total || 0;
+  if (app.$state.user?.id) {
+    const data = await $fetch<InvestmentsList>("/api/list-investments", {
+      method: "POST",
+      body: {
+        userId: app.$state.user.id,
+        pagination: {
+          page: page.value,
+          itemsPerPage: itemsPerPage.value,
+        },
+      },
+      onRequestError: ({ error }) => console.error(error),
+    });
+    items.value = data.items;
+    total.value = data.pagination?.total || 0;
+  }
 };
 
 const headers = computed<DataTableHeaders>(

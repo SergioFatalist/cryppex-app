@@ -1,5 +1,5 @@
-import type { Resource } from "./TransactionBuilder";
-import type { ContractAbiInterface } from "./ABI";
+import type { Resource } from "./transaction-builder";
+import type { ContractAbiInterface } from "./abi";
 
 export enum ContractType {
   AccountCreateContract = "AccountCreateContract",

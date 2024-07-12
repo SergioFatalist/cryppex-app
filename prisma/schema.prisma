@@ -11,57 +11,58 @@ datasource db {
 }
 
 model User {
-  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  telegramId     BigInt        @unique @map("telegram_id")
-  username       String?       @map("username") @db.VarChar
-  firstName      String?       @map("first_name") @db.VarChar
-  lastName       String?       @map("last_name") @db.VarChar
-  languageCode   String?       @map("language_code") @db.VarChar
-  address        String        @map("address") @db.VarChar
-  privateKey     String        @map("private_key") @db.VarChar
-  balance        BigInt        @default(0) @map("balance")
-  locked         BigInt        @default(0) @map("locked")
-  interest       BigInt        @default(0) @map("interest")
-  referrer       User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  referrerId     String?       @map("referrer_id") @db.Uuid
-  referrals      User[]        @relation("referrer")
-  createdEpoch   Int           @default(dbgenerated("EXTRACT(epoch FROM now())")) @map("created_epoch")
-  lastLoginEpoch Int?          @map("last_login_epoch")
-  currLoginEpoch Int?          @map("curr_login_epoch")
-  transactions   Transaction[]
-  investments    Investment[]
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  telegramId   BigInt        @unique @map("telegram_id")
+  username     String?       @map("username") @db.VarChar
+  firstName    String?       @map("first_name") @db.VarChar
+  lastName     String?       @map("last_name") @db.VarChar
+  languageCode String?       @map("language_code") @db.VarChar
+  address      String        @map("address") @db.VarChar
+  privateKey   String        @map("private_key") @db.VarChar
+  balance      BigInt        @default(0) @map("balance")
+  locked       BigInt        @default(0) @map("locked")
+  interest     BigInt        @default(0) @map("interest")
+  referrer     User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  referrerId   String?       @map("referrer_id") @db.Uuid
+  referrals    User[]        @relation("referrer")
+  created      BigInt        @map("created")
+  lastLogin    BigInt?       @map("last_login")
+  currLogin    BigInt?       @map("curr_login_epoch")
+  transactions Transaction[]
+  investments  Investment[]
 
   @@map("users")
 }
 
 model Transaction {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String   @map("user_id") @db.Uuid
-  startEpoch   Int      @map("start_epoch")
-  endEpoch     Int?     @map("end_epoch")
-  referral     String?
-  amount       BigInt   @default(0)
-  success      Boolean?
-  operation    String
-  referralId   String?  @map("referral_id") @db.Uuid
-  txId         String?  @unique @map("tx_id") @db.VarChar()
-  ownerAddress String?  @map("owner_address") @db.VarChar()
-  toAddress    String?  @map("to_address") @db.VarChar()
+  id             String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user           User    @relation(fields: [userId], references: [id])
+  userId         String  @map("user_id") @db.Uuid
+  txID           String? @unique @map("tx_id") @db.VarChar()
+  txTime         BigInt  @map("tx_time")
+  txOwnerAddress String? @map("tx_owner_address") @db.VarChar()
+  txToAddress    String? @map("tx_to_address") @db.VarChar()
+  amount         BigInt  @default(0)
+  success        Boolean @default(false)
+  pending        Boolean @default(true)
+  internal       Boolean @default(true)
+  referral       String?
+  type           String
+  referralId     String? @map("referral_id") @db.Uuid
 
   @@map("transactions")
 }
 
 model Investment {
-  id         String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user       User    @relation(fields: [userId], references: [id])
-  userId     String  @map("user_id") @db.Uuid
-  amount     BigInt
-  rate       Int
-  interest   BigInt
-  startEpoch Int     @default(dbgenerated("EXTRACT(epoch FROM now())")) @map("start_epoch")
-  endEpoch   Int     @map("end_epoch")
-  closed     Boolean @default(false)
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @map("user_id") @db.Uuid
+  amount   BigInt
+  rate     Int
+  interest BigInt
+  start    BigInt
+  finish   BigInt
+  closed   Boolean @default(false)
 
   @@map("investments")
 }

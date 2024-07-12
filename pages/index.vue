@@ -1,12 +1,12 @@
 <template>
-  <div v-if="$app.$state.user?.id" class="d-block h-100">
+  <div v-if="app.$state.user?.id" class="d-block h-100">
     <div class="d-flex flex-column justify-space-between h-100">
       <div class="flex-0-0">
         <div class="d-flex justify-space-between px-4 pt-0 pb-2">
           <div class="flex-0-0">
             <span class="text-subtitle-2">Hello</span>
             <br />
-            <span class="text-h6 text-white">{{ formatTgName($app.user) }}</span>
+            <span class="text-h6 text-white">{{ formatTgName(app.user) }}</span>
           </div>
           <div class="flex-0-0 text-center">
             <v-btn color="secondary" variant="flat" size="x-large" @click="showQRDialog = true">
@@ -18,24 +18,24 @@
           <div class="flex-1-1">
             <span class="text-caption">Balance</span>
             <br />
-            <span>{{ formatTrx($app.$state.summary.balance) }}</span>
+            <span>{{ formatTrx(app.$state.summary.balance) }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Invests</span>
             <br />
-            <span>{{ $app.$state.summary.count }}</span>
+            <span>{{ app.$state.summary.count }}</span>
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Locked</span>
             <br />
-            <span>{{ formatTrx($app.$state.summary.amount) }}</span>
+            <span>{{ formatTrx(app.$state.summary.amount) }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Interests</span>
             <br />
-            <span>{{ formatTrx($app.$state.summary.interest) }}</span>
+            <span>{{ formatTrx(app.$state.summary.interest) }}</span>
             <br />TRX
           </div>
         </div>
@@ -90,7 +90,7 @@
       <div class="text-caption">Send TRX to address</div>
       <div class="my-4">
         <qr-code
-          :value="$app.user?.address"
+          :value="app.user?.address"
           :background="'#161a2e'"
           :foreground="'#ffffff'"
           :size="200"
@@ -104,11 +104,14 @@
           variant="outlined"
           class="text-none text-caption"
           append-icon="mdi-content-copy"
-          @click="copyAddress($app.user?.address || '')"
+          @click="copyAddress(app.user?.address || '')"
         >
-          {{ $app.user?.address }}
+          {{ app.user?.address }}
         </v-btn>
-        <span v-else>{{ $app.user?.address }}</span>
+        <span v-else>{{ app.user?.address }}</span>
+      </div>
+      <div class="text-center mt-4">
+        <v-btn variant="outlined" text="Copy to clipboard" @click="copyAddress(app.user?.address || '')" />
       </div>
     </v-sheet>
   </v-dialog>
@@ -149,6 +152,7 @@
 
 <script setup lang="ts">
 import type { SubmitEventPromise } from "vuetify";
+import type { InvestmentSummary } from "~/server/lib/schema";
 
 const investTitle = new Map<number, string>([
   [10, "Beginner"],
@@ -156,10 +160,9 @@ const investTitle = new Map<number, string>([
   [30, "Professional"],
 ]);
 
-const $app = useAppStore();
-const { $client } = useNuxtApp();
+const app = useAppStore();
 const rules = useValidationRules();
-const { text, copy, copied, isSupported } = useClipboard();
+const { copy, copied, isSupported } = useClipboard();
 const showQRDialog = ref(false);
 const showApplyDialog = ref(false);
 const showSB = ref(false);
@@ -172,14 +175,14 @@ const approveRules = ref(false);
 const copyAddress = (address: string) => {
   copy(address);
   showQRDialog.value = false;
-  alert.value = `Copied to clibpoard ${text}`;
+  alert.value = `Copied to clibpoard ${address}`;
   if (copied) {
     showSB.value = true;
   }
 };
 
 const showApply = (min: number, rate: number) => {
-  if ($app.$state.summary.balance < BigInt(min * 1000000)) {
+  if (app.$state.summary.balance < BigInt(min * 1000000)) {
     alert.value = "Insufficient funds. Top up your balance please";
     showSB.value = true;
     return;
@@ -191,23 +194,33 @@ const showApply = (min: number, rate: number) => {
 };
 
 const load = async () => {
-  if ($app.user?.id) {
-    $app.$state.summary = await $client.Investment.summary.query({
-      id: $app.user.id,
+  if (app.$state.user?.id) {
+    app.$state.summary = await $fetch<InvestmentSummary>("/api/invests-summary", {
+      method: "POST",
+      body: {
+        id: app.$state.user.id,
+      },
+      onRequestError: ({ error }) => console.error(error),
     });
   }
 };
 
 const apply = async (event: SubmitEventPromise) => {
-  if ((await event).valid && $app.$state.user?.id) {
-    await $client.Investment.apply.mutate({
-      userId: $app.$state.user.id,
-      amount: BigInt(investAmount.value * 1000000),
-      rate: investRate.value,
-    });
-    await load();
-    showApplyDialog.value = false;
+  if ((await event).valid && app.$state.user?.id) {
+    if (app.$state.user?.id) {
+      await $fetch<InvestmentSummary>("/api/invest", {
+        method: "POST",
+        body: {
+          userId: app.$state.user.id,
+          rate: investRate.value,
+          amount: investAmount.value * 1000000,
+        },
+        onRequestError: ({ error }) => console.error(error),
+      });
+    }
   }
+  await load();
+  showApplyDialog.value = false;
 };
 
 onBeforeMount(load);

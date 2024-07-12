@@ -24,19 +24,19 @@ export const UuidFieldSchema = z.object({
 
 export const UserSchema = z.object({
   id: z.string().uuid(),
-  telegramId: z.bigint(),
+  telegramId: z.number(),
   firstName: z.string().nullable().optional(),
   lastName: z.string().nullable().optional(),
   username: z.string().nullable().optional(),
-  balance: z.bigint(),
-  locked: z.bigint(),
-  interest: z.bigint(),
-  address: z.string(),
-  referrerId: z.string().uuid().nullable().optional(),
   languageCode: z.string().nullable().optional(),
-  createdEpoch: z.number(),
-  currLoginEpoch: z.number().nullable().optional(),
-  lastLoginEpoch: z.number().nullable().optional(),
+  address: z.string(),
+  balance: z.number(),
+  locked: z.number(),
+  interest: z.number(),
+  referrerId: z.string().uuid().nullable().optional(),
+  created: z.number(),
+  currLogin: z.number().nullable().optional(),
+  lastLogin: z.number().nullable().optional(),
 });
 
 export const UsersListItemSchema = UserSchema.pick({
@@ -46,7 +46,7 @@ export const UsersListItemSchema = UserSchema.pick({
   lastName: true,
   username: true,
   balance: true,
-  createdEpoch: true,
+  created: true,
 });
 
 export const UsersListSchema = PaginatiedSchema.extend({
@@ -54,7 +54,7 @@ export const UsersListSchema = PaginatiedSchema.extend({
 });
 
 export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
-  id: z.bigint(),
+  id: z.number(),
   is_bot: z.boolean().optional(),
   first_name: z.string().optional(),
   last_name: z.string().optional(),
@@ -69,7 +69,7 @@ export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
 export const InitDataSchema = z.object({
   initData: z.string(),
   webAppUser: WebAppUserSchema,
-  kentId: z.string().optional(),
+  kentId: z.number().optional(),
 });
 
 export const ListRequestSchema = z.object({
@@ -79,12 +79,11 @@ export const ListRequestSchema = z.object({
 
 export const TransactionSchema = z.object({
   id: z.string().uuid(),
-  startEpoch: z.number(),
-  endEpoch: z.number().nullable().optional(),
+  txTime: z.number(),
   referral: z.string().nullable().optional(),
-  amount: z.bigint(),
+  amount: z.number(),
   success: z.boolean().nullable(),
-  operation: z.string(),
+  type: z.string(),
 });
 
 export const TransactionsListSchema = PaginatiedSchema.extend({
@@ -93,11 +92,11 @@ export const TransactionsListSchema = PaginatiedSchema.extend({
 
 export const InvestmentSchema = z.object({
   id: z.string().uuid(),
-  amount: z.bigint(),
+  amount: z.number(),
   rate: z.number(),
-  interest: z.bigint(),
-  startEpoch: z.number(),
-  endEpoch: z.number(),
+  interest: z.number(),
+  start: z.number(),
+  finish: z.number(),
 });
 
 export const InvestmentsListSchema = PaginatiedSchema.extend({
@@ -105,16 +104,16 @@ export const InvestmentsListSchema = PaginatiedSchema.extend({
 });
 
 export const InvestmentSummarySchema = z.object({
-  balance: z.bigint(),
+  balance: z.number(),
   count: z.number(),
-  amount: z.bigint(),
-  interest: z.bigint(),
+  amount: z.number(),
+  interest: z.number(),
 });
 
 export const ApplyInvestSchema = z.object({
   userId: z.string().uuid(),
   rate: z.number(),
-  amount: z.bigint(),
+  amount: z.number(),
 });
 
 export const UserWithSummarySchema = z.object({
@@ -125,7 +124,7 @@ export const UserWithSummarySchema = z.object({
 export const SendSchema = z.object({
   userId: z.string().uuid(),
   to: z.string(),
-  amount: z.bigint(),
+  amount: z.number(),
 });
 
 export type User = z.TypeOf<typeof UserSchema>;

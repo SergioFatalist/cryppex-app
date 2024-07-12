@@ -1,4 +1,4 @@
-import type { InvestmentSummary } from "~/server/model/trpc";
+import type { InvestmentSummary } from "~/server/lib/schema";
 
 export default async function (id: string): Promise<InvestmentSummary> {
   const user = await prisma.user.findUniqueOrThrow({
@@ -20,12 +20,10 @@ export default async function (id: string): Promise<InvestmentSummary> {
       interest: true,
     },
   });
-  const ret = {
-    balance: user.balance,
-    count: agg._count.id,
-    amount: agg._sum.amount || BigInt(0),
-    interest: agg._sum.interest || BigInt(0),
+  return {
+    balance: Number(user.balance),
+    count: Number(agg._count.id),
+    amount: Number(agg._sum.amount || 0),
+    interest: Number(agg._sum.interest || 0),
   };
-  console.dir(ret);
-  return ret;
 }

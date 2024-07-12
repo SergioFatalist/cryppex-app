@@ -1,3 +1,3 @@
-export default function (amount: bigint | undefined) {
-  return amount ? (Number(amount) / 1000000).toFixed(2) : 0;
+export default function (amount: number | undefined) {
+  return amount ? (amount / 1_000_000).toFixed(2) : 0;
 }

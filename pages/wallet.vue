@@ -12,7 +12,7 @@
     </v-toolbar-items>
     <v-toolbar-title>
       <span class="text-caption">Tron balance</span><br />
-      <span>{{ formatTrx($app.$state.user?.balance) }} TRX</span>
+      <span>{{ formatTrx(app.$state.user?.balance) }} TRX</span>
     </v-toolbar-title>
 
     <v-toolbar-items>
@@ -39,11 +39,11 @@
     class="text-caption"
     @update:options="onOptions"
   >
-    <template #[`item.startEpoch`]="{ item }">
-      {{ formatEpoch(item.startEpoch) }}
+    <template #[`item.txTime`]="{ item }">
+      {{ dayjs(item.txTime).format("YYYY-MM-DD HH:mm") }}
     </template>
     <template #[`item.amount`]="{ item }">
-      {{ formatTrx(item.amount) }}
+      {{ item.amount ? (item.amount / 1_000_000).toFixed(2) : 0 }}
     </template>
     <template #[`item.success`]="{ item }">
       <v-icon v-if="item.success" color="success" icon="mdi-check-circle-outline" size="16" />
@@ -64,7 +64,7 @@
               v-model="amount"
               :rules="[
                 (v) => rules.equalOrGreaterThan(v, '1'),
-                (v) => rules.lessThan((v * 1000000).toString(), String($app.$state.user?.balance || 0)),
+                (v) => rules.lessThan((v * 1000000).toString(), String(app.$state.user?.balance || 0)),
               ]"
               type="number"
               label="Amount"
@@ -87,13 +87,12 @@
 </template>
 
 <script setup lang="ts">
-import { NIL } from "uuid";
+import dayjs from "dayjs";
 import type { SubmitEventPromise } from "vuetify";
-import type { Pagination, Transaction } from "~/server/model/trpc";
-import type { DataTableHeaders } from "~/server/model/ui";
+import type { Pagination, Transaction, TransactionsList } from "~/server/lib/schema";
+import type { DataTableHeaders } from "~/types/ui";
 
-const $app = useAppStore();
-const { $client } = useNuxtApp();
+const app = useAppStore();
 const rules = useValidationRules();
 
 const loading = ref(false);
@@ -112,24 +111,33 @@ const onOptions = async (pagination: Pagination) => {
 };
 
 const list = async () => {
-  const data = await $client.Wallet.list.query({
-    userId: $app.$state.user?.id || NIL,
-    pagination: {
-      page: page.value,
-      itemsPerPage: itemsPerPage.value,
-    },
-  });
-
-  items.value = data.items;
-  total.value = data.pagination?.total || 0;
+  if (app.$state.user?.id) {
+    const data = await $fetch<TransactionsList>("/api/list-transactions", {
+      method: "POST",
+      body: {
+        userId: app.$state.user.id,
+        pagination: {
+          page: page.value,
+          itemsPerPage: itemsPerPage.value,
+        },
+      },
+      onRequestError: ({ error }) => console.error(error),
+    });
+    items.value = data.items;
+    total.value = data.pagination?.total || 0;
+  }
 };
 
 const send = async (event: SubmitEventPromise) => {
-  if ((await event).valid && $app.$state.user?.id) {
-    await $client.Wallet.send.mutate({
-      userId: $app.$state.user?.id,
-      amount: BigInt(amount.value * 1000000),
-      to: to.value,
+  if ((await event).valid && app.$state.user?.id) {
+    await $fetch<TransactionsList>("/api/send-trx", {
+      method: "POST",
+      body: {
+        userId: app.$state.user?.id,
+        amount: amount.value * 1000000,
+        to: to.value,
+      },
+      onRequestError: ({ error }) => console.error(error),
     });
     showSendDialog.value = false;
     await list();
@@ -139,8 +147,8 @@ const send = async (event: SubmitEventPromise) => {
 const headers = computed<DataTableHeaders>(
   () =>
     [
-      { title: "Date", key: "startEpoch", align: "start" },
-      { title: "Operation", key: "operation", align: "start" },
+      { title: "Date", key: "txTime", align: "start" },
+      { title: "Type", key: "type", align: "start" },
       { title: "Amount", key: "amount", align: "end" },
       { title: "", key: "success", align: "end" },
     ] as const

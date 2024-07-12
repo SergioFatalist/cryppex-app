@@ -15,9 +15,9 @@ CREATE TABLE "users" (
     "locked" BIGINT NOT NULL DEFAULT 0,
     "interest" BIGINT NOT NULL DEFAULT 0,
     "referrer_id" UUID,
-    "created_epoch" INTEGER NOT NULL DEFAULT EXTRACT(epoch FROM now()),
-    "last_login_epoch" INTEGER,
-    "curr_login_epoch" INTEGER,
+    "created" BIGINT NOT NULL,
+    "last_login" BIGINT,
+    "curr_login_epoch" BIGINT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -26,14 +26,17 @@ CREATE TABLE "users" (
 CREATE TABLE "transactions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "user_id" UUID NOT NULL,
-    "start_epoch" INTEGER NOT NULL,
-    "end_epoch" INTEGER,
-    "referral" TEXT,
+    "tx_id" VARCHAR,
+    "tx_time" BIGINT NOT NULL,
+    "tx_owner_address" VARCHAR,
+    "tx_to_address" VARCHAR,
     "amount" BIGINT NOT NULL DEFAULT 0,
-    "success" BOOLEAN,
-    "operation" TEXT NOT NULL,
+    "success" BOOLEAN NOT NULL DEFAULT false,
+    "pending" BOOLEAN NOT NULL DEFAULT true,
+    "internal" BOOLEAN NOT NULL DEFAULT true,
+    "referral" TEXT,
+    "type" TEXT NOT NULL,
     "referral_id" UUID,
-    "tx_id" TEXT,
 
     CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
@@ -45,8 +48,8 @@ CREATE TABLE "investments" (
     "amount" BIGINT NOT NULL,
     "rate" INTEGER NOT NULL,
     "interest" BIGINT NOT NULL,
-    "start_epoch" INTEGER NOT NULL DEFAULT EXTRACT(epoch FROM now()),
-    "end_epoch" INTEGER NOT NULL,
+    "start" BIGINT NOT NULL,
+    "finish" BIGINT NOT NULL,
     "closed" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "investments_pkey" PRIMARY KEY ("id")

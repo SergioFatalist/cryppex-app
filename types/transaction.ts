@@ -1,4 +1,4 @@
-import type { ContractParamter, ContractType, CreateSmartContract } from "./Contract";
+import type { ContractParamter, ContractType, CreateSmartContract } from "./contract";
 
 export interface ContractParamterWrapper<T = ContractParamter> {
   value: T;
@@ -13,6 +13,12 @@ export interface TransactionContract<T = ContractParamter> {
 export interface Transaction<T = ContractParamter> {
   visible: boolean;
   txID: string;
+  blockNumber: number;
+  block_timestamp: number;
+  ret: {
+    contractRet: string;
+    fee: number;
+  }[];
   raw_data: {
     contract: TransactionContract<T>[];
     ref_block_bytes: string;
