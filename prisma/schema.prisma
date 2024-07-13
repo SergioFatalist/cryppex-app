@@ -27,7 +27,7 @@ model User {
   referrals    User[]        @relation("referrer")
   created      BigInt        @map("created")
   lastLogin    BigInt?       @map("last_login")
-  currLogin    BigInt?       @map("curr_login_epoch")
+  currLogin    BigInt?       @map("curr_login")
   transactions Transaction[]
   investments  Investment[]
 
