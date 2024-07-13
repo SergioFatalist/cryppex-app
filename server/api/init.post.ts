@@ -7,6 +7,8 @@ import type { Transaction } from "~/types/transaction";
 export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
 
+  console.dir(data);
+
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
@@ -56,7 +58,6 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
       if (lastTransaction) {
         url += `&min_timestamp=${lastTransaction.txTime}`;
       }
-      console.dir(url);
       const result = await $fetch<{ data: Transaction<TransferContract>[] }>(url, {
         method: "GET",
         headers: {
@@ -71,13 +72,11 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
         }
         const hex = tron.address.toHex(user.address).toLowerCase();
         for (const p of trxTX.raw_data.contract) {
-          console.log(trxTX.txID);
           const minus = p.parameter.value.owner_address.toLowerCase() === hex;
-          // data.costs.reduce((acc, item) => acc + (parseFloat(item.sum)), 0);
           const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
           const amount =
             (p.parameter.value.amount ? BigInt(p.parameter.value.amount) : BigInt(0)) + BigInt(minus ? fee : 0);
-          const u = await tx.transaction.upsert({
+          await tx.transaction.upsert({
             where: { txID: trxTX.txID },
             create: {
               amount: amount,
@@ -95,9 +94,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
             },
             update: {},
           });
-          const before = data.balance;
           data.balance = minus ? data.balance - amount : data.balance + amount;
-          console.log(trxTX.txID, before, amount, data.balance);
         }
       }
       user = await tx.user.update({ where: { id: user.id }, data });

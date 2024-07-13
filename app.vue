@@ -25,16 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import type {UserWithSummary} from "~/server/lib/schema";
+import type { UserWithSummary } from "~/server/lib/schema";
 
 const router = useRouter();
-const route = useRoute();
 const $app = useAppStore();
 const $config = useRuntimeConfig();
 const { $telegram } = useNuxtApp();
-
-const ref = route.query["ref"];
-const kentId = ref ? (Array.isArray(ref) ? ref[0] || "" : ref).toString() : "";
 
 // const platform = $telegram.WebApp.platform;
 // if (platform == "tdesktop") {
@@ -49,19 +45,21 @@ const kentId = ref ? (Array.isArray(ref) ? ref[0] || "" : ref).toString() : "";
 const setUser = async () => {
   const initData = $telegram.WebApp.initData;
   // const initData = potap;
-
-  if (!initData || initData.length < 10) {
+  if (!initData || initData.length < 30) {
     await router.push("/no-data");
     return;
   }
   const params = new URLSearchParams(initData);
+  const startParam = <string | undefined>params.get("start_param");
+  const kentId = startParam ? parseInt(startParam) : undefined;
+
   $telegram.WebApp.expand();
   const data = await $fetch<UserWithSummary>("/api/init", {
     method: "POST",
     body: {
       initData: JSON.stringify(initData),
       webAppUser: JSON.parse(<string>params.get("user")),
-      kentId: kentId ? parseInt(kentId) : undefined,
+      kentId: Number.isInteger(kentId) ? kentId : undefined,
     },
     onRequestError: ({ error }) => console.error(error),
   });

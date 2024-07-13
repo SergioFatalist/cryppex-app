@@ -8,6 +8,10 @@ class Investor {
     }, this.period * 1000);
   }
 
+  public async launch() {
+    return true;
+  }
+
   private async calc() {
     const invests = await prisma.investment.findMany({
       where: { closed: false },
@@ -41,4 +45,6 @@ class Investor {
   // }
 }
 
-export default new Investor();
+const investor = new Investor();
+
+export default investor;

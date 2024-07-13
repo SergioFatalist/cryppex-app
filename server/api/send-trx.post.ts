@@ -13,7 +13,6 @@ export default defineEventHandler(async (event): Promise<void> => {
 
   if (user && user.balance > data.amount) {
     const trxTX = await tron.trx.send(data.to, data.amount);
-    console.dir(JSON.stringify(trxTX));
     if (trxTX.result) {
       user.balance -= BigInt(data.amount);
       await prisma.user.update({
