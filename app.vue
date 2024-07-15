@@ -34,6 +34,9 @@ const { $telegram } = useNuxtApp();
 
 const platform = $telegram.WebApp.platform;
 const mobile = ref<boolean>(platform == "ios" || platform == "android");
+// const mobile = ref<boolean>(true);
+
+console.error(platform);
 
 if (platform !== "unknown" && !mobile.value) {
   await router.push("/use-mobile");
@@ -45,31 +48,48 @@ if (platform !== "unknown" && !mobile.value) {
 //   "user=%7B%22id%22%3A5288550634%2C%22first_name%22%3A%22Potap%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22SergioPotap%22%2C%22language_code%22%3A%22ru%22%2C%22allows_write_to_pm%22%3Atrue%7D&chat_instance=-1260992627038743562&chat_type=private&auth_date=1719972346&hash=8b3b8b12361475d3951de90d327a341b19c0368d912fcdd85c5c75ef0474035d";
 
 const setUser = async () => {
-  const initData = $telegram.WebApp.initData;
-  // const initData = potap;
-  if (!initData || initData.length < 30) {
-    await router.push("/no-data");
-    return;
-  }
-  const params = new URLSearchParams(initData);
-  const startParam = <string | undefined>params.get("start_param");
-  const kentId = startParam ? parseInt(startParam) : undefined;
+  if (!$app.$state.user) {
+    let initData = $telegram.WebApp.initData;
+    // const initData = potap;
 
-  $telegram.WebApp.expand();
-  const data = await $fetch<UserWithSummary>("/api/init", {
-    method: "POST",
-    body: {
-      initData: JSON.stringify(initData),
-      webAppUser: JSON.parse(<string>params.get("user")),
-      kentId: Number.isInteger(kentId) ? kentId : undefined,
-    },
-    onRequestError: ({ error }) => console.error(error),
-  });
-  if (!data) {
-    await router.push("/no-data");
-    return;
+    if (!initData || initData.length < 30) {
+      await router.push("/no-data");
+      return;
+    }
+    const params = new URLSearchParams(initData);
+    const startParam = <string | undefined>params.get("start_param");
+    const kentId = startParam ? parseInt(startParam) : undefined;
+
+    $telegram.WebApp.expand();
+    const data = await $fetch<UserWithSummary>("/api/init", {
+      method: "POST",
+      body: {
+        initData: JSON.stringify(initData),
+        webAppUser: JSON.parse(<string>params.get("user")),
+        kentId: Number.isInteger(kentId) ? kentId : undefined,
+      },
+      onRequestError: ({ error }) => console.error(error),
+    });
+    if (!data) {
+      await router.push("/no-data");
+      return;
+    }
+    $app.setUser(data);
+  } else {
+    const data = await $fetch<UserWithSummary>("/api/load", {
+      method: "POST",
+      body: {
+        id: $app.$state.user.id,
+      },
+      onRequestError: ({ error }) => console.error(error),
+    });
+    $telegram.WebApp.expand();
+    if (!data) {
+      await router.push("/no-data");
+      return;
+    }
+    $app.setUser(data);
   }
-  $app.setUser(data);
 };
 
 onBeforeMount(setUser);
