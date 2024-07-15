@@ -2,7 +2,9 @@ import crypto from "crypto";
 import getInvestmentsSummary from "~/server/lib/get-investments-summary";
 import { InitDataSchema, type UserWithSummary } from "~/server/lib/schema";
 import type { TransferContract } from "~/types/contract";
+import type { WebAppUser } from "~/types/telegram";
 import type { Transaction } from "~/types/transaction";
+import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
@@ -11,30 +13,40 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   }
 
   const config = useRuntimeConfig();
-  const initData = new URLSearchParams(JSON.parse(data.initData));
-  initData.sort();
+  const where: Prisma.UserWhereUniqueInput = {
+    telegramId: undefined,
+    id: undefined,
+  };
+  let webAppUser: WebAppUser | undefined = undefined;
 
-  const h = initData.get("hash");
-  const u = initData.get("user");
+  if (data.initData && data.initData.length > 30) {
+    const initData = new URLSearchParams(JSON.parse(data.initData));
+    initData.sort();
+    const h = initData.get("hash");
+    const u = initData.get("user");
 
-  if (!h || !u) {
-    throw new Error("no data");
+    if (!h || !u) {
+      throw new Error("No init DATA");
+    }
+
+    webAppUser = JSON.parse(u) as WebAppUser;
+    initData.delete("hash");
+    const dataToCheck = [...initData.entries()].map(([key, value]) => key + "=" + value).join("\n");
+    const secretKey = crypto.createHmac("sha256", "WebAppData").update(config.botToken).digest();
+    const hash = crypto.createHmac("sha256", secretKey).update(dataToCheck).digest("hex");
+
+    if (h !== hash) {
+      throw new Error("Invalid hash");
+    }
+    where.telegramId = webAppUser.id;
+  } else if (data.userId) {
+    where.id = data.userId;
+  } else {
+    throw new Error("No any DATA");
   }
 
-  initData.delete("hash");
-
-  const dataToCheck = [...initData.entries()].map(([key, value]) => key + "=" + value).join("\n");
-  const secretKey = crypto.createHmac("sha256", "WebAppData").update(config.botToken).digest();
-  const hash = crypto.createHmac("sha256", secretKey).update(dataToCheck).digest("hex");
-
-  if (h !== hash) {
-    throw new Error("invalid hash");
-  }
-
-  let user = await prisma.user.findUnique({
-    where: { telegramId: data.webAppUser.id },
-  });
   const now = new Date().getTime();
+  let user = await prisma.user.findUnique({ where });
 
   if (user) {
     await prisma.$transaction(async (tx) => {
@@ -97,15 +109,15 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
       }
       user = await tx.user.update({ where: { id: user.id }, data });
     });
-  } else {
+  } else if (webAppUser) {
     const account = await tron.createAccount();
     user = await prisma.user.create({
       data: {
-        telegramId: data.webAppUser.id,
-        firstName: data.webAppUser.first_name,
-        lastName: data.webAppUser.last_name,
-        username: data.webAppUser.username,
-        languageCode: data.webAppUser.language_code,
+        telegramId: webAppUser.id,
+        firstName: webAppUser.first_name,
+        lastName: webAppUser.last_name,
+        username: webAppUser.username,
+        languageCode: webAppUser.language_code,
         address: account.address.base58,
         privateKey: account.privateKey,
         created: now,
@@ -118,7 +130,10 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
           : undefined,
       },
     });
+  } else {
+    throw new Error("Invalid DATA");
   }
+
   return {
     user: {
       id: user.id,

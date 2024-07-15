@@ -35,7 +35,7 @@ const { $telegram } = useNuxtApp();
 const platform = $telegram.WebApp.platform;
 const mobile = ref<boolean>(platform == "ios" || platform == "android");
 
-let initData = $telegram.WebApp.initData;
+const initData = $telegram.WebApp.initData;
 const params = new URLSearchParams(initData);
 const startParam = <string | undefined>params.get("start_param");
 
@@ -46,43 +46,27 @@ if (platform !== "unknown" && !mobile.value) {
 }
 
 const setUser = async () => {
-  if (!$app.$state.user) {
-    if (!initData || initData.length < 30) {
-      await router.push("/no-data");
-      return;
-    }
-    const kentId = startParam ? parseInt(startParam) : undefined;
-
-    $telegram.WebApp.expand();
-    const data = await $fetch<UserWithSummary>("/api/init", {
-      method: "POST",
-      body: {
-        initData: JSON.stringify(initData),
-        webAppUser: JSON.parse(<string>params.get("user")),
-        kentId: Number.isInteger(kentId) ? kentId : undefined,
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-    if (!data) {
-      await router.push("/no-data");
-      return;
-    }
-    $app.setUser(data);
-  } else {
-    const data = await $fetch<UserWithSummary>("/api/load", {
-      method: "POST",
-      body: {
-        id: $app.$state.user.id,
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-    $telegram.WebApp.expand();
-    if (!data) {
-      await router.push("/no-data");
-      return;
-    }
-    $app.setUser(data);
+  if ((!initData || initData.length < 30) && !$app.$state.user) {
+    await router.push("/no-data");
+    return;
   }
+  $telegram.WebApp.expand();
+
+  const data = await $fetch<UserWithSummary>("/api/init", {
+    method: "POST",
+    body: {
+      initData: JSON.stringify(initData),
+      userId: $app.$state.user?.id,
+      kentId: startParam && Number.isInteger(parseInt(startParam)) ? parseInt(startParam) : undefined,
+    },
+    onRequestError: ({ error }) => console.error(error),
+  });
+
+  if (!data) {
+    await router.push("/no-data");
+    return;
+  }
+  $app.setUser(data);
 };
 
 onBeforeMount(setUser);

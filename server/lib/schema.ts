@@ -67,8 +67,8 @@ export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
 });
 
 export const InitDataSchema = z.object({
-  initData: z.string(),
-  webAppUser: WebAppUserSchema,
+  initData: z.string().optional(),
+  userId: z.string().uuid().optional(),
   kentId: z.number().optional(),
 });
 
