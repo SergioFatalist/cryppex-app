@@ -5,6 +5,7 @@ export default defineEventHandler(async (event): Promise<User> => {
   const { data, error } = await readValidatedBody(event, (data) => UuidFieldSchema.safeParse(data));
 
   if (!data || error) {
+    console.log(error);
     throw new Error(`Data is missing or ${error}`);
   }
   const user = await prisma.user.findUniqueOrThrow({ where: { id: data.id } });

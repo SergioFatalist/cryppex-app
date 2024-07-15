@@ -66,7 +66,7 @@ const config = useRuntimeConfig();
 
 const loading = ref(false);
 const my = ref<User | undefined>(undefined);
-const refUrl = computed(() => `${config.public.appUrl}?startapp=kentId${app.user?.telegramId}`);
+const refUrl = computed(() => `${config.public.appUrl}?startapp=${app.user?.telegramId}`);
 const items = ref<UsersListItem[]>([]);
 const itemsPerPage = ref(15);
 const page = ref(1);
@@ -86,11 +86,12 @@ const onOptions = async (pagination: Pagination) => {
 };
 
 const get = async () => {
+  console.log(app.$state.user);
   if (app.$state.user?.referrerId) {
     my.value = await $fetch<User>("/api/get-user", {
       method: "POST",
       body: {
-        id: app.$state.user,
+        id: app.$state.user.referrerId,
       },
       onRequestError: ({ error }) => console.error(error),
     });

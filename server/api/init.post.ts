@@ -6,7 +6,6 @@ import type { Transaction } from "~/types/transaction";
 
 export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
-  console.dir(data);
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
@@ -27,8 +26,6 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const dataToCheck = [...initData.entries()].map(([key, value]) => key + "=" + value).join("\n");
   const secretKey = crypto.createHmac("sha256", "WebAppData").update(config.botToken).digest();
   const hash = crypto.createHmac("sha256", secretKey).update(dataToCheck).digest("hex");
-
-  console.dir(`>>> ${h} ${hash}`);
 
   if (h !== hash) {
     throw new Error("invalid hash");
@@ -135,6 +132,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
       locked: Number(user.locked),
       interest: Number(user.interest),
       created: Number(user.created),
+      referrerId: user.referrerId,
     },
     summary: await getInvestmentsSummary(user.id),
   };

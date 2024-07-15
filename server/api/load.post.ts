@@ -5,7 +5,6 @@ import type { Transaction } from "~/types/transaction";
 
 export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const { data, error } = await readValidatedBody(event, (data) => UuidFieldSchema.safeParse(data));
-  console.dir(data);
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
