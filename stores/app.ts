@@ -1,5 +1,14 @@
 import { defineStore } from "pinia";
-import type { Investment, InvestmentsList, Pagination, Transaction, TransactionsList, User } from "~/server/lib/schema";
+import type {
+  Investment,
+  InvestmentsList,
+  Pagination,
+  RefUser,
+  Referrals,
+  Transaction,
+  TransactionsList,
+  User,
+} from "~/server/lib/schema";
 
 export interface ViewState {
   loading?: boolean;
@@ -20,6 +29,8 @@ export interface AppState {
   kentId?: number | undefined;
   transactions?: Transaction[];
   investments?: Investment[];
+  referrer?: RefUser;
+  referrals?: RefUser[];
   viewStates: {
     [name: string]: ViewState;
   };
@@ -62,6 +73,13 @@ export const useAppStore = defineStore("cryppex", {
     },
   },
   actions: {
+    updateViewState(state: ViewState) {
+      const current = this.$state.viewStates[this.getViewName] || this.getDefaultViewState;
+      this.$state.viewStates[this.getViewName] = {
+        ...current,
+        ...state,
+      };
+    },
     setInitData(initData: string) {
       if (initData.length < 30) {
         return;
@@ -81,21 +99,33 @@ export const useAppStore = defineStore("cryppex", {
         body: {
           kentId: this.$state.kentId,
         },
-        onRequestError: ({ error }) => console.error(error),
+        onRequestError: this.onRequestError,
       });
     },
-    setViewState(state: ViewState) {
-      this.$state.viewStates[this.getViewName] = state;
+    async getReferrer() {
+      this.referrer = await $fetch<RefUser>("/api/get-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Telegram-Init-Data": this.$state.initData,
+        },
+        onRequestError: this.onRequestError,
+      });
     },
-    updateViewState(state: ViewState) {
-      const current = this.$state.viewStates[this.getViewName] || this.getDefaultViewState;
-      this.$state.viewStates[this.getViewName] = {
-        ...current,
-        ...state,
-      };
-    },
-    clearViewState() {
-      this.$state.viewStates[this.getViewName] = this.getDefaultViewState;
+    async sendTrx(to: string, amount: number) {
+      await $fetch<TransactionsList>("/api/send-trx", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Telegram-Init-Data": this.initData,
+        },
+        body: {
+          amount: amount * 1_000_000,
+          to,
+        },
+        onRequestError: this.onRequestError,
+      });
+      await this.loadUser();
     },
     async listTransactions(pagination: Pagination) {
       const data = await $fetch<TransactionsList>("/api/list-transactions", {
@@ -105,7 +135,7 @@ export const useAppStore = defineStore("cryppex", {
           "Telegram-Init-Data": this.initData,
         },
         body: { pagination },
-        onRequestError: ({ error }) => console.error(error),
+        onRequestError: this.onRequestError,
       });
       this.transactions = data.items;
       this.updateViewState({
@@ -121,7 +151,7 @@ export const useAppStore = defineStore("cryppex", {
           "Telegram-Init-Data": this.initData,
         },
         body: { pagination },
-        onRequestError: ({ error }) => console.error(error),
+        onRequestError: this.onRequestError,
       });
       this.investments = data.items;
       this.updateViewState({
@@ -129,20 +159,22 @@ export const useAppStore = defineStore("cryppex", {
         pagination: { ...pagination, total: data.pagination?.total },
       });
     },
-    async sendTrx(to: string, amount: number) {
-      await $fetch<TransactionsList>("/api/send-trx", {
+    async listReferrals(pagination: Pagination) {
+      const data = await $fetch<Referrals>("/api/list-investments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Telegram-Init-Data": this.initData,
         },
-        body: {
-          amount: amount * 1_000_000,
-          to,
-        },
-        onRequestError: ({ error }) => console.error(error),
+        body: { pagination },
+        onRequestError: this.onRequestError,
       });
-      await this.loadUser();
+      this.referrals = data.items;
+      this.updateViewState({
+        loading: false,
+        pagination: { ...pagination, total: data.pagination?.total },
+      });
     },
+    onRequestError: ({ error }: { error: Error }) => console.error(error),
   },
 });

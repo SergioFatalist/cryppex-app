@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <v-row v-if="my">
+    <v-row v-if="app.referrer">
       <v-col cols="12" class="d-flex justify-space-between">
         <div class="text-subtitle-2">Your Referrer</div>
-        <div class="text-subtitle-2 text-white">{{ formatTgName(my) }}</div>
+        <div class="text-subtitle-2 text-white">{{ formatTgName(app.referrer) }}</div>
       </v-col>
     </v-row>
   </v-container>
@@ -19,18 +19,18 @@
   </v-toolbar>
 
   <v-data-table-server
-    v-if="items.length > 0"
-    :items="items"
+    v-if="app.referrals && app.referrals.length"
+    :items="app.referrals"
     :headers="headers"
-    :loading="loading"
-    :page="page"
-    :items-length="total"
-    :items-per-page="itemsPerPage"
-    :hide-default-footer="total == 0"
+    :loading="app.getViewState.loading"
+    :page="app.getViewState.pagination?.page"
+    :items-length="app.getViewState.pagination?.total || 0"
+    :items-per-page="app.getViewState.pagination?.itemsPerPage"
+    :hide-default-footer="app.getViewState.pagination?.total == 0"
     disable-sort
     density="compact"
     class="text-caption"
-    @update:options="onOptions"
+    @update:options="app.listReferrals"
   >
     <template #[`item.created`]="{ item }">
       {{ dayjs(item.created).format("YYYY-MM-DD HH:mm") }}
@@ -58,19 +58,12 @@
 
 <script setup lang="ts">
 import dayjs from "dayjs";
-import type { Pagination, User, UsersList, UsersListItem } from "~/server/lib/schema";
 import type { DataTableHeaders } from "~/types/ui";
 
 const app = useAppStore();
 const config = useRuntimeConfig();
 
-const loading = ref(false);
-const my = ref<User | undefined>(undefined);
 const refUrl = computed(() => `${config.public.appUrl}?startapp=${app.user?.id}`);
-const items = ref<UsersListItem[]>([]);
-const itemsPerPage = ref(15);
-const page = ref(1);
-const total = ref(0);
 const showSB = ref(false);
 const { text, copy } = useClipboard();
 
@@ -79,48 +72,7 @@ const copyUrl = () => {
   showSB.value = true;
 };
 
-const onOptions = async (pagination: Pagination) => {
-  page.value = pagination.page || 1;
-  itemsPerPage.value = pagination.itemsPerPage || 15;
-  await list();
-};
-
-const get = async () => {
-  console.log(app.$state.user);
-  if (app.$state.user?.referrerId) {
-    my.value = await $fetch<User>("/api/get-user", {
-      method: "POST",
-      body: {
-        id: app.$state.user.referrerId,
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-  }
-};
-
-const list = async () => {
-  if (app.$state.user?.id) {
-    const data = await $fetch<UsersList>("/api/list-users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Telegram-Init-Data": app.$state.initData,
-      },
-      body: {
-        userId: app.$state.user.id,
-        pagination: {
-          page: page.value,
-          itemsPerPage: itemsPerPage.value,
-        },
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-    items.value = data.items;
-    total.value = data.pagination?.total || 0;
-  }
-};
-
-onMounted(get);
+onMounted(app.getReferrer);
 
 const headers = computed<DataTableHeaders>(
   () =>

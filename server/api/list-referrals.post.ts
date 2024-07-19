@@ -1,7 +1,7 @@
 import pagination from "~/server/lib/pagination";
-import { PaginatiedSchema, type UsersList } from "~/server/lib/schema";
+import { PaginatiedSchema, type Referrals } from "~/server/lib/schema";
 
-export default defineEventHandler(async (event): Promise<UsersList> => {
+export default defineEventHandler(async (event): Promise<Referrals> => {
   const { data, error } = await readValidatedBody(event, (data) => PaginatiedSchema.safeParse(data));
   const referrerId = (event.context.user as WebAppUser).id;
 

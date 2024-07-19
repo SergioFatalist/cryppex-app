@@ -37,7 +37,7 @@ export const UserSchema = z.object({
   investsInterest: z.number(),
 });
 
-export const UsersListItemSchema = UserSchema.pick({
+export const RefUserSchema = UserSchema.pick({
   id: true,
   firstName: true,
   lastName: true,
@@ -46,8 +46,8 @@ export const UsersListItemSchema = UserSchema.pick({
   created: true,
 });
 
-export const UsersListSchema = PaginatiedSchema.extend({
-  items: z.array(UsersListItemSchema).default([]),
+export const ReferralsSchema = PaginatiedSchema.extend({
+  items: z.array(RefUserSchema).default([]),
 });
 
 export const TransactionSchema = z.object({
@@ -88,8 +88,8 @@ export const SendSchema = z.object({
 });
 
 export type User = z.TypeOf<typeof UserSchema>;
-export type UsersList = z.TypeOf<typeof UsersListSchema>;
-export type UsersListItem = z.TypeOf<typeof UsersListItemSchema>;
+export type RefUser = z.TypeOf<typeof RefUserSchema>;
+export type Referrals = z.TypeOf<typeof ReferralsSchema>;
 export type Pagination = z.TypeOf<typeof PaginationSchema>;
 export type Transaction = z.TypeOf<typeof TransactionSchema>;
 export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;

@@ -1,6 +1,6 @@
-import type { User, UsersListItem } from "~/server/lib/schema";
+import type { User, RefUser } from "~/server/lib/schema";
 
-export default function (user: User | UsersListItem | undefined) {
+export default function (user: User | RefUser | undefined) {
   if (!user) {
     return "No DATA";
   }

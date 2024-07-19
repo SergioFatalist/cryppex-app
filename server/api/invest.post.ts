@@ -1,9 +1,9 @@
 import { ApplyInvestSchema } from "~/server/lib/schema";
 
 const minimals = new Map<number, number>([
-  [10, 100000000],
-  [20, 500000000],
-  [30, 1000000000],
+  [10, 100_000_000],
+  [20, 500_000_000],
+  [30, 1000_000_000],
 ]);
 
 export default defineEventHandler(async (event): Promise<void> => {
