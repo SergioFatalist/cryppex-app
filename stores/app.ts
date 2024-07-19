@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { Pagination, Transaction, TransactionsList, User } from "~/server/lib/schema";
+import type { Investment, InvestmentsList, Pagination, Transaction, TransactionsList, User } from "~/server/lib/schema";
 
 export interface ViewState {
   loading?: boolean;
@@ -19,6 +19,7 @@ export interface AppState {
   user?: User | undefined;
   kentId?: number | undefined;
   transactions?: Transaction[];
+  investments?: Investment[];
   viewStates: {
     [name: string]: ViewState;
   };
@@ -32,7 +33,7 @@ export const useAppStore = defineStore("cryppex", {
   }),
   persist: {
     storage: persistedState.sessionStorage,
-    paths: ["initData"],
+    paths: ["initData", "viewStates"],
   },
   getters: {
     getUser: (state) => state.user ?? {},
@@ -43,7 +44,7 @@ export const useAppStore = defineStore("cryppex", {
     getDefaultPagination(): Pagination {
       return {
         page: 1,
-        itemsPerPage: 25,
+        itemsPerPage: 10,
         total: 0,
       };
     },
@@ -97,25 +98,51 @@ export const useAppStore = defineStore("cryppex", {
       this.$state.viewStates[this.getViewName] = this.getDefaultViewState;
     },
     async listTransactions(pagination: Pagination) {
-      console.log("1", this.getViewState.pagination);
       const data = await $fetch<TransactionsList>("/api/list-transactions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Telegram-Init-Data": this.initData,
         },
-        body: {
-          pagination,
-        },
+        body: { pagination },
         onRequestError: ({ error }) => console.error(error),
       });
       this.transactions = data.items;
-      console.log("2", this.getViewState.pagination, data.pagination);
       this.updateViewState({
         loading: false,
         pagination: { ...pagination, total: data.pagination?.total },
       });
-      console.log("3", this.getViewState.pagination, data.pagination);
+    },
+    async listInvestments(pagination: Pagination) {
+      const data = await $fetch<InvestmentsList>("/api/list-investments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Telegram-Init-Data": this.initData,
+        },
+        body: { pagination },
+        onRequestError: ({ error }) => console.error(error),
+      });
+      this.investments = data.items;
+      this.updateViewState({
+        loading: false,
+        pagination: { ...pagination, total: data.pagination?.total },
+      });
+    },
+    async sendTrx(to: string, amount: number) {
+      await $fetch<TransactionsList>("/api/send-trx", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Telegram-Init-Data": this.initData,
+        },
+        body: {
+          amount: amount * 1_000_000,
+          to,
+        },
+        onRequestError: ({ error }) => console.error(error),
+      });
+      await this.loadUser();
     },
   },
 });

@@ -89,7 +89,6 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
 import type { SubmitEventPromise } from "vuetify";
-import type { TransactionsList } from "~/server/lib/schema";
 import type { DataTableHeaders } from "~/types/ui";
 
 const app = useAppStore();
@@ -99,19 +98,10 @@ const to = ref("");
 const amount = ref(0);
 
 const send = async (event: SubmitEventPromise) => {
-  if ((await event).valid && app.$state.user?.id) {
-    await $fetch<TransactionsList>("/api/send-trx", {
-      method: "POST",
-      body: {
-        userId: app.$state.user?.id,
-        amount: amount.value * 1000000,
-        to: to.value,
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-    showSendDialog.value = false;
-    await app.loadUser();
+  if ((await event).valid) {
+    await app.sendTrx(to.value, amount.value);
   }
+  showSendDialog.value = false;
 };
 
 const headers = computed<DataTableHeaders>(
