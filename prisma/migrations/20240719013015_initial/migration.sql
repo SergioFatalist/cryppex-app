@@ -3,8 +3,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "telegram_id" BIGINT NOT NULL,
+    "id" BIGINT NOT NULL,
     "username" VARCHAR,
     "first_name" VARCHAR,
     "last_name" VARCHAR,
@@ -14,18 +13,16 @@ CREATE TABLE "users" (
     "balance" BIGINT NOT NULL DEFAULT 0,
     "locked" BIGINT NOT NULL DEFAULT 0,
     "interest" BIGINT NOT NULL DEFAULT 0,
-    "referrer_id" UUID,
+    "referrer_id" BIGINT,
     "created" BIGINT NOT NULL,
-    "last_login" BIGINT,
-    "curr_login_epoch" BIGINT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "transactions" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "user_id" UUID NOT NULL,
+    "id" BIGSERIAL NOT NULL,
+    "user_id" BIGINT NOT NULL,
     "tx_id" VARCHAR,
     "tx_time" BIGINT NOT NULL,
     "tx_owner_address" VARCHAR,
@@ -43,8 +40,8 @@ CREATE TABLE "transactions" (
 
 -- CreateTable
 CREATE TABLE "investments" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "user_id" UUID NOT NULL,
+    "id" BIGSERIAL NOT NULL,
+    "user_id" BIGINT NOT NULL,
     "amount" BIGINT NOT NULL,
     "rate" INTEGER NOT NULL,
     "interest" BIGINT NOT NULL,
@@ -54,9 +51,6 @@ CREATE TABLE "investments" (
 
     CONSTRAINT "investments_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_telegram_id_key" ON "users"("telegram_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "transactions_tx_id_key" ON "transactions"("tx_id");

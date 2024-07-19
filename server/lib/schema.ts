@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { WebAppUser } from "~/types/telegram";
 
 export const SortingSchema = z.object({
   key: z.string(),
@@ -23,8 +22,7 @@ export const UuidFieldSchema = z.object({
 });
 
 export const UserSchema = z.object({
-  id: z.string().uuid(),
-  telegramId: z.number(),
+  id: z.number(),
   firstName: z.string().nullable().optional(),
   lastName: z.string().nullable().optional(),
   username: z.string().nullable().optional(),
@@ -33,42 +31,25 @@ export const UserSchema = z.object({
   balance: z.number(),
   locked: z.number(),
   interest: z.number(),
-  referrerId: z.string().uuid().nullable().optional(),
-  created: z.number(),
-  currLogin: z.number().nullable().optional(),
-  lastLogin: z.number().nullable().optional(),
+  investsCount: z.number(),
+  investsAmount: z.number(),
+  referrerId: z.number().nullable().optional(),
 });
 
 export const UsersListItemSchema = UserSchema.pick({
   id: true,
-  telegramId: true,
   firstName: true,
   lastName: true,
   username: true,
   balance: true,
-  created: true,
 });
 
 export const UsersListSchema = PaginatiedSchema.extend({
   items: z.array(UsersListItemSchema).default([]),
 });
 
-export const WebAppUserSchema: z.ZodType<WebAppUser> = z.object({
-  id: z.number(),
-  is_bot: z.boolean().optional(),
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
-  username: z.string().optional(),
-  language_code: z.string().optional(),
-  is_premium: z.boolean().optional(),
-  added_to_attachment_menu: z.boolean().optional(),
-  allows_write_to_pm: z.boolean().optional(),
-  photo_url: z.string().optional(),
-});
-
 export const InitDataSchema = z.object({
-  initData: z.string().optional(),
-  userId: z.string().uuid().optional(),
+  initData: z.string(),
   kentId: z.number().optional(),
 });
 
