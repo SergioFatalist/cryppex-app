@@ -13,19 +13,21 @@ export default defineEventHandler(async (event): Promise<UsersList> => {
   const total = await prisma.user.count({ where });
   const items = await prisma.user.findMany({
     where,
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      username: true,
+      balance: true,
+    },
     ...pagination(data.pagination),
   });
   return {
     pagination: { ...data.pagination, total },
     items: items.map((user) => ({
-      ...omit(user, ["privateKey"]),
-      telegramId: Number(user.telegramId),
+      ...user,
+      id: Number(user.id),
       balance: Number(user.balance),
-      locked: Number(user.locked),
-      interest: Number(user.interest),
-      created: Number(user.created),
-      currLogin: user.currLogin ? Number(user.currLogin) : undefined,
-      lastLogin: user.lastLogin ? Number(user.lastLogin) : undefined,
     })),
   };
 });

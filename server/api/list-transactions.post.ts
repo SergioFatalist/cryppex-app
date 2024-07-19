@@ -26,9 +26,12 @@ export default defineEventHandler(async (event): Promise<TransactionsList> => {
   return {
     pagination: { ...data.pagination, total },
     items: items.map((t) => ({
-      ...t,
-      amount: Number(t.amount),
+      id: Number(t.id),
+      referral: Number(t.referral),
       txTime: Number(t.txTime),
+      amount: Number(t.amount),
+      success: t.success,
+      type: t.type,
     })),
   };
 });

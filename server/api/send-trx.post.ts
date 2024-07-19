@@ -18,8 +18,6 @@ export default defineEventHandler(async (event): Promise<void> => {
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          lastLogin: user.currLogin,
-          currLogin: new Date().getTime(),
           balance: user.balance,
         },
       });

@@ -45,8 +45,6 @@ export default defineEventHandler(async (event): Promise<void> => {
       data: {
         balance,
         locked,
-        lastLogin: user.currLogin,
-        currLogin: now,
       },
     });
   });

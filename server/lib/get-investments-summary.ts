@@ -1,6 +1,6 @@
 import type { InvestmentSummary } from "~/server/lib/schema";
 
-export default async function (id: string): Promise<InvestmentSummary> {
+export default async function (id: number): Promise<InvestmentSummary> {
   const user = await prisma.user.findUniqueOrThrow({
     where: { id },
     select: {

@@ -1,3 +1,4 @@
+import {z} from "zod";
 import pagination from "~/server/lib/pagination";
 import { type InvestmentsList, ListRequestSchema } from "~/server/lib/schema";
 
@@ -18,8 +19,9 @@ export default defineEventHandler(async (event): Promise<InvestmentsList> => {
   return {
     pagination: { ...data.pagination, total },
     items: items.map((i) => ({
-      ...i,
+      id: Number(i.id),
       amount: Number(i.amount),
+      rate: i.rate,
       interest: Number(i.interest),
       start: Number(i.start),
       finish: Number(i.finish),

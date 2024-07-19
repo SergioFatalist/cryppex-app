@@ -17,8 +17,8 @@ export const PaginatiedSchema = z.object({
   pagination: PaginationSchema.optional(),
 });
 
-export const UuidFieldSchema = z.object({
-  id: z.string().uuid(),
+export const IdFieldSchema = z.object({
+  id: z.number(),
 });
 
 export const UserSchema = z.object({
@@ -55,13 +55,13 @@ export const InitDataSchema = z.object({
 
 export const ListRequestSchema = z.object({
   pagination: PaginationSchema.optional(),
-  userId: z.string().uuid(),
+  userId: z.number(),
 });
 
 export const TransactionSchema = z.object({
-  id: z.string().uuid(),
+  id: z.number(),
   txTime: z.number(),
-  referral: z.string().nullable().optional(),
+  referral: z.number(),
   amount: z.number(),
   success: z.boolean().nullable(),
   type: z.string(),
@@ -72,7 +72,7 @@ export const TransactionsListSchema = PaginatiedSchema.extend({
 });
 
 export const InvestmentSchema = z.object({
-  id: z.string().uuid(),
+  id: z.number(),
   amount: z.number(),
   rate: z.number(),
   interest: z.number(),
@@ -92,7 +92,7 @@ export const InvestmentSummarySchema = z.object({
 });
 
 export const ApplyInvestSchema = z.object({
-  userId: z.string().uuid(),
+  userId: z.number(),
   rate: z.number(),
   amount: z.number(),
 });
@@ -103,7 +103,7 @@ export const UserWithSummarySchema = z.object({
 });
 
 export const SendSchema = z.object({
-  userId: z.string().uuid(),
+  userId: z.number(),
   to: z.string(),
   amount: z.number(),
 });
