@@ -8,6 +8,8 @@ import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
+  console.dir("data");
+  console.dir(data);
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
@@ -141,6 +143,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
       locked: Number(user.locked),
       interest: Number(user.interest),
       referrerId: Number(user.referrerId),
+      created: Number(user.created),
       investsAmount: 0,
       investsCount: 0,
     },

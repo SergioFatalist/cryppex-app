@@ -25,17 +25,22 @@
 </template>
 
 <script setup lang="ts">
+import WebApp from "@twa-dev/sdk";
 import type { UserWithSummary } from "~/server/lib/schema";
 
+const route = useRoute();
+
+WebApp.showAlert("Hey there!");
+console.error("INIT", WebApp.initData);
+console.error("HASH", route.hash.replace("#tgWebAppData=", ""));
 const router = useRouter();
 const $app = useAppStore();
 const $config = useRuntimeConfig();
-const { $telegram } = useNuxtApp();
 
-const platform = $telegram.WebApp.platform;
-const mobile = ref<boolean>(platform == "ios" || platform == "android");
+const platform = WebApp.platform;
+const mobile = ref<boolean>(true || platform == "ios" || platform == "android" || platform == "android_x");
 
-const initData = $telegram.WebApp.initData;
+const initData = route.hash.replace("#tgWebAppData=", "");
 const params = new URLSearchParams(initData);
 const startParam = <string | undefined>params.get("start_param");
 
@@ -50,10 +55,14 @@ const setUser = async () => {
     await router.push("/no-data");
     return;
   }
-  $telegram.WebApp.expand();
+  WebApp.expand();
 
   const data = await $fetch<UserWithSummary>("/api/init", {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      TG: route.hash.replace("#tgWebAppData=", ""),
+    },
     body: {
       initData: JSON.stringify(initData),
       userId: $app.$state.user?.id,

@@ -1,3 +1,3 @@
 export default defineEventHandler((event) => {
-  console.dir(event.context);
+  console.dir(event.headers.get("TG"));
 });

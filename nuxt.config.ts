@@ -13,11 +13,22 @@ export default defineNuxtConfig({
     },
     botToken: process.env.BOT_TOKEN,
   },
-  app: {
-    head: {
-      script: [{ src: "https://telegram.org/js/telegram-web-app.js" }],
+  router: {
+    options: {
+      hashMode: false,
+      scrollBehaviorType: undefined,
     },
   },
+  // app: {
+  //   head: {
+  //     script: [
+  //       {
+  //         src: "https://telegram.org/js/telegram-web-app.js",
+  //         defer: false,
+  //       },
+  //     ],
+  //   },
+  // },
   vuetify: {
     vuetifyOptions: {
       icons: {

@@ -29,7 +29,8 @@ module.exports = {
     ".eslintrc.cjs",
     ".prettierrc.cjs",
     "dist/*",
-    "node_modules/*"
+    "node_modules/*",
+    "public/*"
   ],
   rules: {
     "no-undef": "off",
