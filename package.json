@@ -25,7 +25,6 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@pinia/nuxt": "^0.5.1",
     "@prisma/client": "^5.16.1",
-    "@types/telegram-web-app": "^7.3.1",
     "@vueuse/core": "^10.11.0",
     "@vueuse/nuxt": "^10.11.0",
     "dayjs": "^1.11.11",
@@ -36,6 +35,7 @@
     "tronweb": "6.0.0-beta.3",
     "vue": "latest",
     "vue-router": "^4.4.0",
+    "vue-tg": "^0.6.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

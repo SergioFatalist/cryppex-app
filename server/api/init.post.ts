@@ -1,4 +1,4 @@
-import type { WebAppUser } from "@twa-dev/types";
+import {validate} from "@babel/types";
 import crypto from "crypto";
 import getInvestmentsSummary from "~/server/lib/get-investments-summary";
 import { InitDataSchema, type UserWithSummary } from "~/server/lib/schema";
@@ -8,8 +8,6 @@ import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<UserWithSummary> => {
   const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
-  console.dir("data");
-  console.dir(data);
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }

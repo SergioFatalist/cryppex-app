@@ -4,6 +4,8 @@
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "typeRoots": ["node_modules"],
+    "types": ["./node_modules/@types/telegram-web-app"]
   }
 }

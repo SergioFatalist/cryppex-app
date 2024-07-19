@@ -25,23 +25,20 @@
 </template>
 
 <script setup lang="ts">
-import WebApp from "@twa-dev/sdk";
+import { useWebApp, useWebAppViewport } from "vue-tg";
 import type { UserWithSummary } from "~/server/lib/schema";
 
-const route = useRoute();
-
-WebApp.showAlert("Hey there!");
-console.error("INIT", WebApp.initData);
-console.error("HASH", route.hash.replace("#tgWebAppData=", ""));
 const router = useRouter();
 const $app = useAppStore();
 const $config = useRuntimeConfig();
 
-const platform = WebApp.platform;
+const wa = useWebApp();
+const waViewport = useWebAppViewport();
+
+const platform = wa.platform;
 const mobile = ref<boolean>(true || platform == "ios" || platform == "android" || platform == "android_x");
 
-const initData = route.hash.replace("#tgWebAppData=", "");
-const params = new URLSearchParams(initData);
+const params = new URLSearchParams(wa.initData);
 const startParam = <string | undefined>params.get("start_param");
 
 if (platform !== "unknown" && !mobile.value) {
@@ -51,20 +48,20 @@ if (platform !== "unknown" && !mobile.value) {
 }
 
 const setUser = async () => {
-  if ((!initData || initData.length < 30) && !$app.$state.user) {
+  if ((!wa.initData || wa.initData.length < 30) && !$app.$state.user) {
     await router.push("/no-data");
     return;
   }
-  WebApp.expand();
+  waViewport.expand();
 
   const data = await $fetch<UserWithSummary>("/api/init", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      TG: route.hash.replace("#tgWebAppData=", ""),
+      TG: wa.initData,
     },
     body: {
-      initData: JSON.stringify(initData),
+      initData: JSON.stringify(wa.initData),
       userId: $app.$state.user?.id,
       kentId: startParam && Number.isInteger(parseInt(startParam)) ? parseInt(startParam) : undefined,
     },
