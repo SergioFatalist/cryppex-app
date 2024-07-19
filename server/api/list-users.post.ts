@@ -19,6 +19,7 @@ export default defineEventHandler(async (event): Promise<UsersList> => {
       lastName: true,
       username: true,
       balance: true,
+      created: true,
     },
     ...pagination(data.pagination),
   });
@@ -28,6 +29,7 @@ export default defineEventHandler(async (event): Promise<UsersList> => {
       ...user,
       id: Number(user.id),
       balance: Number(user.balance),
+      created: Number(user.created),
     })),
   };
 });

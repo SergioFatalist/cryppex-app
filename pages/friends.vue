@@ -66,7 +66,7 @@ const config = useRuntimeConfig();
 
 const loading = ref(false);
 const my = ref<User | undefined>(undefined);
-const refUrl = computed(() => `${config.public.appUrl}?startapp=${app.user?.telegramId}`);
+const refUrl = computed(() => `${config.public.appUrl}?startapp=${app.user?.id}`);
 const items = ref<UsersListItem[]>([]);
 const itemsPerPage = ref(15);
 const page = ref(1);

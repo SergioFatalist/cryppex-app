@@ -1,8 +1,8 @@
+import type { WebAppUser } from "@twa-dev/types";
 import crypto from "crypto";
 import getInvestmentsSummary from "~/server/lib/get-investments-summary";
 import { InitDataSchema, type UserWithSummary } from "~/server/lib/schema";
 import type { TransferContract } from "~/types/contract";
-import type { WebAppUser } from "~/types/telegram";
 import type { Transaction } from "~/types/transaction";
 import { Prisma } from "@prisma/client";
 
@@ -14,7 +14,6 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
 
   const config = useRuntimeConfig();
   const where: Prisma.UserWhereUniqueInput = {
-    telegramId: undefined,
     id: undefined,
   };
   let webAppUser: WebAppUser | undefined = undefined;
@@ -38,9 +37,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
     if (h !== hash) {
       throw new Error("Invalid hash");
     }
-    where.telegramId = webAppUser.id;
-  } else if (data.userId) {
-    where.id = data.userId;
+    where.id = webAppUser.id;
   } else {
     throw new Error("No any DATA");
   }
@@ -54,8 +51,6 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
         return;
       }
       const data = {
-        lastLogin: user.currLogin,
-        currLogin: now,
         balance: user.balance,
       };
 
@@ -113,7 +108,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
     const account = await tron.createAccount();
     user = await prisma.user.create({
       data: {
-        telegramId: webAppUser.id,
+        id: webAppUser.id,
         firstName: webAppUser.first_name,
         lastName: webAppUser.last_name,
         username: webAppUser.username,
@@ -124,7 +119,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
         referrer: data.kentId
           ? {
               connect: {
-                telegramId: BigInt(data.kentId),
+                id: BigInt(data.kentId),
               },
             }
           : undefined,
@@ -136,8 +131,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
 
   return {
     user: {
-      id: user.id,
-      telegramId: Number(user.telegramId),
+      id: Number(user.id),
       username: user.username,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -146,9 +140,10 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
       balance: Number(user.balance),
       locked: Number(user.locked),
       interest: Number(user.interest),
-      created: Number(user.created),
-      referrerId: user.referrerId,
+      referrerId: Number(user.referrerId),
+      investsAmount: 0,
+      investsCount: 0,
     },
-    summary: await getInvestmentsSummary(user.id),
+    summary: await getInvestmentsSummary(Number(user.id)),
   };
 });

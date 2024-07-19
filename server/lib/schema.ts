@@ -34,6 +34,7 @@ export const UserSchema = z.object({
   investsCount: z.number(),
   investsAmount: z.number(),
   referrerId: z.number().nullable().optional(),
+  created: z.number(),
 });
 
 export const UsersListItemSchema = UserSchema.pick({
@@ -42,6 +43,7 @@ export const UsersListItemSchema = UserSchema.pick({
   lastName: true,
   username: true,
   balance: true,
+  created: true,
 });
 
 export const UsersListSchema = PaginatiedSchema.extend({

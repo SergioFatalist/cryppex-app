@@ -1,23 +1,38 @@
-import { omit } from "remeda";
-import { type User, UuidFieldSchema } from "~/server/lib/schema";
+import { type User, IdFieldSchema } from "~/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<User> => {
-  const { data, error } = await readValidatedBody(event, (data) => UuidFieldSchema.safeParse(data));
+  const { data, error } = await readValidatedBody(event, (data) => IdFieldSchema.safeParse(data));
 
   if (!data || error) {
     console.log(error);
     throw new Error(`Data is missing or ${error}`);
   }
-  const user = await prisma.user.findUniqueOrThrow({ where: { id: data.id } });
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: data.id },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      username: true,
+      languageCode: true,
+      address: true,
+      balance: true,
+      locked: true,
+      interest: true,
+      referrerId: true,
+      created: true,
+    },
+  });
 
   return {
-    ...omit(user, ["privateKey"]),
-    telegramId: Number(user.telegramId),
+    ...user,
+    id: Number(user.id),
     balance: Number(user.balance),
     locked: Number(user.locked),
     interest: Number(user.interest),
+    referrerId: Number(user.referrerId),
     created: Number(user.created),
-    currLogin: user.currLogin ? Number(user.currLogin) : undefined,
-    lastLogin: user.lastLogin ? Number(user.lastLogin) : undefined,
+    investsCount: 0,
+    investsAmount: 0,
   };
 });
