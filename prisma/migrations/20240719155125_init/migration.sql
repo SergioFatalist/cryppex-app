@@ -13,6 +13,8 @@ CREATE TABLE "users" (
     "balance" BIGINT NOT NULL DEFAULT 0,
     "locked" BIGINT NOT NULL DEFAULT 0,
     "interest" BIGINT NOT NULL DEFAULT 0,
+    "invests_count" INTEGER NOT NULL DEFAULT 0,
+    "invests_amount" BIGINT NOT NULL DEFAULT 0,
     "referrer_id" BIGINT,
     "created" BIGINT NOT NULL,
 

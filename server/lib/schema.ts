@@ -51,7 +51,6 @@ export const UsersListSchema = PaginatiedSchema.extend({
 });
 
 export const InitDataSchema = z.object({
-  initData: z.string(),
   kentId: z.number().optional(),
 });
 

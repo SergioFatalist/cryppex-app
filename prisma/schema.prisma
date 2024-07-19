@@ -11,22 +11,24 @@ datasource db {
 }
 
 model User {
-  id           BigInt        @id
-  username     String?       @map("username") @db.VarChar
-  firstName    String?       @map("first_name") @db.VarChar
-  lastName     String?       @map("last_name") @db.VarChar
-  languageCode String?       @map("language_code") @db.VarChar
-  address      String        @map("address") @db.VarChar
-  privateKey   String        @map("private_key") @db.VarChar
-  balance      BigInt        @default(0) @map("balance")
-  locked       BigInt        @default(0) @map("locked")
-  interest     BigInt        @default(0) @map("interest")
-  referrer     User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  referrerId   BigInt?       @map("referrer_id")
-  referrals    User[]        @relation("referrer")
-  created      BigInt        @map("created")
-  transactions Transaction[]
-  investments  Investment[]
+  id            BigInt        @id
+  username      String?       @map("username") @db.VarChar
+  firstName     String?       @map("first_name") @db.VarChar
+  lastName      String?       @map("last_name") @db.VarChar
+  languageCode  String?       @map("language_code") @db.VarChar
+  address       String        @map("address") @db.VarChar
+  privateKey    String        @map("private_key") @db.VarChar
+  balance       BigInt        @default(0) @map("balance")
+  locked        BigInt        @default(0) @map("locked")
+  interest      BigInt        @default(0) @map("interest")
+  investsCount  Int           @default(0) @map("invests_count")
+  investsAmount BigInt        @default(0) @map("invests_amount")
+  referrer      User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  referrerId    BigInt?       @map("referrer_id")
+  referrals     User[]        @relation("referrer")
+  created       BigInt        @map("created")
+  transactions  Transaction[]
+  investments   Investment[]
 
   @@map("users")
 }

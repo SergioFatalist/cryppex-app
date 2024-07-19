@@ -32,13 +32,18 @@ const router = useRouter();
 const $app = useAppStore();
 const $config = useRuntimeConfig();
 
-const wa = useWebApp();
-const waViewport = useWebAppViewport();
+const webApp = useWebApp();
+const webAppViewport = useWebAppViewport();
 
-const platform = wa.platform;
+console.error(webApp.initData);
+
+if (webApp.initData.length > 30) {
+  $app.$state.initData = webApp.initData;
+}
+const platform = webApp.platform;
 const mobile = ref<boolean>(true || platform == "ios" || platform == "android" || platform == "android_x");
 
-const params = new URLSearchParams(wa.initData);
+const params = new URLSearchParams(webApp.initData);
 const startParam = <string | undefined>params.get("start_param");
 
 if (platform !== "unknown" && !mobile.value) {
@@ -46,22 +51,21 @@ if (platform !== "unknown" && !mobile.value) {
 } else if (!mobile.value) {
   navigateTo($config.public.appUrl, { external: true });
 }
+if ($app.$state.initData.length < 30) {
+  await router.push("/no-data");
+}
 
 const setUser = async () => {
-  if ((!wa.initData || wa.initData.length < 30) && !$app.$state.user) {
-    await router.push("/no-data");
-    return;
-  }
-  waViewport.expand();
+  webAppViewport.expand();
 
   const data = await $fetch<UserWithSummary>("/api/init", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      TG: wa.initData,
+      "Telegram-Init-Data": $app.$state.initData,
     },
     body: {
-      initData: JSON.stringify(wa.initData),
+      initData: JSON.stringify(webApp.initData),
       userId: $app.$state.user?.id,
       kentId: startParam && Number.isInteger(parseInt(startParam)) ? parseInt(startParam) : undefined,
     },
@@ -72,7 +76,7 @@ const setUser = async () => {
     await router.push("/no-data");
     return;
   }
-  $app.setUser(data);
+  $app.$state.user = data.user;
 };
 
 onBeforeMount(setUser);

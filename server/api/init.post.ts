@@ -1,55 +1,24 @@
-import {validate} from "@babel/types";
-import crypto from "crypto";
-import getInvestmentsSummary from "~/server/lib/get-investments-summary";
-import { InitDataSchema, type UserWithSummary } from "~/server/lib/schema";
+import { InitDataSchema, type User } from "~/server/lib/schema";
 import type { TransferContract } from "~/types/contract";
 import type { Transaction } from "~/types/transaction";
 import { Prisma } from "@prisma/client";
 
-export default defineEventHandler(async (event): Promise<UserWithSummary> => {
+export default defineEventHandler(async (event): Promise<User> => {
+  const webAppUser = event.context.user as WebAppUser;
   const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
 
-  const config = useRuntimeConfig();
   const where: Prisma.UserWhereUniqueInput = {
-    id: undefined,
+    id: webAppUser.id,
   };
-  let webAppUser: WebAppUser | undefined = undefined;
-
-  if (data.initData && data.initData.length > 30) {
-    const initData = new URLSearchParams(JSON.parse(data.initData));
-    initData.sort();
-    const h = initData.get("hash");
-    const u = initData.get("user");
-
-    if (!h || !u) {
-      throw new Error("No init DATA");
-    }
-
-    webAppUser = JSON.parse(u) as WebAppUser;
-    initData.delete("hash");
-    const dataToCheck = [...initData.entries()].map(([key, value]) => key + "=" + value).join("\n");
-    const secretKey = crypto.createHmac("sha256", "WebAppData").update(config.botToken).digest();
-    const hash = crypto.createHmac("sha256", secretKey).update(dataToCheck).digest("hex");
-
-    if (h !== hash) {
-      throw new Error("Invalid hash");
-    }
-    where.id = webAppUser.id;
-  } else {
-    throw new Error("No any DATA");
-  }
-
   const now = new Date().getTime();
   let user = await prisma.user.findUnique({ where });
 
   if (user) {
     await prisma.$transaction(async (tx) => {
-      if (!user) {
-        return;
-      }
+      if (!user) return;
       const data = {
         balance: user.balance,
       };
@@ -104,7 +73,7 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
       }
       user = await tx.user.update({ where: { id: user.id }, data });
     });
-  } else if (webAppUser) {
+  } else {
     const account = await tron.createAccount();
     user = await prisma.user.create({
       data: {
@@ -125,26 +94,21 @@ export default defineEventHandler(async (event): Promise<UserWithSummary> => {
           : undefined,
       },
     });
-  } else {
-    throw new Error("Invalid DATA");
   }
 
   return {
-    user: {
-      id: Number(user.id),
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      languageCode: user.languageCode,
-      address: user.address,
-      balance: Number(user.balance),
-      locked: Number(user.locked),
-      interest: Number(user.interest),
-      referrerId: Number(user.referrerId),
-      created: Number(user.created),
-      investsAmount: 0,
-      investsCount: 0,
-    },
-    summary: await getInvestmentsSummary(Number(user.id)),
+    id: Number(user.id),
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    languageCode: user.languageCode,
+    address: user.address,
+    balance: Number(user.balance),
+    locked: Number(user.locked),
+    interest: Number(user.interest),
+    referrerId: Number(user.referrerId),
+    created: Number(user.created),
+    investsAmount: Number(user.investsAmount),
+    investsCount: Number(user.investsCount),
   };
 });

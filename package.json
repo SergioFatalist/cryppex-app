@@ -25,6 +25,7 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@pinia/nuxt": "^0.5.1",
     "@prisma/client": "^5.16.1",
+    "@telegram-apps/init-data-node": "^1.0.4",
     "@vueuse/core": "^10.11.0",
     "@vueuse/nuxt": "^10.11.0",
     "dayjs": "^1.11.11",

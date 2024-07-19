@@ -1,4 +1,3 @@
-import { omit } from "remeda";
 import pagination from "~/server/lib/pagination";
 import { ListRequestSchema, type UsersList } from "~/server/lib/schema";
 
