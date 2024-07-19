@@ -1,11 +1,11 @@
-import { InitDataSchema, type User } from "~/server/lib/schema";
+import { IdFieldSchema, type User } from "~/server/lib/schema";
 import type { TransferContract } from "~/types/contract";
 import type { Transaction } from "~/types/transaction";
 import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<User> => {
   const webAppUser = event.context.user as WebAppUser;
-  const { data, error } = await readValidatedBody(event, (data) => InitDataSchema.safeParse(data));
+  const { data, error } = await readValidatedBody(event, (data) => IdFieldSchema.safeParse(data));
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
@@ -85,10 +85,10 @@ export default defineEventHandler(async (event): Promise<User> => {
         address: account.address.base58,
         privateKey: account.privateKey,
         created: now,
-        referrer: data.kentId
+        referrer: data.id
           ? {
               connect: {
-                id: BigInt(data.kentId),
+                id: BigInt(data.id),
               },
             }
           : undefined,
@@ -96,19 +96,16 @@ export default defineEventHandler(async (event): Promise<User> => {
     });
   }
 
+  const info = await prisma.userInfo.findUniqueOrThrow({ where: { id: user.id } });
   return {
-    id: Number(user.id),
-    username: user.username,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    languageCode: user.languageCode,
-    address: user.address,
-    balance: Number(user.balance),
-    locked: Number(user.locked),
-    interest: Number(user.interest),
-    referrerId: Number(user.referrerId),
-    created: Number(user.created),
-    investsAmount: Number(user.investsAmount),
-    investsCount: Number(user.investsCount),
+    ...info,
+    id: Number(info.id),
+    balance: Number(info.balance),
+    locked: Number(info.locked),
+    referrerId: Number(info.referrerId),
+    created: Number(info.created),
+    investsAmount: Number(info.investsAmount),
+    investsCount: Number(info.investsCount),
+    investsInterest: Number(info.investsInterest),
   };
 });

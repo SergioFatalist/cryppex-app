@@ -18,7 +18,7 @@ export const PaginatiedSchema = z.object({
 });
 
 export const IdFieldSchema = z.object({
-  id: z.number(),
+  id: z.number().optional(),
 });
 
 export const UserSchema = z.object({
@@ -30,11 +30,11 @@ export const UserSchema = z.object({
   address: z.string(),
   balance: z.number(),
   locked: z.number(),
-  interest: z.number(),
-  investsCount: z.number(),
-  investsAmount: z.number(),
   referrerId: z.number().nullable().optional(),
   created: z.number(),
+  investsCount: z.number(),
+  investsAmount: z.number(),
+  investsInterest: z.number(),
 });
 
 export const UsersListItemSchema = UserSchema.pick({
@@ -48,10 +48,6 @@ export const UsersListItemSchema = UserSchema.pick({
 
 export const UsersListSchema = PaginatiedSchema.extend({
   items: z.array(UsersListItemSchema).default([]),
-});
-
-export const InitDataSchema = z.object({
-  kentId: z.number().optional(),
 });
 
 export const ListRequestSchema = z.object({
@@ -85,22 +81,10 @@ export const InvestmentsListSchema = PaginatiedSchema.extend({
   items: z.array(InvestmentSchema).default([]),
 });
 
-export const InvestmentSummarySchema = z.object({
-  balance: z.number(),
-  count: z.number(),
-  amount: z.number(),
-  interest: z.number(),
-});
-
 export const ApplyInvestSchema = z.object({
   userId: z.number(),
   rate: z.number(),
   amount: z.number(),
-});
-
-export const UserWithSummarySchema = z.object({
-  user: UserSchema,
-  summary: InvestmentSummarySchema,
 });
 
 export const SendSchema = z.object({
@@ -110,7 +94,6 @@ export const SendSchema = z.object({
 });
 
 export type User = z.TypeOf<typeof UserSchema>;
-export type UserWithSummary = z.TypeOf<typeof UserWithSummarySchema>;
 export type UsersList = z.TypeOf<typeof UsersListSchema>;
 export type UsersListItem = z.TypeOf<typeof UsersListItemSchema>;
 export type Pagination = z.TypeOf<typeof PaginationSchema>;
@@ -118,5 +101,4 @@ export type Transaction = z.TypeOf<typeof TransactionSchema>;
 export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;
 export type Investment = z.TypeOf<typeof InvestmentSchema>;
 export type InvestmentsList = z.TypeOf<typeof InvestmentsListSchema>;
-export type InvestmentSummary = z.TypeOf<typeof InvestmentSummarySchema>;
 export type Send = z.TypeOf<typeof SendSchema>;

@@ -114,6 +114,10 @@ const list = async () => {
   if (app.$state.user?.id) {
     const data = await $fetch<TransactionsList>("/api/list-transactions", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Telegram-Init-Data": app.$state.initData,
+      },
       body: {
         userId: app.$state.user.id,
         pagination: {

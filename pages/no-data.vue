@@ -11,5 +11,7 @@
 </template>
 
 <script setup lang="ts">
-const app = useAppStore();
+definePageMeta({
+  layout: "clean",
+});
 </script>

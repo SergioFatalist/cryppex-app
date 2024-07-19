@@ -18,24 +18,24 @@
           <div class="flex-1-1">
             <span class="text-caption">Balance</span>
             <br />
-            <span>{{ formatTrx(app.$state.summary.balance) }}</span>
+            <span>{{ formatTrx(app.user?.balance || 0) }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Invests</span>
             <br />
-            <span>{{ app.$state.summary.count }}</span>
+            <span>{{ app.user?.investsCount || 0 }}</span>
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Locked</span>
             <br />
-            <span>{{ formatTrx(app.$state.summary.amount) }}</span>
+            <span>{{ formatTrx(app.user?.locked || 0) }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
             <span class="text-caption">Interests</span>
             <br />
-            <span>{{ formatTrx(app.$state.summary.interest) }}</span>
+            <span>{{ formatTrx(app.user?.investsInterest || 0) }}</span>
             <br />TRX
           </div>
         </div>
@@ -152,7 +152,6 @@
 
 <script setup lang="ts">
 import type { SubmitEventPromise } from "vuetify";
-import type { InvestmentSummary } from "~/server/lib/schema";
 
 const investTitle = new Map<number, string>([
   [10, "Beginner"],
@@ -182,7 +181,7 @@ const copyAddress = (address: string) => {
 };
 
 const showApply = (min: number, rate: number) => {
-  if (app.$state.summary.balance < BigInt(min * 1000000)) {
+  if (!app.user || app.user?.balance < BigInt(min * 1000000)) {
     alert.value = "Insufficient funds. Top up your balance please";
     showSB.value = true;
     return;
@@ -193,37 +192,26 @@ const showApply = (min: number, rate: number) => {
   showApplyDialog.value = true;
 };
 
-const load = async () => {
-  if (app.$state.user?.id) {
-    app.$state.summary = await $fetch<InvestmentSummary>("/api/invests-summary", {
+const apply = async (event: SubmitEventPromise) => {
+  if ((await event).valid && app.$state.user?.id) {
+    await $fetch("/api/invest", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Telegram-Init-Data": app.$state.initData,
+      },
       body: {
-        id: app.$state.user.id,
+        rate: investRate.value,
+        amount: investAmount.value * 1000000,
       },
       onRequestError: ({ error }) => console.error(error),
     });
+    await app.loadUser();
   }
-};
-
-const apply = async (event: SubmitEventPromise) => {
-  if ((await event).valid && app.$state.user?.id) {
-    if (app.$state.user?.id) {
-      await $fetch<InvestmentSummary>("/api/invest", {
-        method: "POST",
-        body: {
-          userId: app.$state.user.id,
-          rate: investRate.value,
-          amount: investAmount.value * 1000000,
-        },
-        onRequestError: ({ error }) => console.error(error),
-      });
-    }
-  }
-  await load();
   showApplyDialog.value = false;
 };
 
-onBeforeMount(load);
+onBeforeMount(app.loadUser);
 </script>
 
 <style scoped>
