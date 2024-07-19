@@ -4,11 +4,11 @@ import type { Transaction } from "~/types/transaction";
 import { Prisma } from "@prisma/client";
 
 export default defineEventHandler(async (event): Promise<User> => {
-  const webAppUser = event.context.user as WebAppUser;
   const { data, error } = await readValidatedBody(event, (data) => IdFieldSchema.safeParse(data));
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
+  const webAppUser = event.context.user as WebAppUser;
 
   const where: Prisma.UserWhereUniqueInput = {
     id: webAppUser.id,

@@ -27,17 +27,17 @@
     </v-toolbar-items>
   </v-toolbar>
   <v-data-table-server
-    :items="items"
+    :items="app.transactions"
     :headers="headers"
-    :loading="loading"
-    :page="page"
-    :items-length="total"
-    :items-per-page="itemsPerPage"
-    :hide-default-footer="total == 0"
+    :loading="app.getViewState.loading"
+    :page="app.getViewState.pagination?.page"
+    :items-length="app.getViewState.pagination?.total || 0"
+    :items-per-page="app.getViewState.pagination?.itemsPerPage"
+    :hide-default-footer="app.getViewState.pagination?.total == 0"
     disable-sort
     density="compact"
     class="text-caption"
-    @update:options="onOptions"
+    @update:options="app.listTransactions"
   >
     <template #[`item.txTime`]="{ item }">
       {{ dayjs(item.txTime).format("YYYY-MM-DD HH:mm") }}
@@ -89,48 +89,14 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
 import type { SubmitEventPromise } from "vuetify";
-import type { Pagination, Transaction, TransactionsList } from "~/server/lib/schema";
+import type { TransactionsList } from "~/server/lib/schema";
 import type { DataTableHeaders } from "~/types/ui";
 
 const app = useAppStore();
 const rules = useValidationRules();
-
-const loading = ref(false);
-const items = ref<Transaction[]>([]);
-const itemsPerPage = ref(15);
-const page = ref(1);
-const total = ref(0);
 const showSendDialog = ref(false);
 const to = ref("");
 const amount = ref(0);
-
-const onOptions = async (pagination: Pagination) => {
-  page.value = pagination.page || 1;
-  itemsPerPage.value = pagination.itemsPerPage || 10;
-  await list();
-};
-
-const list = async () => {
-  if (app.$state.user?.id) {
-    const data = await $fetch<TransactionsList>("/api/list-transactions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Telegram-Init-Data": app.$state.initData,
-      },
-      body: {
-        userId: app.$state.user.id,
-        pagination: {
-          page: page.value,
-          itemsPerPage: itemsPerPage.value,
-        },
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-    items.value = data.items;
-    total.value = data.pagination?.total || 0;
-  }
-};
 
 const send = async (event: SubmitEventPromise) => {
   if ((await event).valid && app.$state.user?.id) {
@@ -144,7 +110,7 @@ const send = async (event: SubmitEventPromise) => {
       onRequestError: ({ error }) => console.error(error),
     });
     showSendDialog.value = false;
-    await list();
+    await app.loadUser();
   }
 };
 

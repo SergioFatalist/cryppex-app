@@ -1,14 +1,15 @@
 import pagination from "~/server/lib/pagination";
-import { ListRequestSchema, type UsersList } from "~/server/lib/schema";
+import { PaginatiedSchema, type UsersList } from "~/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<UsersList> => {
-  const { data, error } = await readValidatedBody(event, (data) => ListRequestSchema.safeParse(data));
+  const { data, error } = await readValidatedBody(event, (data) => PaginatiedSchema.safeParse(data));
+  const referrerId = (event.context.user as WebAppUser).id;
 
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
 
-  const where = { referrerId: data.userId };
+  const where = { referrerId };
   const total = await prisma.user.count({ where });
   const items = await prisma.user.findMany({
     where,

@@ -1,15 +1,14 @@
-import {z} from "zod";
 import pagination from "~/server/lib/pagination";
-import { type InvestmentsList, ListRequestSchema } from "~/server/lib/schema";
+import {type InvestmentsList, PaginatiedSchema } from "~/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<InvestmentsList> => {
-  const { data, error } = await readValidatedBody(event, (data) => ListRequestSchema.safeParse(data));
-
+  const { data, error } = await readValidatedBody(event, (data) => PaginatiedSchema.safeParse(data));
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
+  const userId = (event.context.user as WebAppUser).id;
 
-  const where = { userId: data.userId, closed: false };
+  const where = { userId, closed: false };
   const total = await prisma.investment.count({ where });
   const items = await prisma.investment.findMany({
     where,

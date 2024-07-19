@@ -50,11 +50,6 @@ export const UsersListSchema = PaginatiedSchema.extend({
   items: z.array(UsersListItemSchema).default([]),
 });
 
-export const ListRequestSchema = z.object({
-  pagination: PaginationSchema.optional(),
-  userId: z.number(),
-});
-
 export const TransactionSchema = z.object({
   id: z.number(),
   txTime: z.number(),
@@ -88,7 +83,6 @@ export const ApplyInvestSchema = z.object({
 });
 
 export const SendSchema = z.object({
-  userId: z.number(),
   to: z.string(),
   amount: z.number(),
 });
