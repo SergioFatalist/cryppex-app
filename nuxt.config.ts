@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "vuetify-nuxt-module"],
   ssr: false,
   srcDir: "src/",
+  debug: false,
   runtimeConfig: {
     public: {
       appUrl: process.env.PUBLIC_APP_URL,

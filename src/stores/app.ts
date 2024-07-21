@@ -74,8 +74,8 @@ export const useAppStore = defineStore("cryppex", {
   },
   actions: {
     updateViewState(state: ViewState) {
-      const current = this.$state.viewStates[this.getViewName] || this.getDefaultViewState;
-      this.$state.viewStates[this.getViewName] = {
+      const current = this.viewStates[this.getViewName] || this.getDefaultViewState;
+      this.viewStates[this.getViewName] = {
         ...current,
         ...state,
       };
@@ -84,20 +84,22 @@ export const useAppStore = defineStore("cryppex", {
       if (initData.length < 30) {
         return;
       }
-      this.$state.initData = initData;
+      this.initData = initData;
       const params = new URLSearchParams(initData);
       const startParam = <string | undefined>params.get("start_param");
+      console.error(startParam);
       this.kentId = startParam && Number.isInteger(parseInt(startParam)) ? parseInt(startParam) : undefined;
+      console.error(this.kentId);
     },
     async loadUser() {
-      this.$state.user = await $fetch<User>("/api/load-user", {
+      this.user = await $fetch<User>("/api/load-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Telegram-Init-Data": this.$state.initData,
+          "Telegram-Init-Data": this.initData,
         },
         body: {
-          kentId: this.$state.kentId,
+          id: this.kentId,
         },
         onRequestError: this.onRequestError,
       });
@@ -107,7 +109,7 @@ export const useAppStore = defineStore("cryppex", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Telegram-Init-Data": this.$state.initData,
+          "Telegram-Init-Data": this.initData,
         },
         onRequestError: this.onRequestError,
       });
