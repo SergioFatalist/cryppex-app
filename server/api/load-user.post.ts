@@ -23,22 +23,8 @@ export default defineEventHandler(async (event): Promise<User> => {
   await createEvent(
     user.id,
     eventType,
-    `${user.id}:${user.username}:${user.firstName}:${user.lastName}:${user.languageCode}`
+    `${user.id}:${user.username}:${user.firstName}:${user.lastName}:${user.languageCode}:${user.balance}`
   );
-
-  if (eventType == EventType.USER_CREATE && refId) {
-    await prisma.transaction.create({
-      data: {
-        userId: refId,
-        refId: user.id,
-        type: "bonus:registration",
-        txTime: now,
-        internal: true,
-        amount: 10_000_000,
-        success: true,
-      },
-    });
-  }
 
   const info = await prisma.userInfo.findUniqueOrThrow({ where: { id: user.id } });
   return {
