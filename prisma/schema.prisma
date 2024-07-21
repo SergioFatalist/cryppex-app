@@ -94,7 +94,6 @@ view UserInfo {
   languageCode    String? @map("language_code") @db.VarChar
   address         String  @map("address") @db.VarChar
   balance         BigInt  @map("balance")
-  locked          BigInt  @map("locked")
   refId           BigInt? @map("ref_id")
   created         BigInt  @map("created")
   investsCount    Int?    @map("invests_count")
