@@ -1,4 +1,4 @@
-import { TransactionType } from "~/server/lib/schema";
+import { TransactionType } from "@/server/lib/schema";
 
 export default async function (userId: number | bigint, refId: number | bigint) {
   const where = {

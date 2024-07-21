@@ -1,6 +1,6 @@
-import { TransactionType } from "~/server/lib/schema";
-import listTrxTransactions from "~/server/lib/services/list-trx-transactions";
-import updateBonuses from "~/server/lib/services/update-bonuses";
+import { TransactionType } from "@/server/lib/schema";
+import listTrxTransactions from "@/server/lib/services/list-trx-transactions";
+import updateBonuses from "@/server/lib/services/update-bonuses";
 
 export default async function (webAppUser: WebAppUser, refId?: number | bigint) {
   let applyBonuses = false;

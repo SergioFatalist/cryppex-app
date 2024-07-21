@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "vuetify-nuxt-module"],
   ssr: false,
+  srcDir: "src/",
   runtimeConfig: {
     public: {
       appUrl: process.env.PUBLIC_APP_URL,
@@ -16,7 +17,7 @@ export default defineNuxtConfig({
     },
     finance: {
       regBonusAbsolute: 10_000_000,
-      topBonusPercent: 5, //
+      topBonusPercent: 5,
     },
   },
   app: {

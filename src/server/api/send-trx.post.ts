@@ -1,4 +1,4 @@
-import { SendSchema } from "~/server/lib/schema";
+import { SendSchema } from "@/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<void> => {
   const { data, error } = await readValidatedBody(event, (data) => SendSchema.safeParse(data));

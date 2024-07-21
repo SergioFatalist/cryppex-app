@@ -4,6 +4,12 @@
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
   }
 }

@@ -1,4 +1,4 @@
-import type { Pagination } from "~/server/lib/schema";
+import type { Pagination } from "@/server/lib/schema";
 
 export default function (pagination: Pagination | undefined): { take: number | undefined; skip: number | undefined } {
   return pagination

@@ -1,4 +1,4 @@
-import { ApplyInvestSchema } from "~/server/lib/schema";
+import { ApplyInvestSchema } from "@/server/lib/schema";
 
 const minimals = new Map<number, number>([
   [10, 100_000_000],

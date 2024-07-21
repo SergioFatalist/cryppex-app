@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import dayjs from "dayjs";
-import type { DataTableHeaders } from "~/types/ui";
+import type { DataTableHeaders } from "@/types/ui";
 
 const app = useAppStore();
 const config = useRuntimeConfig();

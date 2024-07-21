@@ -1,5 +1,5 @@
-import pagination from "~/server/lib/pagination";
-import { PaginatiedSchema, type TransactionsList } from "~/server/lib/schema";
+import pagination from "@/server/lib/pagination";
+import { PaginatiedSchema, type TransactionsList } from "@/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<TransactionsList> => {
   const { data, error } = await readValidatedBody(event, (data) => PaginatiedSchema.safeParse(data));

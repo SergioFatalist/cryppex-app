@@ -1,4 +1,4 @@
-import { EventType } from "~/server/lib/schema";
+import { EventType } from "@/server/lib/schema";
 
 export default async function (userId: number | bigint, eventType: EventType, eventText?: string): Promise<void> {
   await prisma.event.create({

@@ -8,7 +8,7 @@ import type {
   Transaction,
   TransactionsList,
   User,
-} from "~/server/lib/schema";
+} from "@/server/lib/schema";
 
 export interface ViewState {
   loading?: boolean;
