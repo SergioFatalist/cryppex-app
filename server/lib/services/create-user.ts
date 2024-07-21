@@ -1,7 +1,8 @@
-
 export default async function (webAppUser: WebAppUser, refId?: number) {
+  const config = useRuntimeConfig();
+  const created = new Date().getTime();
   const account = await tron.createAccount();
-  return prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       id: webAppUser.id,
       firstName: webAppUser.first_name,
@@ -10,7 +11,7 @@ export default async function (webAppUser: WebAppUser, refId?: number) {
       languageCode: webAppUser.language_code,
       address: account.address.base58,
       privateKey: account.privateKey,
-      created: new Date().getTime(),
+      created,
       ref: refId
         ? {
             connect: {
@@ -20,4 +21,16 @@ export default async function (webAppUser: WebAppUser, refId?: number) {
         : undefined,
     },
   });
+  if (refId) {
+    await prisma.bonus.create({
+      data: {
+        userId: refId,
+        refId: user.id,
+        amount: config.finance.regBonusAbsolute,
+        applied: false,
+        created,
+      },
+    });
+  }
+  return user;
 }

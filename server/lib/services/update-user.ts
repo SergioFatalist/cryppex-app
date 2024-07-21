@@ -1,8 +1,10 @@
 import { TransactionType } from "~/server/lib/schema";
 import listTrxTransactions from "~/server/lib/services/list-trx-transactions";
+import updateBonuses from "~/server/lib/services/update-bonuses";
 
-export default async function (webAppUser: WebAppUser, _refId?: number | bigint) {
-  return prisma.$transaction(async (tx) => {
+export default async function (webAppUser: WebAppUser, refId?: number | bigint) {
+  let applyBonuses = false;
+  const user = await prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({
       where: { id: webAppUser.id },
     });
@@ -42,8 +44,16 @@ export default async function (webAppUser: WebAppUser, _refId?: number | bigint)
           update: {},
         });
         data.balance = minus ? data.balance - amount : data.balance + amount;
+        applyBonuses = applyBonuses ? applyBonuses : !minus;
       }
     }
     return tx.user.update({ where: { id: user.id }, data });
   });
+
+  if (applyBonuses && refId) {
+    await updateBonuses(user.id, refId);
+    return prisma.user.findUniqueOrThrow({ where: { id: user.id } });
+  }
+
+  return user;
 }
