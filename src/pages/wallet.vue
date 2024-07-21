@@ -11,11 +11,12 @@
     <v-toolbar-items>
       <v-btn
         :disabled="!app.user?.balance || app.user?.balance < 100_000_000"
-        color="success"
+        color="warning"
         variant="tonal"
+        size="large"
         @click="showSendDialog = true"
       >
-        withdraw crypto
+        Withdraw<br />crypto
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>

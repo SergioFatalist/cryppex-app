@@ -9,8 +9,8 @@
             <span class="text-h6">{{ formatTgName(app.user) }}</span>
           </v-toolbar-title>
           <v-toolbar-items>
-            <v-btn color="success" variant="tonal" @click="showQRDialog = true">
-              deposit crypto
+            <v-btn color="warning" variant="tonal" size="large" @click="showQRDialog = true">
+              Deposit<br />crypto
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>

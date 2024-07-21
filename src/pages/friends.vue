@@ -6,7 +6,7 @@
     </v-toolbar-title>
 
     <v-toolbar-items>
-      <v-btn color="success" variant="tonal" @click="copyUrl">Copy link</v-btn>
+      <v-btn color="warning" variant="tonal" size="large" @click="copyUrl">Copy<br />link</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 
