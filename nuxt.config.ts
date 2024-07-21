@@ -11,7 +11,13 @@ export default defineNuxtConfig({
       privateKey: process.env.TRON_PRIVATE_KEY,
       apiKey: process.env.TRON_API_KEY,
     },
-    botToken: process.env.BOT_TOKEN,
+    bot: {
+      token: process.env.BOT_TOKEN,
+    },
+    finance: {
+      regBonusAbsolute: 10_000_000,
+      topBonusPercent: 5, //
+    },
   },
   app: {
     head: {

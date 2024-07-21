@@ -19,21 +19,35 @@ model User {
   address      String        @map("address") @db.VarChar
   privateKey   String        @map("private_key") @db.VarChar
   balance      BigInt        @default(0) @map("balance")
-  locked       BigInt        @default(0) @map("locked")
-  referrer     User?         @relation("referrer", fields: [referrerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  referrerId   BigInt?       @map("referrer_id")
-  referrals    User[]        @relation("referrer")
+  ref          User?         @relation("ref", fields: [refId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  refId        BigInt?       @map("ref_id")
+  referrals    User[]        @relation("ref")
   created      BigInt        @map("created")
   transactions Transaction[]
+  bonuses      Bonus[]
   investments  Investment[]
+  events       Event[]
 
   @@map("users")
+}
+
+model Bonus {
+  id      BigInt  @id @default(autoincrement())
+  userId  BigInt  @map("user_id")
+  refId   BigInt  @map("ref_id")
+  amount  BigInt  @default(0)
+  created BigInt  @map("created")
+  applied Boolean @default(false)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@map("bonuses")
 }
 
 model Transaction {
   id             BigInt  @id @default(autoincrement())
   user           User    @relation(fields: [userId], references: [id])
   userId         BigInt  @map("user_id")
+  refId          BigInt? @map("ref_id")
   txID           String? @unique @map("tx_id") @db.VarChar()
   txTime         BigInt  @map("tx_time")
   txOwnerAddress String? @map("tx_owner_address") @db.VarChar()
@@ -42,9 +56,7 @@ model Transaction {
   success        Boolean @default(false)
   pending        Boolean @default(true)
   internal       Boolean @default(true)
-  referral       String?
   type           String
-  referralId     String? @map("referral_id") @db.Uuid
 
   @@map("transactions")
 }
@@ -63,6 +75,17 @@ model Investment {
   @@map("investments")
 }
 
+model Event {
+  id        BigInt  @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    BigInt  @map("user_id")
+  eventTime BigInt? @map("event_time")
+  eventType String? @map("event_type") @db.VarChar()
+  eventText String? @map("event_text")
+
+  @@map("events")
+}
+
 view UserInfo {
   id              BigInt  @id
   username        String? @map("username") @db.VarChar
@@ -72,7 +95,7 @@ view UserInfo {
   address         String  @map("address") @db.VarChar
   balance         BigInt  @map("balance")
   locked          BigInt  @map("locked")
-  referrerId      BigInt? @map("referrer_id")
+  refId           BigInt? @map("ref_id")
   created         BigInt  @map("created")
   investsCount    Int?    @map("invests_count")
   investsAmount   BigInt? @map("invests_amount")

@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export enum EventType {
+  UNDEFINED = "undefined",
+  USER_CREATE = "user:create",
+  USER_LOGIN = "user:login",
+  USER_UDPATE = "user:update",
+}
+
 export const SortingSchema = z.object({
   key: z.string(),
   order: z.union([z.literal("asc"), z.literal("desc"), z.boolean()]).optional(),
@@ -30,7 +37,7 @@ export const UserSchema = z.object({
   address: z.string(),
   balance: z.number(),
   locked: z.number(),
-  referrerId: z.number().nullable().optional(),
+  refId: z.number().nullable().optional(),
   created: z.number(),
   investsCount: z.number(),
   investsAmount: z.number(),
