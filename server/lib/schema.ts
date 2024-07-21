@@ -7,6 +7,13 @@ export enum EventType {
   USER_UDPATE = "user:update",
 }
 
+export enum TransactionType {
+  WITHDRAWAL = "withdrawal",
+  DEPOSIT = "deposit",
+  BONUS = "bonus",
+  INTEREST = "interest",
+}
+
 export const SortingSchema = z.object({
   key: z.string(),
   order: z.union([z.literal("asc"), z.literal("desc"), z.boolean()]).optional(),
