@@ -87,9 +87,7 @@ export const useAppStore = defineStore("cryppex", {
       this.initData = initData;
       const params = new URLSearchParams(initData);
       const startParam = <string | undefined>params.get("start_param");
-      console.error(startParam);
       this.kentId = startParam && Number.isInteger(parseInt(startParam)) ? parseInt(startParam) : undefined;
-      console.error(this.kentId);
     },
     async loadUser() {
       this.user = await $fetch<User>("/api/load-user", {
@@ -100,16 +98,6 @@ export const useAppStore = defineStore("cryppex", {
         },
         body: {
           id: this.kentId,
-        },
-        onRequestError: this.onRequestError,
-      });
-    },
-    async getReferrer() {
-      this.referrer = await $fetch<RefUser>("/api/get-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Telegram-Init-Data": this.initData,
         },
         onRequestError: this.onRequestError,
       });

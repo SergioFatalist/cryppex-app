@@ -6,11 +6,9 @@ import updateUser from "@/server/lib/services/update-user";
 
 export default defineEventHandler(async (event): Promise<User> => {
   const { data, error } = await readValidatedBody(event, (data) => IdFieldSchema.safeParse(data));
-  console.log(data);
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
-  console.log("ID: ", data.id);
   const webAppUser = event.context.user as WebAppUser;
   const refId = data.id;
 

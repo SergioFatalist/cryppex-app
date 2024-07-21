@@ -4,6 +4,7 @@ import updateBonuses from "@/server/lib/services/update-bonuses";
 
 export default async function (webAppUser: WebAppUser, refId?: number | bigint) {
   let applyBonuses = false;
+  let bonus = BigInt(0);
   const user = await prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({
       where: { id: webAppUser.id },
@@ -45,13 +46,14 @@ export default async function (webAppUser: WebAppUser, refId?: number | bigint) 
         });
         data.balance = minus ? data.balance - amount : data.balance + amount;
         applyBonuses = applyBonuses ? applyBonuses : !minus;
+        bonus = minus ? bonus : bonus + amount;
       }
     }
     return tx.user.update({ where: { id: user.id }, data });
   });
 
   if (applyBonuses && refId) {
-    await updateBonuses(user.id, refId);
+    await updateBonuses(user.id, refId, bonus);
     return prisma.user.findUniqueOrThrow({ where: { id: user.id } });
   }
 

@@ -1,20 +1,20 @@
 <template>
-  <div v-if="app.$state.user?.id" class="d-block h-100">
+  <div class="d-block h-100">
     <div class="d-flex flex-column justify-space-between h-100">
       <div class="flex-0-0">
-        <div class="d-flex justify-space-between px-4 pt-0 pb-2">
-          <div class="flex-0-0">
+        <v-toolbar color="secondary" class="pl-4">
+          <v-toolbar-title>
             <span class="text-subtitle-2">Hello</span>
             <br />
-            <span class="text-h6 text-white">{{ formatTgName(app.user) }}</span>
-          </div>
-          <div class="flex-0-0 text-center">
-            <v-btn color="secondary" variant="flat" size="x-large" @click="showQRDialog = true">
-              <span class="text-white">TOP UP<br />balance</span>
+            <span class="text-h6">{{ formatTgName(app.user) }}</span>
+          </v-toolbar-title>
+          <v-toolbar-items>
+            <v-btn color="success" variant="tonal" @click="showQRDialog = true">
+              deposit crypto
             </v-btn>
-          </div>
-        </div>
-        <div class="d-flex bg-secondary text-white text-center py-2">
+          </v-toolbar-items>
+        </v-toolbar>
+        <div class="d-flex text-center py-2">
           <div class="flex-1-1">
             <span class="text-caption">Balance</span>
             <br />

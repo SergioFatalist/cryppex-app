@@ -1,12 +1,4 @@
 <template>
-  <v-container>
-    <v-row v-if="app.referrer">
-      <v-col cols="12" class="d-flex justify-space-between">
-        <div class="text-subtitle-2">Your Referrer</div>
-        <div class="text-subtitle-2 text-white">{{ formatTgName(app.referrer) }}</div>
-      </v-col>
-    </v-row>
-  </v-container>
   <v-toolbar color="secondary" class="pl-4">
     <v-toolbar-title>
       <span class="text-caption">Link to Invite a friends</span><br />
@@ -14,7 +6,7 @@
     </v-toolbar-title>
 
     <v-toolbar-items>
-      <v-btn prepend-icon="mdi-content-copy" variant="plain" size="large" class="pa-4" @click="copyUrl">Copy</v-btn>
+      <v-btn color="success" variant="tonal" @click="copyUrl">Copy link</v-btn>
     </v-toolbar-items>
   </v-toolbar>
 
@@ -71,8 +63,6 @@ const copyUrl = () => {
   copy(refUrl.value);
   showSB.value = true;
 };
-
-onMounted(app.getReferrer);
 
 const headers = computed<DataTableHeaders>(
   () =>
