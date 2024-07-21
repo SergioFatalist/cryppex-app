@@ -90,7 +90,6 @@ ALTER TABLE "investments" ADD CONSTRAINT "investments_user_id_fkey" FOREIGN KEY 
 -- AddForeignKey
 ALTER TABLE "events" ADD CONSTRAINT "events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-
 CREATE VIEW "users_info" AS
 SELECT u.id                AS id,
        u.username          AS username,

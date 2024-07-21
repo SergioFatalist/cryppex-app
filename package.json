@@ -16,8 +16,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "prisma:generate": "pnpm prisma generate",
-    "prisma:migrate:dev": "pnpm prisma migrate dev --create-only",
-    "prisma:migrate:deploy": "pnpm prisma migrate deploy",
+    "prisma:create": "pnpm prisma migrate dev --create-only",
+    "prisma:deploy": "pnpm prisma migrate deploy",
     "lint": "eslint --ext .js,.ts,.vue --fix ./"
   },
   "dependencies": {
