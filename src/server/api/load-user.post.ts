@@ -30,7 +30,6 @@ export default defineEventHandler(async (event): Promise<User> => {
     ...info,
     id: Number(info.id),
     balance: Number(info.balance),
-    locked: Number(info.locked),
     refId: Number(info.refId),
     created: Number(info.created),
     investsAmount: Number(info.investsAmount),

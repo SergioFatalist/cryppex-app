@@ -33,16 +33,6 @@ class Investor {
       });
     }
   }
-
-  // private async checkBalance() {
-  //   const users = await prisma.user.findMany({});
-  //   for (const u of users) {
-  //     const balance = await tron.trx.getBalance(u.address);
-  //     if (BigInt(balance) != u.balance + u.locked) {
-  //       const txs = await tron.trx.getTransactionsToAddress(u.address);
-  //     }
-  //   }
-  // }
 }
 
 const investor = new Investor();

@@ -43,7 +43,6 @@ export const UserSchema = z.object({
   languageCode: z.string().nullable().optional(),
   address: z.string(),
   balance: z.number(),
-  locked: z.number(),
   refId: z.number().nullable().optional(),
   created: z.number(),
   investsCount: z.number(),

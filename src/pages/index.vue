@@ -27,12 +27,6 @@
             <span>{{ app.user?.investsCount || 0 }}</span>
           </div>
           <div class="flex-1-1">
-            <span class="text-caption">Locked</span>
-            <br />
-            <span>{{ formatTrx(app.user?.locked || 0) }}</span>
-            <br />TRX
-          </div>
-          <div class="flex-1-1">
             <span class="text-caption">Interests</span>
             <br />
             <span>{{ formatTrx(app.user?.investsInterest || 0) }}</span>
