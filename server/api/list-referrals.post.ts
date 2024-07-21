@@ -3,13 +3,13 @@ import { PaginatiedSchema, type Referrals } from "~/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<Referrals> => {
   const { data, error } = await readValidatedBody(event, (data) => PaginatiedSchema.safeParse(data));
-  const referrerId = (event.context.user as WebAppUser).id;
+  const refId = (event.context.user as WebAppUser).id;
 
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
 
-  const where = { referrerId };
+  const where = { refId };
   const total = await prisma.user.count({ where });
   const items = await prisma.user.findMany({
     where,

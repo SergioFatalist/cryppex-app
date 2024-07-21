@@ -17,7 +17,7 @@ export default defineEventHandler(async (event): Promise<TransactionsList> => {
     select: {
       id: true,
       txTime: true,
-      referral: true,
+      refId: true,
       amount: true,
       success: true,
       type: true,
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event): Promise<TransactionsList> => {
     pagination: { ...data.pagination, total },
     items: items.map((t) => ({
       id: Number(t.id),
-      referral: Number(t.referral),
+      refId: Number(t.refId),
       txTime: Number(t.txTime),
       amount: Number(t.amount),
       success: t.success,

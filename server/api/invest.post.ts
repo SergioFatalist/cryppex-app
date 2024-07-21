@@ -24,7 +24,6 @@ export default defineEventHandler(async (event): Promise<void> => {
     });
     const amount = BigInt(data.amount);
     const balance = user.balance - amount;
-    const locked = user.locked + amount;
     await tx.investment.create({
       data: {
         amount: data.amount,
@@ -42,10 +41,7 @@ export default defineEventHandler(async (event): Promise<void> => {
     });
     await tx.user.update({
       where: { id: data.userId },
-      data: {
-        balance,
-        locked,
-      },
+      data: { balance },
     });
   });
 });

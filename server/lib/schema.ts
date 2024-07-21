@@ -67,7 +67,7 @@ export const ReferralsSchema = PaginatiedSchema.extend({
 export const TransactionSchema = z.object({
   id: z.number(),
   txTime: z.number(),
-  referral: z.number(),
+  refId: z.number(),
   amount: z.number(),
   success: z.boolean().nullable(),
   type: z.string(),

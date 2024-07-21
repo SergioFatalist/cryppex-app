@@ -7,7 +7,7 @@ export default defineEventHandler((event) => {
     if (!initData) {
       throw new Error("NO DATA");
     }
-    validate(initData, config.botToken);
+    validate(initData, config.bot.token);
 
     event.context.user = JSON.parse(<string>new URLSearchParams(initData).get("user")) as WebAppUser;
   }
