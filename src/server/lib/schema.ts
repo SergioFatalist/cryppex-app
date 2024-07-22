@@ -50,13 +50,17 @@ export const UserSchema = z.object({
   investsInterest: z.number(),
 });
 
-export const RefUserSchema = UserSchema.pick({
-  id: true,
-  firstName: true,
-  lastName: true,
-  username: true,
-  balance: true,
-  created: true,
+export const RefUserSchema = z.object({
+  id: z.number(),
+  firstName: z.string().nullable().optional(),
+  lastName: z.string().nullable().optional(),
+  username: z.string().nullable().optional(),
+  languageCode: z.string().nullable().optional(),
+  balance: z.number(),
+  refId: z.number().nullable().optional(),
+  created: z.number(),
+  pending: z.number().nullable().optional(),
+  applied: z.number().nullable().optional(),
 });
 
 export const ReferralsSchema = PaginatiedSchema.extend({

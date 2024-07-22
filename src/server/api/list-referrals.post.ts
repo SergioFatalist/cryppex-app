@@ -10,17 +10,9 @@ export default defineEventHandler(async (event): Promise<Referrals> => {
   }
 
   const where = { refId };
-  const total = await prisma.user.count({ where });
-  const items = await prisma.user.findMany({
+  const total = await prisma.refInfo.count({ where: { refId: refId } });
+  const items = await prisma.refInfo.findMany({
     where,
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      username: true,
-      balance: true,
-      created: true,
-    },
     ...pagination(data.pagination),
   });
   return {
@@ -28,8 +20,11 @@ export default defineEventHandler(async (event): Promise<Referrals> => {
     items: items.map((user) => ({
       ...user,
       id: Number(user.id),
+      refId: Number(user.refId),
       balance: Number(user.balance),
       created: Number(user.created),
+      pending: Number(user.pending),
+      applied: Number(user.applied),
     })),
   };
 });

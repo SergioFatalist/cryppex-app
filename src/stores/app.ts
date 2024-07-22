@@ -150,7 +150,7 @@ export const useAppStore = defineStore("cryppex", {
       });
     },
     async listReferrals(pagination: Pagination) {
-      const data = await $fetch<Referrals>("/api/list-investments", {
+      const data = await $fetch<Referrals>("/api/list-referrals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

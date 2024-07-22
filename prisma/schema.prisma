@@ -102,3 +102,18 @@ view UserInfo {
 
   @@map("users_info")
 }
+
+view RefInfo {
+  id           BigInt  @id
+  username     String? @map("username") @db.VarChar
+  firstName    String? @map("first_name") @db.VarChar
+  lastName     String? @map("last_name") @db.VarChar
+  languageCode String? @map("language_code") @db.VarChar
+  balance      BigInt  @map("balance")
+  refId        BigInt? @map("ref_id")
+  created      BigInt  @map("created")
+  pending      BigInt? @map("pending")
+  applied      BigInt? @map("applied")
+
+  @@map("refs_info")
+}

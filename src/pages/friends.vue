@@ -11,7 +11,6 @@
   </v-toolbar>
 
   <v-data-table-server
-    v-if="app.referrals && app.referrals.length"
     :items="app.referrals"
     :headers="headers"
     :loading="app.getViewState.loading"
@@ -24,11 +23,14 @@
     class="text-caption"
     @update:options="app.listReferrals"
   >
-    <template #[`item.created`]="{ item }">
-      {{ dayjs(item.created).format("YYYY-MM-DD HH:mm") }}
-    </template>
     <template #[`item.username`]="{ item }">
       {{ formatTgName(item) }}
+    </template>
+    <template #[`item.pending`]="{ item }">
+      {{ item.pending ? (item.pending / 1_000_000).toFixed(2) : 0 }}
+    </template>
+    <template #[`item.applied`]="{ item }">
+      {{ item.applied ? (item.applied / 1_000_000).toFixed(2) : 0 }}
     </template>
     <template #[`item.balance`]="{ item }">
       {{ item.balance ? (item.balance / 1_000_000).toFixed(2) : 0 }}
@@ -67,8 +69,9 @@ const copyUrl = () => {
 const headers = computed<DataTableHeaders>(
   () =>
     [
-      { title: "Added", key: "created", align: "start" },
       { title: "User", key: "username", align: "start" },
+      { title: "Pending", key: "pending", align: "end" },
+      { title: "Applied", key: "applied", align: "end" },
       { title: "Balance", key: "balance", align: "end" },
     ] as const
 );
