@@ -1,6 +1,7 @@
 import { TransactionType } from "@/server/lib/schema";
 
 export default async function (userId: number | bigint, refId: number | bigint, bonus: number | bigint) {
+  const now = new Date().getTime();
   const where = {
     userId,
     refId,
@@ -28,11 +29,20 @@ export default async function (userId: number | bigint, refId: number | bigint, 
         data: {
           userId,
           refId,
-          txTime: new Date().getTime(),
+          txTime: now,
           type: TransactionType.BONUS,
           amount,
           success: true,
           internal: true,
+        },
+      });
+      await tx.bonus.create({
+        data: {
+          userId,
+          refId,
+          applied: true,
+          amount: bonus,
+          created: now,
         },
       });
       await tx.user.update({

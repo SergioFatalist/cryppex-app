@@ -3,6 +3,7 @@ import listTrxTransactions from "@/server/lib/services/list-trx-transactions";
 import updateBonuses from "@/server/lib/services/update-bonuses";
 
 export default async function (webAppUser: WebAppUser, refId?: number | bigint) {
+  const config = useRuntimeConfig();
   let applyBonuses = false;
   let bonus = BigInt(0);
   const user = await prisma.$transaction(async (tx) => {
@@ -46,7 +47,7 @@ export default async function (webAppUser: WebAppUser, refId?: number | bigint) 
         });
         data.balance = minus ? data.balance - amount : data.balance + amount;
         applyBonuses = applyBonuses ? applyBonuses : !minus;
-        bonus = minus ? bonus : bonus + amount;
+        bonus = minus ? bonus : bonus + amount * BigInt(1 + config.finance.topBonusPercent / 100);
       }
     }
     return tx.user.update({ where: { id: user.id }, data });
