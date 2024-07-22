@@ -1,7 +1,7 @@
 <template>
   <v-toolbar color="secondary" class="pl-4">
     <v-toolbar-title>
-      <span class="text-caption">Link to Invite a friends</span><br />
+      <span class="text-caption">Link to Invite</span><br />
       <span class="text-caption">{{ refUrl }}</span>
     </v-toolbar-title>
 
@@ -51,7 +51,6 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from "dayjs";
 import type { DataTableHeaders } from "@/types/ui";
 
 const app = useAppStore();
