@@ -20,6 +20,7 @@ FROM users AS u
                     WHERE i.closed IS false
                     GROUP BY i.user_id) AS i ON i.user_id = u.id;
 
+CREATE VIEW "refs_info" AS
 SELECT u.id,
        u.username,
        u.first_name,

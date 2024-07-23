@@ -64,11 +64,19 @@
               label="Amount"
             />
           </v-col>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field v-model="to" :rules="[rules.required]" type="" label="Tron TRX Address" />
-            </v-col>
-          </v-row>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field v-model="to" :rules="[rules.required]" type="" label="Tron TRX Address" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <div class="text-center">
+              The transfer fee {{ formatTrx(config.public.sendFeeAbsolute) }} TRX will be deducted from the transfer
+              amount
+            </div>
+          </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" class="text-center">
@@ -87,6 +95,7 @@ import type { DataTableHeaders } from "@/types/ui";
 
 const app = useAppStore();
 const rules = useValidationRules();
+const config = useRuntimeConfig();
 const showSendDialog = ref(false);
 const to = ref("");
 const amount = ref(0);

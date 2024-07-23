@@ -23,7 +23,6 @@ model User {
   refId        BigInt?       @map("ref_id")
   referrals    User[]        @relation("ref")
   created      BigInt        @map("created")
-  withdraw     Boolean       @default(false) @map("withdraw")
   transactions Transaction[]
   bonuses      Bonus[]
   investments  Investment[]

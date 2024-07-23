@@ -7,6 +7,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appUrl: process.env.PUBLIC_APP_URL,
+      regBonusAbsolute: 10_000_000,
+      sendFeeAbsolute: 3_000_000,
+      topBonusPercent: 5,
     },
     tron: {
       fullHost: process.env.TRON_FULL_HOST,
@@ -15,10 +18,6 @@ export default defineNuxtConfig({
     },
     bot: {
       token: process.env.BOT_TOKEN,
-    },
-    finance: {
-      regBonusAbsolute: 10_000_000,
-      topBonusPercent: 5,
     },
   },
   app: {

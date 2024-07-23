@@ -3,6 +3,7 @@ import { SendSchema } from "@/server/lib/schema";
 export default defineEventHandler(async (event): Promise<void> => {
   const { data, error } = await readValidatedBody(event, (data) => SendSchema.safeParse(data));
   const id = (event.context.user as WebAppUser).id;
+  const config = useRuntimeConfig();
 
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event): Promise<void> => {
   });
 
   if (user && user.balance > data.amount) {
-    const trxTX = await tron.trx.send(data.to, data.amount);
+    const trxTX = await tron.trx.send(data.to, data.amount - config.public.sendFeeAbsolute);
     if (trxTX.result) {
       user.balance -= BigInt(data.amount);
       await prisma.user.update({

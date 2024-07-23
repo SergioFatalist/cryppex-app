@@ -5,7 +5,7 @@ import updateBonuses from "@/server/lib/services/update-bonuses";
 export default async function updateUser(webAppUser: WebAppUser, refId?: number | bigint) {
   const config = useRuntimeConfig();
   let applyBonuses = false;
-  let bonus = 0n;
+  let bonus = BigInt(0);
   const user = await prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({
       where: { id: webAppUser.id },
@@ -23,11 +23,14 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
       }
       const hex = tron.address.toHex(user.address).toLowerCase();
       for (const p of trxTX.raw_data.contract) {
-        if (Object.hasOwn(p.parameter.value, "asset_name") || p.parameter.value.amount < 100_000_000) {
+        const minus = p.parameter.value.owner_address.toLowerCase() === hex;
+        const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
+        const amount = BigInt(p.parameter.value.amount + (minus ? fee : 0));
+
+        if (Object.hasOwn(p.parameter.value, "asset_name") || amount < BigInt(100_000_000)) {
           continue;
         }
-        const minus = p.parameter.value.owner_address.toLowerCase() === hex;
-        const amount = BigInt(p.parameter.value.amount);
+
         await tx.transaction.upsert({
           where: { txID: trxTX.txID },
           create: {
@@ -49,10 +52,11 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
         data.balance = minus ? data.balance - amount : data.balance + amount;
         applyBonuses = applyBonuses ? applyBonuses : !minus;
         bonus =
-          minus && amount < BigInt(100_000_000)
+          minus || amount < BigInt(100_000_000)
             ? bonus
             : bonus +
-              BigInt(Math.round(Number(amount) * parseFloat((config.finance.topBonusPercent / 100).toString())));
+              BigInt(Math.round(Number(amount) * parseFloat((config.public.topBonusPercent / 100).toString())));
+        console.log(`Amount: ${amount} Bonuse: ${bonus}`);
       }
     }
     return tx.user.update({ where: { id: user.id }, data });

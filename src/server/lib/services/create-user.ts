@@ -26,7 +26,7 @@ export default async function createUser(webAppUser: WebAppUser, refId?: number)
       data: {
         userId: refId,
         refId: user.id,
-        amount: config.finance.regBonusAbsolute,
+        amount: config.public.regBonusAbsolute,
         applied: false,
         created,
       },
