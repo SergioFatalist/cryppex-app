@@ -25,11 +25,11 @@ export default defineEventHandler(async (event): Promise<User> => {
   return {
     ...info,
     id: Number(info.id),
-    balance: Number(info.balance),
+    balance: parseFloat((Number(info.balance) / 1_000_000).toFixed(2)),
     refId: Number(info.refId),
     created: Number(info.created),
-    investsAmount: Number(info.investsAmount),
+    investsAmount: parseFloat((Number(info.investsAmount) / 1_000_000).toFixed(2)),
     investsCount: Number(info.investsCount),
-    investsInterest: Number(info.investsInterest),
+    investsInterest: parseFloat((Number(info.investsInterest) / 1_000_000).toFixed(2)),
   };
 });

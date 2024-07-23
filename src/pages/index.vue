@@ -18,7 +18,7 @@
           <div class="flex-1-1">
             <span class="text-caption">Balance</span>
             <br />
-            <span>{{ formatTrx(app.user?.balance || 0) }}</span>
+            <span>{{ app.user?.balance || 0 }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
@@ -29,7 +29,7 @@
           <div class="flex-1-1">
             <span class="text-caption">Interests</span>
             <br />
-            <span>{{ formatTrx(app.user?.investsInterest || 0) }}</span>
+            <span>{{ app.user?.investsInterest || 0 }}</span>
             <br />TRX
           </div>
         </div>
@@ -124,6 +124,14 @@
               :rules="[rules.decimal, (v) => rules.equalOrGreaterThan(v, minimalAmount.toString())]"
               type="number"
               label="Amount"
+            />
+            <v-slider
+              v-model="investAmount"
+              :min="minimalAmount"
+              :max="Math.round((app.user?.balance || 0) / 1_000_000)"
+              :step="Math.round((minimalAmount - (app.user?.balance || 0) / 1_000_000) / 4)"
+              show-ticks="always"
+              tick-size="4"
             />
             <v-checkbox v-model="approveRules" label="Approve rules" />
           </v-col>

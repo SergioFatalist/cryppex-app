@@ -30,8 +30,8 @@ const headers = computed<DataTableHeaders>(
   () =>
     [
       { title: "End", key: "endEpoch", align: "start", value: (i) => formatEpoch(i.endEpoch) },
-      { title: "Amount", key: "amount", align: "end", value: (i) => formatTrx(i.amount) },
-      { title: "Interest", key: "interest", align: "end", value: (i) => formatTrx(i.interest) },
+      { title: "Amount", key: "amount", align: "end", value: (i) => i.amount },
+      { title: "Interest", key: "interest", align: "end", value: (i) => i.interest },
       { title: "Rate", key: "rate", align: "end", value: (i) => `${i.rate}%` },
     ] as const
 );

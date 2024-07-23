@@ -7,8 +7,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appUrl: process.env.PUBLIC_APP_URL,
-      regBonusAbsolute: 10_000_000,
-      sendFeeAbsolute: 3_000_000,
+      regBonusAbsolute: 10,
+      sendFeeAbsolute: 3,
       topBonusPercent: 5,
     },
     tron: {

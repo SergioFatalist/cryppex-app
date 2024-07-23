@@ -5,7 +5,7 @@
     </v-toolbar-items>
     <v-toolbar-title>
       <span class="text-caption">Tron balance</span><br />
-      <span>{{ formatTrx(app.$state.user?.balance) }} TRX</span>
+      <span>{{ app.$state.user?.balance }} TRX</span>
     </v-toolbar-title>
 
     <v-toolbar-items>
@@ -73,7 +73,7 @@
         <v-row>
           <v-col cols="12">
             <div class="text-center">
-              The transfer fee {{ formatTrx(config.public.sendFeeAbsolute) }} TRX will be deducted from the transfer
+              The transfer fee {{ config.public.sendFeeAbsolute }} TRX will be deducted from the transfer
               amount
             </div>
           </v-col>
