@@ -19,11 +19,7 @@ export default defineEventHandler(async (event): Promise<User> => {
   const eventType = u ? EventType.USER_UDPATE : EventType.USER_CREATE;
   const user = u ? await updateUser(webAppUser, u.refId ?? undefined) : await createUser(webAppUser, refId);
 
-  await createEvent(
-    user.id,
-    eventType,
-    `${user.id}:${user.username}:${user.firstName}:${user.lastName}:${user.languageCode}:${user.balance}`
-  );
+  await createEvent(user.id, eventType, `${user.id}:${user.balance}`);
 
   const info = await prisma.userInfo.findUniqueOrThrow({ where: { id: user.id } });
   return {

@@ -1,7 +1,7 @@
 import type { TransferContract } from "@/types/contract";
 import type { Transaction } from "@/types/transaction";
 
-export default async function (
+export default async function listTrxTransactions(
   address: string,
   timestamp?: number | bigint
 ): Promise<{ data: Transaction<TransferContract>[] }> {

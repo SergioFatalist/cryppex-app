@@ -1,4 +1,4 @@
-export default async function (webAppUser: WebAppUser, refId?: number) {
+export default async function createUser(webAppUser: WebAppUser, refId?: number) {
   const config = useRuntimeConfig();
   const created = new Date().getTime();
   const account = await tron.createAccount();

@@ -1,6 +1,6 @@
 import { TransactionType } from "@/server/lib/schema";
 
-export default async function (userId: number | bigint, refId: number | bigint, bonus: number | bigint) {
+export default async function updateBonuses(userId: number | bigint, refId: number | bigint, bonus: number | bigint) {
   const now = new Date().getTime();
   const where = {
     userId,
