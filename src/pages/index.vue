@@ -114,7 +114,7 @@
       <v-container class="bg-surface" fluid>
         <v-row>
           <v-col cols="12">
-            <div class="text-h6">Invest as {{ investTitle.get(investRate) }}</div>
+            <div class="text-h6">Invest as {{ investTitle.get(investRate)?.title }}</div>
           </v-col>
         </v-row>
         <v-row>
@@ -124,12 +124,13 @@
               :rules="[rules.decimal, (v) => rules.equalOrGreaterThan(v, minimalAmount.toString())]"
               type="number"
               label="Amount"
+              hide-spin-buttons
             />
             <v-slider
               v-model="investAmount"
               :min="minimalAmount"
-              :max="Math.round((app.user?.balance || 0) / 1_000_000)"
-              :step="Math.round((minimalAmount - (app.user?.balance || 0) / 1_000_000) / 4)"
+              :max="app.user?.balance"
+              :step="Math.round((app.user?.balance || 0) / 4) - minimalAmount"
               show-ticks="always"
               tick-size="4"
             />
@@ -155,10 +156,11 @@
 <script setup lang="ts">
 import type { SubmitEventPromise } from "vuetify";
 
-const investTitle = new Map<number, string>([
-  [10, "Beginner"],
-  [20, "Confident"],
-  [30, "Professional"],
+type Rate = 10 | 20 | 30;
+const investTitle = new Map<Rate, { min: number; title: string }>([
+  [10, { min: 100, title: "Beginner" }],
+  [20, { min: 500, title: "Confident" }],
+  [30, { min: 1000, title: "Professional" }],
 ]);
 
 const app = useAppStore();
@@ -170,7 +172,7 @@ const showSB = ref(false);
 const alert = ref("");
 const minimalAmount = ref(100);
 const investAmount = ref(0);
-const investRate = ref(10);
+const investRate = ref<Rate>(10);
 const approveRules = ref(false);
 
 const copyAddress = (address: string) => {
@@ -182,8 +184,8 @@ const copyAddress = (address: string) => {
   }
 };
 
-const showApply = (min: number, rate: number) => {
-  if (!app.user || app.user?.balance < BigInt(min * 1000000)) {
+const showApply = (min: number, rate: Rate) => {
+  if (!app.user || app.user?.balance < min) {
     alert.value = "Insufficient funds. Top up your balance please";
     showSB.value = true;
     return;
@@ -195,20 +197,8 @@ const showApply = (min: number, rate: number) => {
 };
 
 const apply = async (event: SubmitEventPromise) => {
-  if ((await event).valid && app.$state.user?.id) {
-    await $fetch("/api/invest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Telegram-Init-Data": app.$state.initData,
-      },
-      body: {
-        rate: investRate.value,
-        amount: investAmount.value * 1000000,
-      },
-      onRequestError: ({ error }) => console.error(error),
-    });
-    await app.loadUser();
+  if ((await event).valid) {
+    await app.invest(investRate.value, investAmount.value);
   }
   showApplyDialog.value = false;
 };

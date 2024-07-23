@@ -10,7 +10,7 @@
 
     <v-toolbar-items>
       <v-btn
-        :disabled="!app.user?.balance || app.user?.balance < 99_000_000"
+        :disabled="!app.user?.balance || app.user?.balance < 99"
         color="warning"
         variant="tonal"
         size="large"
@@ -20,30 +20,21 @@
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
-  <v-data-table-server
+  <v-data-table
     :items="app.transactions"
     :headers="headers"
-    :loading="app.getViewState.loading"
-    :page="app.getViewState.pagination?.page"
-    :items-length="app.getViewState.pagination?.total || 0"
-    :items-per-page="app.getViewState.pagination?.itemsPerPage"
-    :hide-default-footer="app.getViewState.pagination?.total == 0"
+    :loading="app.loading"
+    hide-default-footer
     disable-sort
     density="compact"
     class="text-caption"
     @update:options="app.listTransactions"
   >
-    <template #[`item.txTime`]="{ item }">
-      {{ dayjs(item.txTime).format("YYYY-MM-DD HH:mm") }}
-    </template>
-    <template #[`item.amount`]="{ item }">
-      {{ item.amount ? (item.amount / 1_000_000).toFixed(2) : 0 }}
-    </template>
     <template #[`item.success`]="{ item }">
       <v-icon v-if="item.success" color="success" icon="mdi-check-circle-outline" size="16" />
       <v-icon v-else color="error" icon="mdi-close-circle-outline" size="16" />
     </template>
-  </v-data-table-server>
+  </v-data-table>
   <v-dialog v-model="showSendDialog" min-width="75%">
     <v-form validate-on="submit lazy" @submit.prevent="send">
       <v-container class="bg-surface" fluid>
@@ -57,7 +48,7 @@
             <v-text-field
               v-model="amount"
               :rules="[
-                (v) => rules.lessThan((v * 1_000_000).toString(), String((app.$state.user?.balance || 0) / 1_000_000)),
+                (v) => rules.lessThan(v.toString(), (app.$state.user?.balance || 0).toString()),
                 (v) => rules.equalOrGreaterThan(v, '1'),
               ]"
               type="number"
@@ -73,8 +64,7 @@
         <v-row>
           <v-col cols="12">
             <div class="text-center">
-              The transfer fee {{ config.public.sendFeeAbsolute }} TRX will be deducted from the transfer
-              amount
+              The transfer fee {{ config.public.sendFeeAbsolute }} TRX will be deducted from the transfer amount
             </div>
           </v-col>
         </v-row>
@@ -107,10 +97,17 @@ const send = async (event: SubmitEventPromise) => {
   }
 };
 
+onMounted(app.listTransactions);
+
 const headers = computed<DataTableHeaders>(
   () =>
     [
-      { title: "Date", key: "txTime", align: "start" },
+      {
+        title: "Date",
+        key: "txTime",
+        align: "start",
+        value: (v) => v.txTime && dayjs(v.txTime).format("DD/MM/YY HH:mm"),
+      },
       { title: "Type", key: "type", align: "start" },
       { title: "Amount", key: "amount", align: "end" },
       { title: "", key: "success", align: "end" },

@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 class Investor {
   private period = 10; // seconds
   private timer;
@@ -17,19 +19,22 @@ class Investor {
       where: { closed: false },
     });
     for (const i of invests) {
-      const now = BigInt(new Date().getTime());
-      const closed = now >= i.finish;
-      const slots = (i.finish - i.start) / BigInt(this.period);
-      const pass = (now - i.start) / BigInt(this.period);
-      const full = BigInt((Number(i.amount) * (100 + i.rate)) / 100);
-      const interest = closed ? full : ((full - i.amount) / slots) * pass;
+      const now = dayjs().unix();
+      const start = dayjs(Number(i.start)).unix();
+      const finish = dayjs(Number(i.finish)).unix();
+      const closed = now >= finish;
+      const slots = (finish - start) / this.period;
+      const pass = (now - start) / this.period;
+      const full = Math.round(Number(i.amount) * (1 + i.rate / 100));
+      const interest = Math.round(closed ? full : ((full - Number(i.amount)) / slots) * pass);
+
+      console.log(
+        `${dayjs().unix()}: ${i.id} start:${start} finish:${finish} closed:${closed} slots:${slots} pass:${pass} full:${full} interest:${interest}`
+      );
 
       await prisma.investment.update({
         where: { id: i.id },
-        data: {
-          closed,
-          interest,
-        },
+        data: { closed, interest },
       });
     }
   }

@@ -14,23 +14,6 @@ export enum TransactionType {
   INTEREST = "interest",
 }
 
-export const SortingSchema = z.object({
-  key: z.string(),
-  order: z.union([z.literal("asc"), z.literal("desc"), z.boolean()]).optional(),
-});
-
-export const PaginationSchema = z.object({
-  page: z.number().optional(),
-  itemsPerPage: z.number().optional(),
-  total: z.number().optional(),
-  sortBy: z.array(SortingSchema).optional(),
-  groupBy: z.array(SortingSchema).optional(),
-});
-
-export const PaginatiedSchema = z.object({
-  pagination: PaginationSchema.optional(),
-});
-
 export const IdFieldSchema = z.object({
   id: z.number().optional(),
 });
@@ -63,10 +46,6 @@ export const RefUserSchema = z.object({
   applied: z.number().nullable().optional(),
 });
 
-export const ReferralsSchema = PaginatiedSchema.extend({
-  items: z.array(RefUserSchema).default([]),
-});
-
 export const TransactionSchema = z.object({
   id: z.number(),
   txTime: z.number(),
@@ -74,10 +53,6 @@ export const TransactionSchema = z.object({
   amount: z.number(),
   success: z.boolean().nullable(),
   type: z.string(),
-});
-
-export const TransactionsListSchema = PaginatiedSchema.extend({
-  items: z.array(TransactionSchema).default([]),
 });
 
 export const InvestmentSchema = z.object({
@@ -89,12 +64,7 @@ export const InvestmentSchema = z.object({
   finish: z.number(),
 });
 
-export const InvestmentsListSchema = PaginatiedSchema.extend({
-  items: z.array(InvestmentSchema).default([]),
-});
-
 export const ApplyInvestSchema = z.object({
-  userId: z.number(),
   rate: z.number(),
   amount: z.number(),
 });
@@ -104,10 +74,13 @@ export const SendSchema = z.object({
   amount: z.number(),
 });
 
+export const ReferralsSchema = z.array(RefUserSchema).default([]);
+export const TransactionsListSchema = z.array(TransactionSchema).default([]);
+export const InvestmentsListSchema = z.array(InvestmentSchema).default([]);
+
 export type User = z.TypeOf<typeof UserSchema>;
 export type RefUser = z.TypeOf<typeof RefUserSchema>;
 export type Referrals = z.TypeOf<typeof ReferralsSchema>;
-export type Pagination = z.TypeOf<typeof PaginationSchema>;
 export type Transaction = z.TypeOf<typeof TransactionSchema>;
 export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;
 export type Investment = z.TypeOf<typeof InvestmentSchema>;

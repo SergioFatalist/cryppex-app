@@ -10,18 +10,14 @@
     </v-toolbar-items>
   </v-toolbar>
 
-  <v-data-table-server
+  <v-data-table
     :items="app.referrals"
     :headers="headers"
-    :loading="app.getViewState.loading"
-    :page="app.getViewState.pagination?.page"
-    :items-length="app.getViewState.pagination?.total || 0"
-    :items-per-page="app.getViewState.pagination?.itemsPerPage"
-    :hide-default-footer="app.getViewState.pagination?.total == 0"
+    :loading="app.loading"
+    hide-default-footer
     disable-sort
     density="compact"
     class="text-caption"
-    @update:options="app.listReferrals"
   >
     <template #[`item.username`]="{ item }">
       {{ formatTgName(item) }}
@@ -35,7 +31,7 @@
     <template #[`item.balance`]="{ item }">
       {{ item.balance ? (item.balance / 1_000_000).toFixed(2) : 0 }}
     </template>
-  </v-data-table-server>
+  </v-data-table>
   <v-container>
     <v-row>
       <v-col cols="12" class="text-center text-h6">Invite firiends for referral bonuses</v-col>

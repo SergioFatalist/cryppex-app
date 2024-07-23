@@ -1,29 +1,17 @@
-import pagination from "@/server/lib/pagination";
-import { type InvestmentsList, PaginatiedSchema } from "@/server/lib/schema";
+import { type InvestmentsList } from "@/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<InvestmentsList> => {
-  const { data, error } = await readValidatedBody(event, (data) => PaginatiedSchema.safeParse(data));
-  if (!data || error) {
-    throw new Error(`Data is missing or ${error}`);
-  }
   const userId = (event.context.user as WebAppUser).id;
-
-  const where = { userId, closed: false };
-  const total = await prisma.investment.count({ where });
   const items = await prisma.investment.findMany({
-    where,
+    where: { userId, closed: false },
     orderBy: { finish: "asc" },
-    ...pagination(data.pagination),
   });
-  return {
-    pagination: { ...data.pagination, total },
-    items: items.map((i) => ({
-      id: Number(i.id),
-      amount: Number(i.amount),
-      rate: i.rate,
-      interest: Number(i.interest),
-      start: Number(i.start),
-      finish: Number(i.finish),
-    })),
-  };
+  return items.map((i) => ({
+    id: Number(i.id),
+    amount: parseFloat((Number(i.amount) / 1_000_000).toFixed(2)),
+    rate: i.rate,
+    interest: parseFloat((Number(i.interest) / 1_000_000).toFixed(2)),
+    start: Math.round(Number(i.start) / 1000),
+    finish: Math.round(Number(i.finish) / 1000),
+  }));
 });

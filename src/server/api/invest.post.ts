@@ -12,35 +12,38 @@ export default defineEventHandler(async (event): Promise<void> => {
   if (!data || error) {
     throw new Error(`Data is missing or ${error}`);
   }
+  const id = (event.context.user as WebAppUser).id;
+  const amount = data.amount * 1_000_000;
+  const rate = minimals.get(data.rate) ? data.rate : 0;
 
-  if (!minimals.get(data.rate) || (minimals.get(data.rate) ?? 0) > data.amount) {
+  if (!rate || (minimals.get(rate) ?? 0) > amount) {
     throw new Error("Invalid Data specified");
   }
 
   const now = new Date().getTime();
   await prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({
-      where: { id: data.userId },
+      where: { id },
     });
-    const amount = BigInt(data.amount);
+    const amount = BigInt(data.amount * 1_000_000);
     const balance = user.balance - amount;
     await tx.investment.create({
       data: {
-        amount: data.amount,
-        rate: data.rate,
+        amount: amount,
+        rate: rate,
         start: now,
-        finish: now + 86400000 * data.rate,
+        finish: now + 86400000 * rate,
         closed: false,
         interest: BigInt(0),
         user: {
           connect: {
-            id: data.userId,
+            id,
           },
         },
       },
     });
     await tx.user.update({
-      where: { id: data.userId },
+      where: { id },
       data: { balance },
     });
   });
