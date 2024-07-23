@@ -5,7 +5,7 @@ import updateBonuses from "@/server/lib/services/update-bonuses";
 export default async function (webAppUser: WebAppUser, refId?: number | bigint) {
   const config = useRuntimeConfig();
   let applyBonuses = false;
-  let bonus = BigInt(0);
+  let bonus = 0n;
   const user = await prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({
       where: { id: webAppUser.id },
@@ -28,8 +28,7 @@ export default async function (webAppUser: WebAppUser, refId?: number | bigint) 
         }
         const minus = p.parameter.value.owner_address.toLowerCase() === hex;
         const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
-        const amount =
-          (p.parameter.value.amount ? BigInt(p.parameter.value.amount) : BigInt(0)) + BigInt(minus ? fee : 0);
+        const amount = BigInt(p.parameter.value.amount + (minus ? fee : 0));
         await tx.transaction.upsert({
           where: { txID: trxTX.txID },
           create: {

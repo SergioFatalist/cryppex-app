@@ -29,7 +29,6 @@
     "@vueuse/core": "^10.11.0",
     "@vueuse/nuxt": "^10.11.0",
     "dayjs": "^1.11.11",
-    "mathjs": "^13.0.3",
     "nuxt": "^3.12.2",
     "prisma": "^5.16.1",
     "qrcode.vue": "^3.4.1",
