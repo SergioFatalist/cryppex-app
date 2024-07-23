@@ -25,7 +25,7 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
       for (const p of trxTX.raw_data.contract) {
         const minus = p.parameter.value.owner_address.toLowerCase() === hex;
         const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
-        const amount = BigInt(p.parameter.value.amount + (minus ? fee : 0));
+        const amount = BigInt(Math.round(p.parameter.value.amount / 1000) * 1000 + (minus ? fee : 0));
 
         if (Object.hasOwn(p.parameter.value, "asset_name") || amount < BigInt(100_000_000)) {
           continue;
@@ -54,8 +54,7 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
         bonus =
           minus || amount < BigInt(100_000_000)
             ? bonus
-            : bonus +
-              BigInt(Math.round(Number(amount) * parseFloat((config.public.topBonusPercent / 100).toString())));
+            : bonus + BigInt(Math.round(Number(amount) * parseFloat((config.public.topBonusPercent / 100).toString())));
         console.log(`Amount: ${amount} Bonuse: ${bonus}`);
       }
     }
