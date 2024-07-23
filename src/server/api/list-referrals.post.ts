@@ -10,9 +10,9 @@ export default defineEventHandler(async (event): Promise<Referrals> => {
     ...user,
     id: Number(user.id),
     refId: Number(user.refId),
-    balance: Number(user.balance),
-    created: Number(user.created),
-    pending: Number(user.pending),
-    applied: Number(user.applied),
+    balance: parseFloat((Number(user.balance) / 1_000_000).toFixed(2)),
+    created: parseFloat((Number(user.created) / 1_000_000).toFixed(2)),
+    pending: parseFloat((Number(user.pending) / 1_000_000).toFixed(2)),
+    applied: parseFloat((Number(user.applied) / 1_000_000).toFixed(2)),
   }));
 });

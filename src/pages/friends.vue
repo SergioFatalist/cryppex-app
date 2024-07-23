@@ -22,15 +22,6 @@
     <template #[`item.username`]="{ item }">
       {{ formatTgName(item) }}
     </template>
-    <template #[`item.pending`]="{ item }">
-      {{ item.pending ? (item.pending / 1_000_000).toFixed(2) : 0 }}
-    </template>
-    <template #[`item.applied`]="{ item }">
-      {{ item.applied ? (item.applied / 1_000_000).toFixed(2) : 0 }}
-    </template>
-    <template #[`item.balance`]="{ item }">
-      {{ item.balance ? (item.balance / 1_000_000).toFixed(2) : 0 }}
-    </template>
   </v-data-table>
   <v-container>
     <v-row>
@@ -60,6 +51,8 @@ const copyUrl = () => {
   copy(refUrl.value);
   showSB.value = true;
 };
+
+onMounted(app.listReferrals);
 
 const headers = computed<DataTableHeaders>(
   () =>
