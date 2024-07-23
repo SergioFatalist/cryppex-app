@@ -15,9 +15,9 @@ export default defineEventHandler(async (event): Promise<User> => {
   const where: Prisma.UserWhereUniqueInput = {
     id: webAppUser.id,
   };
-  const count = await prisma.user.count({ where });
-  const eventType = count ? EventType.USER_UDPATE : EventType.USER_CREATE;
-  const user = count ? await updateUser(webAppUser, refId) : await createUser(webAppUser, refId);
+  const u = await prisma.user.findUnique({ where });
+  const eventType = u ? EventType.USER_UDPATE : EventType.USER_CREATE;
+  const user = u ? await updateUser(webAppUser, u.refId ?? undefined) : await createUser(webAppUser, refId);
 
   await createEvent(
     user.id,

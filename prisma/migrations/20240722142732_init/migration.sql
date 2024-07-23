@@ -125,5 +125,5 @@ SELECT u.id                AS id,
        pb.amount           AS pending,
        ab.amount           AS applied
 FROM users AS u
-         LEFT JOIN (SELECT user_id, sum(amount)::int AS amount FROM bonuses WHERE applied IS false GROUP BY user_id) AS pb ON pb.user_id = u.ref_id
-         LEFT JOIN (SELECT user_id, sum(amount)::int AS amount FROM bonuses WHERE applied IS true GROUP BY user_id) AS ab ON ab.user_id = u.ref_id;
+         LEFT JOIN (SELECT ref_id, sum(amount)::int AS amount FROM bonuses WHERE applied=false GROUP BY ref_id) AS pb ON pb.ref_id = u.id
+         LEFT JOIN (SELECT ref_id, sum(amount)::int AS amount FROM bonuses WHERE applied=true GROUP BY ref_id) AS ab ON ab.ref_id = u.id;

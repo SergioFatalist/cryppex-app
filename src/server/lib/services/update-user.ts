@@ -23,6 +23,9 @@ export default async function (webAppUser: WebAppUser, refId?: number | bigint) 
       }
       const hex = tron.address.toHex(user.address).toLowerCase();
       for (const p of trxTX.raw_data.contract) {
+        if (Object.hasOwn(p.parameter.value, "asset_name") || p.parameter.value.amount < 100_000_000) {
+          continue;
+        }
         const minus = p.parameter.value.owner_address.toLowerCase() === hex;
         const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
         const amount =
@@ -46,15 +49,26 @@ export default async function (webAppUser: WebAppUser, refId?: number | bigint) 
           update: {},
         });
         data.balance = minus ? data.balance - amount : data.balance + amount;
+        console.log(
+          BigInt(
+            Math.round(parseFloat(amount.toString()) * parseFloat((config.finance.topBonusPercent / 100).toString()))
+          )
+        );
         applyBonuses = applyBonuses ? applyBonuses : !minus;
-        bonus = minus ? bonus : bonus + amount * BigInt(1 + config.finance.topBonusPercent / 100);
+        bonus =
+          minus && amount < BigInt(100_000_000)
+            ? bonus
+            : bonus +
+              BigInt(Math.round(Number(amount) * parseFloat((config.finance.topBonusPercent / 100).toString())));
       }
     }
     return tx.user.update({ where: { id: user.id }, data });
   });
 
+  console.log(`applyBonuses && refId ${applyBonuses} && ${refId}`);
   if (applyBonuses && refId) {
-    await updateBonuses(user.id, refId, bonus);
+    console.log("updateBonuses");
+    await updateBonuses(refId, user.id, bonus);
     return prisma.user.findUniqueOrThrow({ where: { id: user.id } });
   }
 

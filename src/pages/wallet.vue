@@ -10,7 +10,7 @@
 
     <v-toolbar-items>
       <v-btn
-        :disabled="!app.user?.balance || app.user?.balance < 100_000_000"
+        :disabled="!app.user?.balance || app.user?.balance < 99_000_000"
         color="warning"
         variant="tonal"
         size="large"
@@ -57,8 +57,8 @@
             <v-text-field
               v-model="amount"
               :rules="[
+                (v) => rules.lessThan((v * 1_000_000).toString(), String((app.$state.user?.balance || 0) / 1_000_000)),
                 (v) => rules.equalOrGreaterThan(v, '1'),
-                (v) => rules.lessThan((v * 1000000).toString(), String(app.$state.user?.balance || 0)),
               ]"
               type="number"
               label="Amount"
@@ -94,8 +94,8 @@ const amount = ref(0);
 const send = async (event: SubmitEventPromise) => {
   if ((await event).valid) {
     await app.sendTrx(to.value, amount.value);
+    showSendDialog.value = false;
   }
-  showSendDialog.value = false;
 };
 
 const headers = computed<DataTableHeaders>(
