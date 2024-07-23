@@ -9,7 +9,7 @@ export default async function createUser(webAppUser: WebAppUser, refId?: number)
       lastName: webAppUser.last_name,
       username: webAppUser.username,
       languageCode: webAppUser.language_code,
-      address: account.address.base58,
+      address: account.address.hex,
       privateKey: account.privateKey,
       created,
       ref: refId
@@ -26,7 +26,7 @@ export default async function createUser(webAppUser: WebAppUser, refId?: number)
       data: {
         userId: refId,
         refId: user.id,
-        amount: config.public.regBonusAbsolute,
+        amount: config.public.regBonusAbsolute * 1_000_000,
         applied: false,
         created,
       },

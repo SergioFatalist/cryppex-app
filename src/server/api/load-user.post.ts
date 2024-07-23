@@ -25,6 +25,7 @@ export default defineEventHandler(async (event): Promise<User> => {
   return {
     ...info,
     id: Number(info.id),
+    address: tron.address.fromHex(info.address),
     balance: parseFloat((Number(info.balance) / 1_000_000).toFixed(2)),
     refId: Number(info.refId),
     created: Number(info.created),

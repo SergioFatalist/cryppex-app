@@ -21,9 +21,8 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
       if (t > 0) {
         continue;
       }
-      const hex = tron.address.toHex(user.address).toLowerCase();
       for (const p of trxTX.raw_data.contract) {
-        const minus = p.parameter.value.owner_address.toLowerCase() === hex;
+        const minus = p.parameter.value.owner_address.toLowerCase() === user.address.toLowerCase();
         const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
         const amount = BigInt(Math.round(p.parameter.value.amount / 1000) * 1000 + (minus ? fee : 0));
 
