@@ -27,8 +27,7 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
           continue;
         }
         const minus = p.parameter.value.owner_address.toLowerCase() === hex;
-        const fee = trxTX.ret.reduce((acc, item) => acc + item.fee, 0);
-        const amount = BigInt(p.parameter.value.amount + (minus ? fee : 0));
+        const amount = BigInt(p.parameter.value.amount);
         await tx.transaction.upsert({
           where: { txID: trxTX.txID },
           create: {
@@ -48,11 +47,6 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
           update: {},
         });
         data.balance = minus ? data.balance - amount : data.balance + amount;
-        console.log(
-          BigInt(
-            Math.round(parseFloat(amount.toString()) * parseFloat((config.finance.topBonusPercent / 100).toString()))
-          )
-        );
         applyBonuses = applyBonuses ? applyBonuses : !minus;
         bonus =
           minus && amount < BigInt(100_000_000)
@@ -64,9 +58,7 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
     return tx.user.update({ where: { id: user.id }, data });
   });
 
-  console.log(`applyBonuses && refId ${applyBonuses} && ${refId}`);
   if (applyBonuses && refId) {
-    console.log("updateBonuses");
     await updateBonuses(refId, user.id, bonus);
     return prisma.user.findUniqueOrThrow({ where: { id: user.id } });
   }
