@@ -5,6 +5,9 @@ export enum EventType {
   USER_CREATE = "user:create",
   USER_LOGIN = "user:login",
   USER_UDPATE = "user:update",
+  TRX_DEPOSIT = "trx:deposit",
+  TRX_WITHDRAW = "trx:withdraw",
+  TRX_REQUEST = "trx:request",
 }
 
 export enum TransactionType {

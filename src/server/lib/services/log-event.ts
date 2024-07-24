@@ -1,6 +1,10 @@
 import { EventType } from "@/server/lib/schema";
 
-export default async function createEvent(userId: number | bigint, eventType: EventType, eventText?: string): Promise<void> {
+export default async function logEvent(
+  userId: number | bigint,
+  eventType: EventType,
+  eventText?: string
+): Promise<void> {
   await prisma.event.create({
     data: {
       userId,
