@@ -1,4 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+// #1B6DA2
+// #4BA8E1
+// #D5EAF9
+// #04121B
+
 export default defineNuxtConfig({
   modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "@nuxtjs/i18n", "vuetify-nuxt-module"],
   ssr: false,
