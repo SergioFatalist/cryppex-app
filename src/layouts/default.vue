@@ -6,19 +6,19 @@
     <v-bottom-navigation>
       <v-btn to="/">
         <v-icon>mdi-home-outline</v-icon>
-        <span>Home</span>
+        <span>{{ $t("Home") }}</span>
       </v-btn>
       <v-btn to="/wallet">
         <v-icon>mdi-wallet-outline</v-icon>
-        <span>Wallet</span>
+        <span>{{ $t("Wallet") }}</span>
       </v-btn>
       <v-btn to="/friends">
         <v-icon>mdi-account-multiple-outline</v-icon>
-        <span>Friends</span>
+        <span>{{ $t("Friends") }}</span>
       </v-btn>
       <v-btn to="/investment">
         <v-icon>mdi-currency-usd</v-icon>
-        <span>Interests</span>
+        <span>{{ $t("Interests") }}</span>
       </v-btn>
     </v-bottom-navigation>
   </v-layout>

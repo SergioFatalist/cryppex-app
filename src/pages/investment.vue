@@ -1,11 +1,9 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" class="d-flex justify-space-between">
-        <div class="text-subtitle-2">My Current Investments</div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-toolbar color="secondary" class="pl-4">
+    <v-toolbar-title>
+      {{ $t("My current Investments") }}
+    </v-toolbar-title>
+  </v-toolbar>
   <v-data-table
     :items="app.investments"
     :headers="headers"
@@ -22,6 +20,7 @@ import type { DataTableHeaders } from "@/types/ui";
 import dayjs from "dayjs";
 
 const app = useAppStore();
+const { t } = useI18n();
 
 onMounted(app.listInvestments);
 
@@ -29,14 +28,14 @@ const headers = computed<DataTableHeaders>(
   () =>
     [
       {
-        title: "End",
+        title: t("End"),
         key: "finish",
         align: "start",
         value: (v) => v.finish && dayjs(v.finish).format("DD/MM/YY HH:mm"),
       },
-      { title: "Amount", key: "amount", align: "end", value: (v) => v.amount },
-      { title: "Interest", key: "interest", align: "end", value: (v) => v.interest },
-      { title: "Rate", key: "rate", align: "end", value: (v) => `${v.rate}%` },
+      { title: t("Amount"), key: "amount", align: "end", value: (v) => v.amount },
+      { title: t("Interests"), key: "interest", align: "end", value: (v) => v.interest },
+      { title: t("Rate"), key: "rate", align: "end", value: (v) => `${v.rate}%` },
     ] as const
 );
 </script>

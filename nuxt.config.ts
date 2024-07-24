@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "vuetify-nuxt-module"],
+  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "@nuxtjs/i18n", "vuetify-nuxt-module"],
   ssr: false,
   srcDir: "src/",
   debug: false,
@@ -29,6 +29,32 @@ export default defineNuxtConfig({
         },
       ],
     },
+  },
+  i18n: {
+    lazy: true,
+    strategy: "no_prefix",
+    dynamicRouteParams: false,
+    skipSettingLocaleOnNavigate: true,
+    langDir: "./i18n",
+    locales: [
+      {
+        code: "en-US",
+        iso: "en-US",
+        file: "en-US.json",
+        name: "English",
+      },
+      {
+        code: "ru-RU",
+        iso: "ru-RU",
+        file: "ru-RU.json",
+        name: "Russian",
+      },
+    ],
+    detectBrowserLanguage: {
+      useCookie: false,
+      fallbackLocale: "en",
+    },
+    vueI18n: "./i18n.config.ts",
   },
   vuetify: {
     vuetifyOptions: {

@@ -4,10 +4,10 @@
       <v-img src="/tron-trx.svg" class="ma-0 pa-0" width="64" alt="tron logo" />
     </v-toolbar-items>
     <v-toolbar-title>
-      <span class="text-caption">Tron balance</span><br />
+      <span class="text-caption">{{ $t("Balance") }}</span>
+      <br />
       <span>{{ app.$state.user?.balance }} TRX</span>
     </v-toolbar-title>
-
     <v-toolbar-items>
       <v-btn
         :disabled="!app.user?.balance || app.user?.balance < 99"
@@ -16,7 +16,7 @@
         size="large"
         @click="showSendDialog = true"
       >
-        Withdraw<br />crypto
+        {{ $t("Withdraw") }}
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
@@ -40,7 +40,7 @@
       <v-container class="bg-surface" fluid>
         <v-row>
           <v-col cols="12">
-            <div class="text-h6">Send TRX</div>
+            <div class="text-h6">{{ $t("Send TRX") }}</div>
           </v-col>
         </v-row>
         <v-row>
@@ -51,26 +51,31 @@
                 (v) => rules.lessThan(v.toString(), (app.$state.user?.balance || 0).toString()),
                 (v) => rules.equalOrGreaterThan(v, '1'),
               ]"
+              :label="t('Amount')"
               type="number"
-              label="Amount"
+              hide-spin-buttons
             />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-text-field v-model="to" :rules="[rules.required]" type="" label="Tron TRX Address" />
+            <v-text-field v-model="to" :rules="[rules.required]" :label="t('Tron TRX Address')" />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
             <div class="text-center">
-              The transfer fee {{ config.public.sendFeeAbsolute }} TRX will be deducted from the transfer amount
+              {{
+                $t("The transfer fee {0} TRX will be deducted from the transfer amount", [
+                  config.public.sendFeeAbsolute,
+                ])
+              }}
             </div>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" class="text-center">
-            <v-btn type="submit" color="primary" outlined>Withdraw</v-btn>
+            <v-btn type="submit" color="primary" outlined>{{ $t("Withdraw") }}</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -86,6 +91,8 @@ import type { DataTableHeaders } from "@/types/ui";
 const app = useAppStore();
 const rules = useValidationRules();
 const config = useRuntimeConfig();
+const { t } = useI18n();
+
 const showSendDialog = ref(false);
 const to = ref("");
 const amount = ref(0);
@@ -103,13 +110,13 @@ const headers = computed<DataTableHeaders>(
   () =>
     [
       {
-        title: "Date",
+        title: t("Date"),
         key: "txTime",
         align: "start",
         value: (v) => v.txTime && dayjs(v.txTime).format("DD/MM/YY HH:mm"),
       },
-      { title: "Type", key: "type", align: "start" },
-      { title: "Amount", key: "amount", align: "end" },
+      { title: t("Type"), key: "type", align: "start" },
+      { title: t("Amount"), key: "amount", align: "end" },
       { title: "", key: "success", align: "end" },
     ] as const
 );

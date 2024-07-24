@@ -12,6 +12,7 @@ import type {
 export interface AppState {
   initData: string;
   loading: boolean;
+  lang: string;
   user?: User | undefined;
   kentId?: number | undefined;
   transactions?: Transaction[];
@@ -23,22 +24,24 @@ export interface AppState {
 export const useAppStore = defineStore("cryppex", {
   state: (): AppState => ({
     initData: "",
+    lang: "en",
     loading: false,
     user: undefined,
   }),
   persist: {
     storage: persistedState.sessionStorage,
-    paths: ["initData"],
+    paths: ["initData", "lang"],
   },
   getters: {
     getUser: (state) => state.user ?? {},
   },
   actions: {
-    setInitData(initData: string) {
+    setInitData(initData: string, lang: string) {
       if (initData.length < 30) {
         return;
       }
       this.initData = initData;
+      this.lang = lang;
       const params = new URLSearchParams(initData);
       const startParam = <string | undefined>params.get("start_param");
       this.kentId = startParam && Number.isInteger(parseInt(startParam)) ? parseInt(startParam) : undefined;

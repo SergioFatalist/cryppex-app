@@ -4,30 +4,30 @@
       <div class="flex-0-0">
         <v-toolbar color="secondary" class="pl-4">
           <v-toolbar-title>
-            <span class="text-subtitle-2">Hello</span>
+            <span class="text-subtitle-2">{{ $t("Hello") }}</span>
             <br />
             <span class="text-h6">{{ formatTgName(app.user) }}</span>
           </v-toolbar-title>
           <v-toolbar-items>
-            <v-btn color="warning" variant="tonal" size="large" @click="showQRDialog = true">
-              Deposit<br />crypto
+            <v-btn color="warning" variant="tonal" size="large" class="text-wrap" @click="showQRDialog = true">
+              {{ $t("Deposit") }}
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <div class="d-flex text-center py-2">
           <div class="flex-1-1">
-            <span class="text-caption">Balance</span>
+            <span class="text-caption">{{ $t("Balance") }}</span>
             <br />
             <span>{{ app.user?.balance || 0 }}</span>
             <br />TRX
           </div>
           <div class="flex-1-1">
-            <span class="text-caption">Invests</span>
+            <span class="text-caption">{{ $t("Invests") }}</span>
             <br />
             <span>{{ app.user?.investsCount || 0 }}</span>
           </div>
           <div class="flex-1-1">
-            <span class="text-caption">Interests</span>
+            <span class="text-caption">{{ $t("Interests") }}</span>
             <br />
             <span>{{ app.user?.investsInterest || 0 }}</span>
             <br />TRX
@@ -38,39 +38,42 @@
         <v-row class="px-4">
           <v-col cols="12" class="d-flex justify-space-between first my-2 px-xs-2 py-xs-1 pa-sm-4">
             <div class="text-caption">
-              <span class="text-h6">Beginner</span><br />
-              Minimal - 100 TRX<br />
-              Interest - 10%<br />
-              Term - 20 days
+              <span class="text-h6">{{ $t("Beginner") }}</span>
+              <br />
+              {{ $t("Minimal - {0} TRX", ["100"]) }}<br />
+              {{ $t("Interest - {0}%", ["10"]) }}<br />
+              {{ $t("Term - {0} days", ["20"]) }}
             </div>
             <div class="d-flex flex-column justify-space-around">
-              <v-btn variant="outlined" @click="showApply(100, 10)">Apply</v-btn>
+              <v-btn variant="outlined" @click="showApply(100, 10)">{{ $t("Invest now") }}</v-btn>
             </div>
           </v-col>
         </v-row>
         <v-row class="px-4">
           <v-col cols="12" class="d-flex justify-space-between second my-2 px-xs-2 py-xs-1 pa-sm-4">
             <div class="text-caption">
-              <span class="text-h6">Confident</span><br />
-              Minimal - 500 TRX<br />
-              Interest - 20%<br />
-              Term - 30 days
+              <span class="text-h6">{{ $t("Confident") }}</span>
+              <br />
+              {{ $t("Minimal - {0} TRX", ["500"]) }}<br />
+              {{ $t("Interest - {0}%", ["20"]) }}<br />
+              {{ $t("Term - {0} days", ["30"]) }}
             </div>
             <div class="d-flex flex-column justify-space-around">
-              <v-btn variant="outlined" @click="showApply(500, 20)">Apply</v-btn>
+              <v-btn variant="outlined" @click="showApply(500, 20)">{{ $t("Invest now") }}</v-btn>
             </div>
           </v-col>
         </v-row>
         <v-row class="px-4">
           <v-col cols="12" class="d-flex justify-space-between third my-2 px-xs-2 py-xs-1 pa-sm-4">
             <div class="text-caption">
-              <span class="text-h6">Professional</span><br />
-              Minimal - 1000 TRX<br />
-              Interest - 30%<br />
-              Term - 40 days
+              <span class="text-h6">{{ $t("Professional") }}</span>
+              <br />
+              {{ $t("Minimal - {0} TRX", ["1000"]) }}<br />
+              {{ $t("Interest - {0}%", ["30"]) }}<br />
+              {{ $t("Term - {0} days", ["40"]) }}
             </div>
             <div class="d-flex flex-column justify-space-around">
-              <v-btn variant="outlined" @click="showApply(1000, 30)">Apply</v-btn>
+              <v-btn variant="outlined" @click="showApply(1000, 30)">{{ $t("Invest now") }}</v-btn>
             </div>
           </v-col>
         </v-row>
@@ -80,8 +83,8 @@
   </div>
   <v-dialog v-model="showQRDialog" min-width="75%">
     <v-sheet class="text-center pa-4">
-      <div class="text-h6">Top Up balance</div>
-      <div class="text-caption">Send TRX to address</div>
+      <div class="text-h6">{{ $t("Top Up balance") }}</div>
+      <div class="text-caption">{{ $t("Send TRX to address") }}</div>
       <div class="my-4">
         <qr-code
           :value="app.user?.address"
@@ -104,9 +107,6 @@
         </v-btn>
         <span v-else>{{ app.user?.address }}</span>
       </div>
-      <div class="text-center mt-4">
-        <v-btn variant="outlined" text="Copy to clipboard" @click="copyAddress(app.user?.address || '')" />
-      </div>
     </v-sheet>
   </v-dialog>
   <v-dialog v-model="showApplyDialog" min-width="75%">
@@ -114,7 +114,7 @@
       <v-container class="bg-surface" fluid>
         <v-row>
           <v-col cols="12">
-            <div class="text-h6">Invest as {{ investTitle.get(investRate)?.title }}</div>
+            <div class="text-h6">{{ $t("Invest as {0}", [investTitle.get(investRate)?.title || "o_O"]) }}</div>
           </v-col>
         </v-row>
         <v-row>
@@ -122,8 +122,8 @@
             <v-text-field
               v-model="investAmount"
               :rules="[rules.decimal, (v) => rules.equalOrGreaterThan(v, minimalAmount.toString())]"
+              :label="t('Amount')"
               type="number"
-              label="Amount"
               hide-spin-buttons
             />
             <v-slider
@@ -134,12 +134,12 @@
               show-ticks="always"
               tick-size="4"
             />
-            <v-checkbox v-model="approveRules" label="Approve rules" />
+            <v-checkbox v-model="approveRules" :label="t('Approve rules')" />
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12" class="text-center">
-            <v-btn :disabled="!approveRules" type="submit" color="primary" outlined>Invest</v-btn>
+            <v-btn :disabled="!approveRules" type="submit" color="primary" outlined>{{ $t("Invest") }}</v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -166,6 +166,7 @@ const investTitle = new Map<Rate, { min: number; title: string }>([
 const app = useAppStore();
 const rules = useValidationRules();
 const { copy, copied, isSupported } = useClipboard();
+const { t } = useI18n();
 const showQRDialog = ref(false);
 const showApplyDialog = ref(false);
 const showSB = ref(false);
@@ -178,7 +179,7 @@ const approveRules = ref(false);
 const copyAddress = (address: string) => {
   copy(address);
   showQRDialog.value = false;
-  alert.value = `Copied to clibpoard ${address}`;
+  alert.value = t("Copied to clibpoard {0}", [address]);
   if (copied) {
     showSB.value = true;
   }
@@ -186,7 +187,7 @@ const copyAddress = (address: string) => {
 
 const showApply = (min: number, rate: Rate) => {
   if (!app.user || app.user?.balance < min) {
-    alert.value = "Insufficient funds. Top up your balance please";
+    alert.value = t("Insufficient funds - top up your balance please");
     showSB.value = true;
     return;
   }
