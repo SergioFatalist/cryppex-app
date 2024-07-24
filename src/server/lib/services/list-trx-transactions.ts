@@ -1,5 +1,5 @@
-import type { TransferContract } from "@/types/contract";
-import type { Transaction } from "@/types/transaction";
+import type { TransferContract } from "~/types/contract";
+import type { Transaction } from "~/types/transaction";
 
 export default async function listTrxTransactions(
   address: string,

@@ -7,7 +7,7 @@ import type {
   Transaction,
   TransactionsList,
   User,
-} from "@/server/lib/schema";
+} from "~/server/lib/schema";
 
 export interface AppState {
   initData: string;
@@ -98,7 +98,10 @@ export const useAppStore = defineStore("cryppex", {
           "Content-Type": "application/json",
           "Telegram-Init-Data": this.initData,
         },
-        body: { rate, amount },
+        body: {
+          rate: parseInt(rate.toString()),
+          amount: parseInt(amount.toString()),
+        },
         onRequestError: this.onRequestError,
       });
       await this.loadUser();

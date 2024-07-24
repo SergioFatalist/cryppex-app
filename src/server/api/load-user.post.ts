@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
-import { EventType, IdFieldSchema, type User } from "@/server/lib/schema";
-import logEvent from "~/server/lib/services/log-event";
-import createUser from "@/server/lib/services/create-user";
-import updateUser from "@/server/lib/services/update-user";
+import { EventType, IdFieldSchema, type User } from "~/server/lib/schema";
+import createEvent from "~/server/lib/services/create-event";
+import createUser from "~/server/lib/services/create-user";
+import updateUser from "~/server/lib/services/update-user";
 
 export default defineEventHandler(async (event): Promise<User> => {
   const { data, error } = await readValidatedBody(event, (data) => IdFieldSchema.safeParse(data));
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event): Promise<User> => {
   const eventType = u ? EventType.USER_UDPATE : EventType.USER_CREATE;
   const user = u ? await updateUser(webAppUser, u.refId ?? undefined) : await createUser(webAppUser, refId);
 
-  await logEvent(user.id, eventType, `${user.id}:${user.balance}`);
+  await createEvent(user.id, eventType, `${user.id}:${user.balance}`);
 
   const info = await prisma.userInfo.findUniqueOrThrow({ where: { id: user.id } });
   return {

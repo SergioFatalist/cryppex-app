@@ -1,4 +1,4 @@
-import { type TransactionsList } from "@/server/lib/schema";
+import { type TransactionsList } from "~/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<TransactionsList> => {
   const userId = (event.context.user as WebAppUser).id;

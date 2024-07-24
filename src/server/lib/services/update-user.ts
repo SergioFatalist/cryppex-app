@@ -1,7 +1,7 @@
-import { EventType, TransactionType } from "@/server/lib/schema";
-import listTrxTransactions from "@/server/lib/services/list-trx-transactions";
-import updateBonuses from "@/server/lib/services/update-bonuses";
-import logEvent from "~/server/lib/services/log-event";
+import { EventType, TransactionType } from "~/server/lib/schema";
+import listTrxTransactions from "~/server/lib/services/list-trx-transactions";
+import updateBonuses from "~/server/lib/services/update-bonuses";
+import createEvent from "~/server/lib/services/create-event";
 
 export default async function updateUser(webAppUser: WebAppUser, refId?: number | bigint) {
   const config = useRuntimeConfig();
@@ -49,7 +49,7 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
           },
           update: {},
         });
-        await logEvent(user.id, minus ? EventType.TRX_WITHDRAW : EventType.TRX_DEPOSIT, `amount: ${amount} txid:${t.id}`);
+        await createEvent(user.id, minus ? EventType.TRX_WITHDRAW : EventType.TRX_DEPOSIT, `amount: ${amount} txid:${t.id}`);
         data.balance = minus ? data.balance - amount : data.balance + amount;
         applyBonuses = applyBonuses ? applyBonuses : !minus;
         bonus =

@@ -1,6 +1,6 @@
-import { EventType } from "@/server/lib/schema";
+import { EventType } from "~/server/lib/schema";
 
-export default async function logEvent(
+export default async function createEvent(
   userId: number | bigint,
   eventType: EventType,
   eventText?: string

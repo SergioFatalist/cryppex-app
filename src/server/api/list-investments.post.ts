@@ -1,4 +1,4 @@
-import { type InvestmentsList } from "@/server/lib/schema";
+import { type InvestmentsList } from "~/server/lib/schema";
 
 export default defineEventHandler(async (event): Promise<InvestmentsList> => {
   const userId = (event.context.user as WebAppUser).id;
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event): Promise<InvestmentsList> => {
     amount: parseFloat((Number(i.amount) / 1_000_000).toFixed(2)),
     rate: i.rate,
     interest: parseFloat((Number(i.interest) / 1_000_000).toFixed(2)),
-    start: Math.round(Number(i.start) / 1000),
-    finish: Math.round(Number(i.finish) / 1000),
+    start: Number(i.start),
+    finish: Number(i.finish),
   }));
 });

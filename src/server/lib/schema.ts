@@ -14,6 +14,7 @@ export enum TransactionType {
   WITHDRAWAL = "withdrawal",
   DEPOSIT = "deposit",
   BONUS = "bonus",
+  INVEST = "invest",
   INTEREST = "interest",
 }
 

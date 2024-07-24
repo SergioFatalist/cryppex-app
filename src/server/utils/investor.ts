@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { TransactionType } from "~/server/lib/schema";
 
 class Investor {
   private period = 10; // seconds
@@ -25,8 +26,8 @@ class Investor {
       const closed = now >= finish;
       const slots = (finish - start) / this.period;
       const pass = (now - start) / this.period;
-      const full = Math.round(Number(i.amount) * (1 + i.rate / 100));
-      const interest = Math.round(closed ? full : ((full - Number(i.amount)) / slots) * pass);
+      const full = Math.round(Number(i.amount) * (1 + i.rate / 100) - Number(i.amount));
+      const interest = Math.round(closed ? full : (full / slots) * pass);
 
       console.log(
         `${dayjs().unix()}: ${i.id} start:${start} finish:${finish} closed:${closed} slots:${slots} pass:${pass} full:${full} interest:${interest}`
@@ -36,6 +37,31 @@ class Investor {
         where: { id: i.id },
         data: { closed, interest },
       });
+      if (closed) {
+        await prisma.user.update({
+          where: { id: i.userId },
+          data: {
+            balance: {
+              increment: i.amount + BigInt(full),
+            },
+          },
+        });
+        await prisma.transaction.create({
+          data: {
+            type: TransactionType.INTEREST,
+            internal: true,
+            success: true,
+            pending: false,
+            amount: i.amount + BigInt(full),
+            txTime: now.valueOf(),
+            user: {
+              connect: {
+                id: i.userId,
+              },
+            },
+          },
+        });
+      }
     }
   }
 }
