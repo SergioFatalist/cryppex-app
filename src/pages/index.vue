@@ -174,7 +174,7 @@ const alert = ref<string>("");
 const minimalAmount = ref<number>(100);
 const investAmount = ref<number>(0);
 const investRate = ref<Rate>(10);
-const approveRules = ref(false);
+const approveRules = ref(true);
 
 const copyAddress = (address: string) => {
   copy(address);
