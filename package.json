@@ -32,6 +32,7 @@
     "@vueuse/nuxt": "^10.11.0",
     "dayjs": "^1.11.11",
     "nuxt": "^3.12.2",
+    "nuxt-gtag": "^2.1.0",
     "prisma": "^5.16.1",
     "qrcode.vue": "^3.4.1",
     "telegraf": "^4.16.3",

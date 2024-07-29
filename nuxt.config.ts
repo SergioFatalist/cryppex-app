@@ -6,7 +6,14 @@
 // #04121B
 
 export default defineNuxtConfig({
-  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "@nuxtjs/i18n", "vuetify-nuxt-module"],
+  modules: [
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
+    "@nuxtjs/i18n",
+    "vuetify-nuxt-module",
+    "nuxt-gtag",
+  ],
   ssr: false,
   srcDir: "src/",
   debug: false,
@@ -35,6 +42,9 @@ export default defineNuxtConfig({
         },
       ],
     },
+  },
+  gtag: {
+    id: "G-6ZR83BLR8G",
   },
   i18n: {
     lazy: true,
