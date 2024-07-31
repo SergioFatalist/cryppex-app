@@ -86,6 +86,16 @@ model Event {
   @@map("events")
 }
 
+model Account {
+  id          String @unique
+  address     String @map("address") @db.VarChar
+  privateKey  String @map("private_key") @db.VarChar
+  lastLogin   Int    @map("last_login")
+  lastCounter BigInt @map("last_counter")
+
+  @@map("accounts")
+}
+
 view UserInfo {
   id              BigInt  @id
   username        String? @map("username") @db.VarChar

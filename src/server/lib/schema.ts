@@ -78,6 +78,16 @@ export const SendSchema = z.object({
   amount: z.number(),
 });
 
+export const AddressSchema = z.object({
+  id: z.string(),
+});
+
+export const AddressAccountSchema = z.object({
+  id: z.string(),
+  address: z.string(),
+  counter: z.string(),
+});
+
 export const ReferralsSchema = z.array(RefUserSchema).default([]);
 export const TransactionsListSchema = z.array(TransactionSchema).default([]);
 export const InvestmentsListSchema = z.array(InvestmentSchema).default([]);
@@ -90,3 +100,5 @@ export type TransactionsList = z.TypeOf<typeof TransactionsListSchema>;
 export type Investment = z.TypeOf<typeof InvestmentSchema>;
 export type InvestmentsList = z.TypeOf<typeof InvestmentsListSchema>;
 export type Send = z.TypeOf<typeof SendSchema>;
+export type Address = z.TypeOf<typeof AddressSchema>;
+export type AddressAccount = z.TypeOf<typeof AddressAccountSchema>;
