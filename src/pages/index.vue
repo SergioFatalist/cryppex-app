@@ -5,6 +5,10 @@
         <v-img src="/logo-text-trans.svg" alt="logo" width="180" />
       </v-app-bar-title>
       <v-spacer />
+      <v-btn class="mx-8" href="https://t.me/cryppex_bot/app">
+        <v-img src="/icons8-telegram.svg" alt="telegram icon" width="32" />
+        <span class="mx-2">Telegram App</span>
+      </v-btn>
       <v-form v-if="!app.address" validate-on="submit lazy" @submit.prevent="siteLogin">
         <v-text-field
           v-model="app.login"
@@ -13,7 +17,7 @@
           variant="outlined"
           density="compact"
           label="TRON Address"
-          min-width="400"
+          min-width="500"
         >
           <template #append>
             <v-btn type="submit" prepend-icon="mdi-login" rounded flat>Login</v-btn>
