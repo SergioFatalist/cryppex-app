@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DataTableHeaders } from "~/types/ui";
+import type { DataTableHeaders } from "@/types/ui";
 
 const app = useAppStore();
 const config = useRuntimeConfig();

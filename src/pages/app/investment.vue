@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DataTableHeaders } from "~/types/ui";
+import type { DataTableHeaders } from "@/types/ui";
 import dayjs from "dayjs";
 
 const app = useAppStore();
