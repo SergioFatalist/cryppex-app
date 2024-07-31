@@ -1,32 +1,44 @@
 import { defineStore } from "pinia";
-import type {
-  Investment,
-  InvestmentsList,
-  RefUser,
-  Referrals,
-  Transaction,
-  TransactionsList,
-  User,
+import {
+  type Investment,
+  type InvestmentsList,
+  type RefUser,
+  type Referrals,
+  type Transaction,
+  type TransactionsList,
+  type User,
+  type AddressAccount,
 } from "~/server/lib/schema";
+
+export type Lang = "en" | "ru" | string;
 
 export interface AppState {
   initData: string;
   loading: boolean;
   lang: string;
+  dark: boolean;
   user?: User | undefined;
   kentId?: number | undefined;
   transactions?: Transaction[];
   investments?: Investment[];
   referrer?: RefUser;
   referrals?: RefUser[];
+  login?: string;
+  address?: string;
+  counter: number;
+  counter2: number;
 }
 
 export const useAppStore = defineStore("cryppex", {
   state: (): AppState => ({
     initData: "",
     lang: "en",
+    dark: true,
     loading: false,
     user: undefined,
+    login: "",
+    counter: 0,
+    counter2: 0,
   }),
   persist: {
     storage: persistedState.sessionStorage,
@@ -36,6 +48,12 @@ export const useAppStore = defineStore("cryppex", {
     getUser: (state) => state.user ?? {},
   },
   actions: {
+    toggleDark() {
+      this.dark = !this.dark;
+    },
+    setLang(lang: Lang) {
+      this.lang = lang;
+    },
     setInitData(initData: string, lang: string) {
       if (initData.length < 30) {
         return;
@@ -48,7 +66,7 @@ export const useAppStore = defineStore("cryppex", {
     },
     async loadUser() {
       this.loading = true;
-      this.user = await $fetch<User>("/api/load-user", {
+      this.user = await $fetch<User>("/api/telegram/load-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +81,7 @@ export const useAppStore = defineStore("cryppex", {
     },
     async sendTrx(to: string, amount: number) {
       this.loading = true;
-      await $fetch<TransactionsList>("/api/send-trx", {
+      await $fetch<TransactionsList>("/api/telegram/send-trx", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +98,7 @@ export const useAppStore = defineStore("cryppex", {
     },
     async listTransactions() {
       this.loading = true;
-      this.transactions = await $fetch<TransactionsList>("/api/list-transactions", {
+      this.transactions = await $fetch<TransactionsList>("/api/telegram/list-transactions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +110,7 @@ export const useAppStore = defineStore("cryppex", {
     },
     async invest(rate: number, amount: number) {
       this.loading = true;
-      await $fetch("/api/invest", {
+      await $fetch("/api/telegram/invest", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +127,7 @@ export const useAppStore = defineStore("cryppex", {
     },
     async listInvestments() {
       this.loading = true;
-      this.investments = await $fetch<InvestmentsList>("/api/list-investments", {
+      this.investments = await $fetch<InvestmentsList>("/api/telegram/list-investments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +139,7 @@ export const useAppStore = defineStore("cryppex", {
     },
     async listReferrals() {
       this.loading = true;
-      this.referrals = await $fetch<Referrals>("/api/list-referrals", {
+      this.referrals = await $fetch<Referrals>("/api/telegram/list-referrals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -132,5 +150,15 @@ export const useAppStore = defineStore("cryppex", {
       this.loading = false;
     },
     onRequestError: ({ error }: { error: Error }) => console.error(error),
+    async login() {
+      const res = await $fetch<AddressAccount>("/api/site/login", {
+        method: "POST",
+        body: {
+          id: this.login,
+        },
+      });
+      this.counter = this.counter = Number(res.counter);
+      this.address = res.address;
+    },
   },
 });

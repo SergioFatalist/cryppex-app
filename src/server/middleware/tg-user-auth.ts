@@ -1,7 +1,7 @@
 import { validate } from "@telegram-apps/init-data-node";
 
 export default defineEventHandler((event) => {
-  if (event.path.startsWith("/api")) {
+  if (event.path.startsWith("/api/telegram")) {
     const config = useRuntimeConfig();
     const initData = event.headers.get("Telegram-Init-Data");
     if (!initData) {
