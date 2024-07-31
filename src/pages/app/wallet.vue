@@ -88,6 +88,10 @@ import dayjs from "dayjs";
 import type { SubmitEventPromise } from "vuetify";
 import type { DataTableHeaders } from "@/types/ui";
 
+definePageMeta({
+  layout: "app",
+});
+
 const app = useAppStore();
 const rules = useValidationRules();
 const config = useRuntimeConfig();

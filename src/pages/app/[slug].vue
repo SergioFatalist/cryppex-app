@@ -1,3 +1,3 @@
 <script setup lang="ts">
-navigateTo("/app");
+navigateTo("/");
 </script>

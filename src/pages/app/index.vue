@@ -156,6 +156,10 @@
 <script setup lang="ts">
 import type { SubmitEventPromise } from "vuetify";
 
+definePageMeta({
+  layout: "app",
+});
+
 type Rate = 10 | 20 | 30;
 const investTitle = new Map<Rate, { min: number; title: string }>([
   [10, { min: 100, title: "Beginner" }],

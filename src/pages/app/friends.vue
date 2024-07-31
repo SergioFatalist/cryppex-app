@@ -42,6 +42,10 @@
 <script setup lang="ts">
 import type { DataTableHeaders } from "@/types/ui";
 
+definePageMeta({
+  layout: "app",
+});
+
 const app = useAppStore();
 const config = useRuntimeConfig();
 const { t } = useI18n();

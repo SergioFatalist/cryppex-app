@@ -4,19 +4,19 @@
       <NuxtPage />
     </v-main>
     <v-bottom-navigation>
-      <v-btn to="/">
+      <v-btn to="/app">
         <v-icon>mdi-home-outline</v-icon>
         <span>{{ $t("Home") }}</span>
       </v-btn>
-      <v-btn to="/wallet">
+      <v-btn to="/app/wallet">
         <v-icon>mdi-wallet-outline</v-icon>
         <span>{{ $t("Wallet") }}</span>
       </v-btn>
-      <v-btn to="/friends">
+      <v-btn to="/app/friends">
         <v-icon>mdi-account-multiple-outline</v-icon>
         <span>{{ $t("Friends") }}</span>
       </v-btn>
-      <v-btn to="/investment">
+      <v-btn to="/app/investment">
         <v-icon>mdi-currency-usd</v-icon>
         <span>{{ $t("Interests") }}</span>
       </v-btn>

@@ -19,6 +19,10 @@
 import type { DataTableHeaders } from "@/types/ui";
 import dayjs from "dayjs";
 
+definePageMeta({
+  layout: "app",
+});
+
 const app = useAppStore();
 const { t } = useI18n();
 
