@@ -13,6 +13,7 @@
   "Deposit": "Deposit",
   "End": "End",
   "Friends": "Friends",
+  "From {0} TRX": "From {0} TRX",
   "Hello": "Hello",
   "Home": "Home",
   "Insufficient funds - top up your balance please": "Insufficient funds  Top up your balance please",
@@ -22,6 +23,7 @@
   "Invest": "Invest",
   "Invest as {0}": "Invest as {0}",
   "Invest now": "Invest now",
+  "Invest with confidence - secure your future today!": "Invest with confidence - secure your future today!",
   "Invests": "Invests",
   "Invite friends for referral bonuses": "Invite friends for referral bonuses",
   "Invite link": "Invite link",
@@ -37,8 +39,10 @@
   "The transfer fee {0} TRX will be deducted from the transfer amount": "The transfer fee {0} TRX will be deducted from the transfer amount",
   "Top Up balance": "Top Up balance",
   "Tron TRX Address": "Tron TRX Address",
+  "Try and see - everything is possible": "Try and see - everything is possible\tПопробуй и убедись — все возможно\tTry and see — everything is possible",
   "Type": "Type",
   "User": "User",
   "Wallet": "Wallet",
-  "Withdraw": "Withdraw"
+  "Withdraw": "Withdraw",
+  "You know what you want!": "You know what you want!"
 }

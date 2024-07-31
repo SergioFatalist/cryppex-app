@@ -36,7 +36,7 @@ export default defineEventHandler(async (event): Promise<AddressAccount> => {
 
   return {
     id: user.id,
-    address: user.address,
+    address: tron.address.fromHex(user.address),
     counter: user.lastCounter.toString(),
   };
 });

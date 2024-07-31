@@ -49,7 +49,11 @@ export default async function updateUser(webAppUser: WebAppUser, refId?: number 
           },
           update: {},
         });
-        await createEvent(user.id, minus ? EventType.TRX_WITHDRAW : EventType.TRX_DEPOSIT, `amount: ${amount} txid:${t.id}`);
+        await createEvent(
+          user.id,
+          minus ? EventType.TRX_WITHDRAW : EventType.TRX_DEPOSIT,
+          `amount: ${amount} txid:${t.id}`
+        );
         data.balance = minus ? data.balance - amount : data.balance + amount;
         applyBonuses = applyBonuses ? applyBonuses : !minus;
         bonus =

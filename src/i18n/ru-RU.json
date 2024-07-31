@@ -13,6 +13,7 @@
   "Deposit": "Пополнить",
   "End": "Завершение",
   "Friends": "Друзья",
+  "From {0} TRX": "От {0} TRX",
   "Hello": "Привет",
   "Home": "Домой",
   "Insufficient funds - top up your balance please": "Недостаточно средств, пополни баланс",
@@ -22,6 +23,7 @@
   "Invest": "Инвестиция",
   "Invest as {0}": "Инвестируй как {0}",
   "Invest now": "Инвестировать",
+  "Invest with confidence - secure your future today!": "Вкладывайте — обеспечьте своё будущее!",
   "Invests": "Инвестиции",
   "Invite friends for referral bonuses": "Приглашай друзей и получай реферальные бонусы",
   "Invite link": "Инвайт ссылка",
@@ -37,8 +39,10 @@
   "The transfer fee {0} TRX will be deducted from the transfer amount": "Комиссия за перевод {0} TRX будет вычтена из суммы перевода",
   "Top Up balance": "Пополнение баланса",
   "Tron TRX Address": "Tron TRX адрес",
+  "Try and see - everything is possible": "Попробуй и убедись — все возможно",
   "Type": "Тип",
   "User": "Пользователь",
   "Wallet": "Кошелек",
-  "Withdraw": "Вывод"
+  "Withdraw": "Вывод",
+  "You know what you want!": "Ты знаешь чего хочешь!"
 }

@@ -37,8 +37,8 @@ export const useAppStore = defineStore("cryppex", {
     loading: false,
     user: undefined,
     login: "",
-    counter: 0,
-    counter2: 0,
+    counter: 1_000_000,
+    counter2: 1_000_000,
   }),
   persist: {
     storage: persistedState.sessionStorage,
@@ -48,6 +48,7 @@ export const useAppStore = defineStore("cryppex", {
     getUser: (state) => state.user ?? {},
   },
   actions: {
+    onRequestError: ({ error }: { error: Error }) => console.error(error),
     toggleDark() {
       this.dark = !this.dark;
     },
@@ -149,16 +150,19 @@ export const useAppStore = defineStore("cryppex", {
       });
       this.loading = false;
     },
-    onRequestError: ({ error }: { error: Error }) => console.error(error),
-    async login() {
+    async siteLogin() {
       const res = await $fetch<AddressAccount>("/api/site/login", {
         method: "POST",
         body: {
           id: this.login,
         },
       });
-      this.counter = this.counter = Number(res.counter);
+      this.counter = this.counter2 = Number(res.counter);
       this.address = res.address;
+    },
+    siteLogout() {
+      this.counter = this.counter2 = 1_000_000;
+      this.address = this.login = undefined;
     },
   },
 });
